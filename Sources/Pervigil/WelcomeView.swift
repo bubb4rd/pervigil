@@ -81,14 +81,6 @@ struct WelcomeView: View {
     /// last-remembered step.
     @State private var windowVisible = false
 
-    /// Whether the hero mark shows as active: a live session, or a use case
-    /// just picked (lighting the mark is the payoff for the choice; the
-    /// manual opt-out keeps it the quiet idle grey).
-    private var markActive: Bool {
-        model.session.isActive
-            || (selectedUseCase != nil && selectedUseCase != Self.manualID)
-    }
-
     /// The screen's visible height, kept live: resolutions change at runtime
     /// and displays come and go, so this refreshes on every screen-parameter
     /// change (and each open) rather than being read once per app run.
@@ -128,7 +120,7 @@ struct WelcomeView: View {
                     // The mark is a fixed header across every step, so the brand stays
                     // put and picking a use case still lights it (the payoff for the
                     // choice) no matter which step you're on.
-                    BrandMarkView(isActive: markActive, scale: 2.0 * type.scale)
+                    BrandMarkView(isActive: true, scale: 2.0 * type.scale) // the brand mark, always in blue
                         .padding(.top, 22)
                         .padding(.bottom, 4)
                     ScrollView {
