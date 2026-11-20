@@ -1158,3 +1158,13 @@
 "Your Mac has been kept awake for %@." = "Mac이 %@ 동안 깨어 있게 유지되었습니다.";
 "Your keep-awake session ends in about %@." = "깨어 있게 유지 세션이 약 %@ 후에 종료됩니다.";
 "Your keep-awake session has ended." = "깨어 있게 유지 세션이 종료되었습니다.";
+"Closed Lid needs the helper" = "덮개 닫힘에는 도우미가 필요합니다";
+"Never Sleep needs the helper" = "잠자기 안 함에는 도우미가 필요합니다";
+"Install the administrator helper to follow sessions automatically, or choose Allow Once in the Pervigil menu." = "관리자 도우미를 설치하면 세션을 자동으로 따릅니다. 또는 Pervigil 메뉴에서 한 번 허용을 선택하세요.";
+"AWDL pause needs the helper" = "AWDL 일시 정지에는 도우미가 필요합니다";
+"Install the administrator helper to pause AWDL automatically while you play, or turn the pause on by hand in Gaming & Streaming." = "관리자 도우미를 설치하면 플레이 중 AWDL을 자동으로 일시 정지합니다. 또는 게임 및 스트리밍에서 직접 일시 정지를 켜세요.";
+"Following sessions needs the administrator helper. Without it, Pervigil won't ask for your password in the background, so the lid setting stays as it is." = "세션을 따르려면 관리자 도우미가 필요합니다. 도우미가 없으면 Pervigil은 백그라운드에서 암호를 요청하지 않으므로 덮개 설정은 그대로 유지됩니다.";
+"Following sessions needs the administrator helper. Without it, Pervigil won't ask for your password in the background, so the sleep setting stays as it is." = "세션을 따르려면 관리자 도우미가 필요합니다. 도우미가 없으면 Pervigil은 백그라운드에서 암호를 요청하지 않으므로 잠자기 설정은 그대로 유지됩니다.";
+"Allow Once" = "한 번 허용";
+"Asks for your password now. Lasts until Pervigil quits." = "지금 암호를 요청합니다. Pervigil을 종료할 때까지 유지됩니다.";
+"Following sessions needs the administrator helper. Without it, Pervigil asks for your password only when you choose Allow Once, and that lasts until it quits." = "세션을 따르려면 관리자 도우미가 필요합니다. 도우미가 없으면 Pervigil은 한 번 허용을 선택할 때만 암호를 요청하며, 종료할 때까지 유지됩니다.";

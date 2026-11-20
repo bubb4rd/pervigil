@@ -1158,3 +1158,13 @@
 "Your Mac has been kept awake for %@." = "Votre Mac est maintenu éveillé depuis %@.";
 "Your keep-awake session ends in about %@." = "Votre session de maintien en éveil se termine dans environ %@.";
 "Your keep-awake session has ended." = "Votre session de maintien en éveil est terminée.";
+"Closed Lid needs the helper" = "Capot fermé nécessite l’assistant";
+"Never Sleep needs the helper" = "Jamais en veille nécessite l’assistant";
+"Install the administrator helper to follow sessions automatically, or choose Allow Once in the Pervigil menu." = "Installez l’assistant administrateur pour suivre les sessions automatiquement, ou choisissez Autoriser une fois dans le menu Pervigil.";
+"AWDL pause needs the helper" = "La pause AWDL nécessite l’assistant";
+"Install the administrator helper to pause AWDL automatically while you play, or turn the pause on by hand in Gaming & Streaming." = "Installez l’assistant administrateur pour suspendre AWDL automatiquement pendant que vous jouez, ou activez la pause manuellement dans Jeu et streaming.";
+"Following sessions needs the administrator helper. Without it, Pervigil won't ask for your password in the background, so the lid setting stays as it is." = "Suivre les sessions nécessite l’assistant administrateur. Sans lui, Pervigil ne demande pas votre mot de passe en arrière-plan, donc le réglage du capot reste tel quel.";
+"Following sessions needs the administrator helper. Without it, Pervigil won't ask for your password in the background, so the sleep setting stays as it is." = "Suivre les sessions nécessite l’assistant administrateur. Sans lui, Pervigil ne demande pas votre mot de passe en arrière-plan, donc le réglage de veille reste tel quel.";
+"Allow Once" = "Autoriser une fois";
+"Asks for your password now. Lasts until Pervigil quits." = "Demande votre mot de passe maintenant. Valable jusqu’à ce que Pervigil quitte.";
+"Following sessions needs the administrator helper. Without it, Pervigil asks for your password only when you choose Allow Once, and that lasts until it quits." = "Suivre les sessions nécessite l’assistant administrateur. Sans lui, Pervigil ne demande votre mot de passe que si vous choisissez Autoriser une fois, et cela vaut jusqu’à ce qu’il quitte.";

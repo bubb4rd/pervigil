@@ -306,3 +306,8 @@
 "Off" = "Вимк.";
 "Paused" = "Призупинено";
 "Running hot, letting the Mac cool down" = "Перегрів, Mac може охолонути";
+"Pervigil needs your password to change the Mac's sleep setting." = "Pervigil потребує вашого пароля, щоб змінити налаштування сну Mac.";
+"Pervigil needs your password to keep the Mac awake with the lid closed during sessions." = "Pervigil потребує вашого пароля, щоб Mac не засинав із закритою кришкою під час сеансів.";
+"Pervigil needs your password to pause AWDL (AirDrop, Handoff and Continuity)." = "Pervigil потребує вашого пароля, щоб призупинити AWDL (AirDrop, Handoff і Continuity).";
+"Pervigil needs your password to lock or unlock the keyboard for cleaning." = "Pervigil потребує вашого пароля, щоб заблокувати або розблокувати клавіатуру для чищення.";
+"Needs helper" = "Потрібен помічник";

@@ -1158,3 +1158,13 @@
 "Your Mac has been kept awake for %@." = "你的 Mac 已保持唤醒 %@。";
 "Your keep-awake session ends in about %@." = "你的保持唤醒会话将在约 %@ 后结束。";
 "Your keep-awake session has ended." = "你的保持唤醒会话已结束。";
+"Closed Lid needs the helper" = "合盖需要助理";
+"Never Sleep needs the helper" = "永不睡眠需要助理";
+"Install the administrator helper to follow sessions automatically, or choose Allow Once in the Pervigil menu." = "安装管理员助理以自动跟随会话，或在 Pervigil 菜单中选择“允许一次”。";
+"AWDL pause needs the helper" = "暂停 AWDL 需要助理";
+"Install the administrator helper to pause AWDL automatically while you play, or turn the pause on by hand in Gaming & Streaming." = "安装管理员助理以在游戏时自动暂停 AWDL，或在“游戏与串流”中手动打开暂停。";
+"Following sessions needs the administrator helper. Without it, Pervigil won't ask for your password in the background, so the lid setting stays as it is." = "跟随会话需要管理员助理。没有它，Pervigil 不会在后台索要你的密码，因此合盖设置保持不变。";
+"Following sessions needs the administrator helper. Without it, Pervigil won't ask for your password in the background, so the sleep setting stays as it is." = "跟随会话需要管理员助理。没有它，Pervigil 不会在后台索要你的密码，因此睡眠设置保持不变。";
+"Allow Once" = "允许一次";
+"Asks for your password now. Lasts until Pervigil quits." = "现在索要你的密码。在 Pervigil 退出前有效。";
+"Following sessions needs the administrator helper. Without it, Pervigil asks for your password only when you choose Allow Once, and that lasts until it quits." = "跟随会话需要管理员助理。没有它，Pervigil 仅在你选择“允许一次”时索要密码，并在退出前有效。";

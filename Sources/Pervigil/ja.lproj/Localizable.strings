@@ -1158,3 +1158,13 @@
 "Your Mac has been kept awake for %@." = "Mac は %@ の間スリープを防止されています。";
 "Your keep-awake session ends in about %@." = "スリープ防止セッションは約 %@ で終了します。";
 "Your keep-awake session has ended." = "スリープ防止セッションが終了しました。";
+"Closed Lid needs the helper" = "「ふたを閉じる」にはヘルパーが必要です";
+"Never Sleep needs the helper" = "「スリープしない」にはヘルパーが必要です";
+"Install the administrator helper to follow sessions automatically, or choose Allow Once in the Pervigil menu." = "管理者ヘルパーをインストールするとセッションに自動で追従します。または Pervigil メニューで「1回だけ許可」を選択してください。";
+"AWDL pause needs the helper" = "AWDL の一時停止にはヘルパーが必要です";
+"Install the administrator helper to pause AWDL automatically while you play, or turn the pause on by hand in Gaming & Streaming." = "管理者ヘルパーをインストールすると、プレイ中に AWDL を自動で一時停止します。または「ゲームとストリーミング」で手動で一時停止をオンにしてください。";
+"Following sessions needs the administrator helper. Without it, Pervigil won't ask for your password in the background, so the lid setting stays as it is." = "セッションへの追従には管理者ヘルパーが必要です。ヘルパーがない場合、Pervigil はバックグラウンドでパスワードを求めないため、ふたの設定は変わりません。";
+"Following sessions needs the administrator helper. Without it, Pervigil won't ask for your password in the background, so the sleep setting stays as it is." = "セッションへの追従には管理者ヘルパーが必要です。ヘルパーがない場合、Pervigil はバックグラウンドでパスワードを求めないため、スリープ設定は変わりません。";
+"Allow Once" = "1回だけ許可";
+"Asks for your password now. Lasts until Pervigil quits." = "今すぐパスワードを求めます。Pervigil を終了するまで有効です。";
+"Following sessions needs the administrator helper. Without it, Pervigil asks for your password only when you choose Allow Once, and that lasts until it quits." = "セッションへの追従には管理者ヘルパーが必要です。ヘルパーがない場合、Pervigil は「1回だけ許可」を選んだときだけパスワードを求め、終了するまで有効です。";

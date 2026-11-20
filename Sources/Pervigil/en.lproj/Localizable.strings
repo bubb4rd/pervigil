@@ -1158,3 +1158,13 @@
 "Your Mac has been kept awake for %@." = "Your Mac has been kept awake for %@.";
 "Your keep-awake session ends in about %@." = "Your keep-awake session ends in about %@.";
 "Your keep-awake session has ended." = "Your keep-awake session has ended.";
+"Closed Lid needs the helper" = "Closed Lid needs the helper";
+"Never Sleep needs the helper" = "Never Sleep needs the helper";
+"Install the administrator helper to follow sessions automatically, or choose Allow Once in the Pervigil menu." = "Install the administrator helper to follow sessions automatically, or choose Allow Once in the Pervigil menu.";
+"AWDL pause needs the helper" = "AWDL pause needs the helper";
+"Install the administrator helper to pause AWDL automatically while you play, or turn the pause on by hand in Gaming & Streaming." = "Install the administrator helper to pause AWDL automatically while you play, or turn the pause on by hand in Gaming & Streaming.";
+"Following sessions needs the administrator helper. Without it, Pervigil won't ask for your password in the background, so the lid setting stays as it is." = "Following sessions needs the administrator helper. Without it, Pervigil won't ask for your password in the background, so the lid setting stays as it is.";
+"Following sessions needs the administrator helper. Without it, Pervigil won't ask for your password in the background, so the sleep setting stays as it is." = "Following sessions needs the administrator helper. Without it, Pervigil won't ask for your password in the background, so the sleep setting stays as it is.";
+"Allow Once" = "Allow Once";
+"Asks for your password now. Lasts until Pervigil quits." = "Asks for your password now. Lasts until Pervigil quits.";
+"Following sessions needs the administrator helper. Without it, Pervigil asks for your password only when you choose Allow Once, and that lasts until it quits." = "Following sessions needs the administrator helper. Without it, Pervigil asks for your password only when you choose Allow Once, and that lasts until it quits.";

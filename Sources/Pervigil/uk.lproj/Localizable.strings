@@ -1158,3 +1158,13 @@
 "Your Mac has been kept awake for %@." = "Ваш Mac підтримувався неспиним протягом %@.";
 "Your keep-awake session ends in about %@." = "Ваш сеанс підтримки активності завершиться приблизно через %@.";
 "Your keep-awake session has ended." = "Ваш сеанс підтримки активності завершився.";
+"Closed Lid needs the helper" = "Для «Закритої кришки» потрібен помічник";
+"Never Sleep needs the helper" = "Для «Без сну» потрібен помічник";
+"Install the administrator helper to follow sessions automatically, or choose Allow Once in the Pervigil menu." = "Встановіть помічник адміністратора, щоб автоматично стежити за сеансами, або виберіть «Дозволити один раз» у меню Pervigil.";
+"AWDL pause needs the helper" = "Для паузи AWDL потрібен помічник";
+"Install the administrator helper to pause AWDL automatically while you play, or turn the pause on by hand in Gaming & Streaming." = "Встановіть помічник адміністратора, щоб AWDL автоматично призупинявся під час гри, або ввімкніть паузу вручну в розділі «Ігри та стримінг».";
+"Following sessions needs the administrator helper. Without it, Pervigil won't ask for your password in the background, so the lid setting stays as it is." = "Щоб стежити за сеансами, потрібен помічник адміністратора. Без нього Pervigil не запитує пароль у фоні, тому налаштування кришки лишається як є.";
+"Following sessions needs the administrator helper. Without it, Pervigil won't ask for your password in the background, so the sleep setting stays as it is." = "Щоб стежити за сеансами, потрібен помічник адміністратора. Без нього Pervigil не запитує пароль у фоні, тому налаштування сну лишається як є.";
+"Allow Once" = "Дозволити один раз";
+"Asks for your password now. Lasts until Pervigil quits." = "Запитує пароль зараз. Діє до виходу з Pervigil.";
+"Following sessions needs the administrator helper. Without it, Pervigil asks for your password only when you choose Allow Once, and that lasts until it quits." = "Щоб стежити за сеансами, потрібен помічник адміністратора. Без нього Pervigil запитує пароль, лише коли ви вибираєте «Дозволити один раз», і це діє до виходу із застосунку.";

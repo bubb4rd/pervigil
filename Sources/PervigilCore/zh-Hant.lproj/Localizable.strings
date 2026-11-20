@@ -306,3 +306,8 @@
 "Off" = "關";
 "Paused" = "已暫停";
 "Running hot, letting the Mac cool down" = "過熱，讓 Mac 降溫";
+"Pervigil needs your password to change the Mac's sleep setting." = "Pervigil 需要您的密碼來更改 Mac 的睡眠設定。";
+"Pervigil needs your password to keep the Mac awake with the lid closed during sessions." = "Pervigil 需要您的密碼，以便在工作階段期間闔蓋時保持 Mac 喚醒。";
+"Pervigil needs your password to pause AWDL (AirDrop, Handoff and Continuity)." = "Pervigil 需要您的密碼來暫停 AWDL（AirDrop、Handoff 與接續互通）。";
+"Pervigil needs your password to lock or unlock the keyboard for cleaning." = "Pervigil 需要您的密碼來鎖定或解鎖鍵盤以便清潔。";
+"Needs helper" = "需要輔助程式";

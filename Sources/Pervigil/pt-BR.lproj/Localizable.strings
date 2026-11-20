@@ -1158,3 +1158,13 @@
 "Your Mac has been kept awake for %@." = "O seu Mac foi mantido acordado por %@.";
 "Your keep-awake session ends in about %@." = "A sua sessão de vigília termina em cerca de %@.";
 "Your keep-awake session has ended." = "A sua sessão de vigília terminou.";
+"Closed Lid needs the helper" = "Tampa fechada precisa do assistente";
+"Never Sleep needs the helper" = "Nunca repousar precisa do assistente";
+"Install the administrator helper to follow sessions automatically, or choose Allow Once in the Pervigil menu." = "Instale o assistente de administrador para acompanhar as sessões automaticamente ou escolha Permitir uma vez no menu do Pervigil.";
+"AWDL pause needs the helper" = "A pausa do AWDL precisa do assistente";
+"Install the administrator helper to pause AWDL automatically while you play, or turn the pause on by hand in Gaming & Streaming." = "Instale o assistente de administrador para pausar o AWDL automaticamente enquanto joga ou ative a pausa manualmente em Jogos e streaming.";
+"Following sessions needs the administrator helper. Without it, Pervigil won't ask for your password in the background, so the lid setting stays as it is." = "Acompanhar as sessões requer o assistente de administrador. Sem ele, o Pervigil não pede sua senha em segundo plano, então o ajuste da tampa fica como está.";
+"Following sessions needs the administrator helper. Without it, Pervigil won't ask for your password in the background, so the sleep setting stays as it is." = "Acompanhar as sessões requer o assistente de administrador. Sem ele, o Pervigil não pede sua senha em segundo plano, então o ajuste de repouso fica como está.";
+"Allow Once" = "Permitir uma vez";
+"Asks for your password now. Lasts until Pervigil quits." = "Pede sua senha agora. Vale até o Pervigil ser encerrado.";
+"Following sessions needs the administrator helper. Without it, Pervigil asks for your password only when you choose Allow Once, and that lasts until it quits." = "Acompanhar as sessões requer o assistente de administrador. Sem ele, o Pervigil só pede sua senha quando você escolhe Permitir uma vez, e isso vale até ele ser encerrado.";
