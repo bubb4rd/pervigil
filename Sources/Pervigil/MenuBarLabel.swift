@@ -3,13 +3,13 @@ import Combine
 import PervigilCore
 
 /// The icon shown in the system menu bar: the Pervigil mark as a template
-/// image, solid while a session runs and an outline while idle
+/// image, always solid, with a small dot badge while the Mac is held awake
 /// (``MenuBarIcon``), so the bar matches the app icon.
 ///
 /// The label stays static by design: a `MenuBarExtra` label is snapshotted to
 /// a template image, so a Canvas renders blank, `TimelineView` freezes the
-/// app, and SwiftUI animations don't run there. State reads through solid
-/// versus outline, not motion. The optional countdown text next to the icon
+/// app, and SwiftUI animations don't run there. State reads through the badge
+/// and the mark's details, not motion. The optional countdown text next to the icon
 /// updates via a plain `Timer.publish` tick for the same reason.
 struct MenuBarLabel: View {
     @Bindable var session: SessionController
