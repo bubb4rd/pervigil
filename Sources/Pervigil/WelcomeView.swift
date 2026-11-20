@@ -83,7 +83,7 @@ struct WelcomeView: View {
 
     /// Whether the hero mark shows as active: a live session, or a use case
     /// just picked (lighting the mark is the payoff for the choice; the
-    /// manual opt-out keeps it an honest outline).
+    /// manual opt-out keeps it the quiet idle grey).
     private var markActive: Bool {
         model.session.isActive
             || (selectedUseCase != nil && selectedUseCase != Self.manualID)
