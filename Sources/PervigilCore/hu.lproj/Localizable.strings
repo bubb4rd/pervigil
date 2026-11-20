@@ -306,3 +306,8 @@
 "Off" = "Ki";
 "Paused" = "Szüneteltetve";
 "Running hot, letting the Mac cool down" = "A Mac forró, lehűlhet";
+"Pervigil needs your password to change the Mac's sleep setting." = "A Pervigil a jelszavát kéri a Mac alvási beállításának módosításához.";
+"Pervigil needs your password to keep the Mac awake with the lid closed during sessions." = "A Pervigil a jelszavát kéri, hogy munkamenetek alatt csukott fedéllel is ébren tartsa a Macet.";
+"Pervigil needs your password to pause AWDL (AirDrop, Handoff and Continuity)." = "A Pervigil a jelszavát kéri az AWDL (AirDrop, Handoff és Folytonosság) szüneteltetéséhez.";
+"Pervigil needs your password to lock or unlock the keyboard for cleaning." = "A Pervigil a jelszavát kéri a billentyűzet tisztításhoz való zárolásához vagy feloldásához.";
+"Needs helper" = "Segéd kell";

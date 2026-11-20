@@ -306,3 +306,8 @@
 "Off" = "Desactivado";
 "Paused" = "En pausa";
 "Running hot, letting the Mac cool down" = "Muy caliente, dejando que el Mac se enfríe";
+"Pervigil needs your password to change the Mac's sleep setting." = "Pervigil necesita tu contraseña para cambiar el ajuste de reposo del Mac.";
+"Pervigil needs your password to keep the Mac awake with the lid closed during sessions." = "Pervigil necesita tu contraseña para mantener el Mac despierto con la tapa cerrada durante las sesiones.";
+"Pervigil needs your password to pause AWDL (AirDrop, Handoff and Continuity)." = "Pervigil necesita tu contraseña para pausar AWDL (AirDrop, Handoff y Continuidad).";
+"Pervigil needs your password to lock or unlock the keyboard for cleaning." = "Pervigil necesita tu contraseña para bloquear o desbloquear el teclado para limpiarlo.";
+"Needs helper" = "Requiere asistente";

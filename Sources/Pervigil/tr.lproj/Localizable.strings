@@ -1158,3 +1158,13 @@
 "Your Mac has been kept awake for %@." = "Mac'iniz %@ süredir uyanık tutuluyor.";
 "Your keep-awake session ends in about %@." = "Uyanık tutma oturumunuz yaklaşık %@ içinde sona erecek.";
 "Your keep-awake session has ended." = "Uyanık tutma oturumunuz sona erdi.";
+"Closed Lid needs the helper" = "Kapak kapalı için yardımcı gerekli";
+"Never Sleep needs the helper" = "Hiç uyuma için yardımcı gerekli";
+"Install the administrator helper to follow sessions automatically, or choose Allow Once in the Pervigil menu." = "Oturumları otomatik izlemek için yönetici yardımcısını yükleyin veya Pervigil menüsünde Bir Kez İzin Ver’i seçin.";
+"AWDL pause needs the helper" = "AWDL duraklatma için yardımcı gerekli";
+"Install the administrator helper to pause AWDL automatically while you play, or turn the pause on by hand in Gaming & Streaming." = "Oyun oynarken AWDL’yi otomatik duraklatmak için yönetici yardımcısını yükleyin veya duraklatmayı Oyun ve Yayın bölümünden elle açın.";
+"Following sessions needs the administrator helper. Without it, Pervigil won't ask for your password in the background, so the lid setting stays as it is." = "Oturumları izlemek için yönetici yardımcısı gerekir. O olmadan Pervigil arka planda parolanızı istemez, bu yüzden kapak ayarı olduğu gibi kalır.";
+"Following sessions needs the administrator helper. Without it, Pervigil won't ask for your password in the background, so the sleep setting stays as it is." = "Oturumları izlemek için yönetici yardımcısı gerekir. O olmadan Pervigil arka planda parolanızı istemez, bu yüzden uyku ayarı olduğu gibi kalır.";
+"Allow Once" = "Bir Kez İzin Ver";
+"Asks for your password now. Lasts until Pervigil quits." = "Parolanızı şimdi ister. Pervigil kapanana kadar geçerlidir.";
+"Following sessions needs the administrator helper. Without it, Pervigil asks for your password only when you choose Allow Once, and that lasts until it quits." = "Oturumları izlemek için yönetici yardımcısı gerekir. O olmadan Pervigil parolanızı yalnızca Bir Kez İzin Ver’i seçtiğinizde ister ve bu, uygulama kapanana kadar geçerlidir.";

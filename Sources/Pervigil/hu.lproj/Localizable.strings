@@ -1158,3 +1158,13 @@
 "Your Mac has been kept awake for %@." = "A Macet %@ ideje tartja ébren.";
 "Your keep-awake session ends in about %@." = "Az ébrentartási munkamenet körülbelül %@ múlva véget ér.";
 "Your keep-awake session has ended." = "Az ébrentartási munkamenet véget ért.";
+"Closed Lid needs the helper" = "A Csukott fedél funkcióhoz segéd kell";
+"Never Sleep needs the helper" = "A Soha nem alszik funkcióhoz segéd kell";
+"Install the administrator helper to follow sessions automatically, or choose Allow Once in the Pervigil menu." = "Telepítse a rendszergazdai segédet a munkamenetek automatikus követéséhez, vagy válassza az Engedélyezés egyszer lehetőséget a Pervigil menüjében.";
+"AWDL pause needs the helper" = "Az AWDL szüneteltetéséhez segéd kell";
+"Install the administrator helper to pause AWDL automatically while you play, or turn the pause on by hand in Gaming & Streaming." = "Telepítse a rendszergazdai segédet, hogy játék közben automatikusan szüneteljen az AWDL, vagy kapcsolja be a szüneteltetést kézzel a Játék és streamelés ablakban.";
+"Following sessions needs the administrator helper. Without it, Pervigil won't ask for your password in the background, so the lid setting stays as it is." = "A munkamenetek követéséhez rendszergazdai segéd kell. Nélküle a Pervigil nem kéri a jelszavát a háttérben, így a fedélbeállítás változatlan marad.";
+"Following sessions needs the administrator helper. Without it, Pervigil won't ask for your password in the background, so the sleep setting stays as it is." = "A munkamenetek követéséhez rendszergazdai segéd kell. Nélküle a Pervigil nem kéri a jelszavát a háttérben, így az alvási beállítás változatlan marad.";
+"Allow Once" = "Engedélyezés egyszer";
+"Asks for your password now. Lasts until Pervigil quits." = "Most kéri a jelszavát. A Pervigil kilépéséig érvényes.";
+"Following sessions needs the administrator helper. Without it, Pervigil asks for your password only when you choose Allow Once, and that lasts until it quits." = "A munkamenetek követéséhez rendszergazdai segéd kell. Nélküle a Pervigil csak akkor kéri a jelszavát, ha az Engedélyezés egyszer lehetőséget választja, és ez a kilépéséig érvényes.";

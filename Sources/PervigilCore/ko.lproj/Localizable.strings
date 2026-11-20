@@ -306,3 +306,8 @@
 "Off" = "끔";
 "Paused" = "일시 정지됨";
 "Running hot, letting the Mac cool down" = "온도가 높아 Mac이 식도록 함";
+"Pervigil needs your password to change the Mac's sleep setting." = "Mac의 잠자기 설정을 변경하려면 Pervigil에 암호가 필요합니다.";
+"Pervigil needs your password to keep the Mac awake with the lid closed during sessions." = "세션 중 덮개를 닫아도 Mac을 깨어 있게 하려면 Pervigil에 암호가 필요합니다.";
+"Pervigil needs your password to pause AWDL (AirDrop, Handoff and Continuity)." = "AWDL(AirDrop, Handoff, 연속성)을 일시 정지하려면 Pervigil에 암호가 필요합니다.";
+"Pervigil needs your password to lock or unlock the keyboard for cleaning." = "청소를 위해 키보드를 잠그거나 잠금 해제하려면 Pervigil에 암호가 필요합니다.";
+"Needs helper" = "도우미 필요";

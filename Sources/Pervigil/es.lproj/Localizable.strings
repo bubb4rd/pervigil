@@ -1158,3 +1158,13 @@
 "Your Mac has been kept awake for %@." = "Tu Mac se ha mantenido despierto durante %@.";
 "Your keep-awake session ends in about %@." = "Tu sesión para mantener despierto termina en unos %@.";
 "Your keep-awake session has ended." = "Tu sesión para mantener despierto ha terminado.";
+"Closed Lid needs the helper" = "Tapa cerrada necesita el asistente";
+"Never Sleep needs the helper" = "Nunca dormir necesita el asistente";
+"Install the administrator helper to follow sessions automatically, or choose Allow Once in the Pervigil menu." = "Instala el asistente de administrador para seguir las sesiones automáticamente o elige Permitir una vez en el menú de Pervigil.";
+"AWDL pause needs the helper" = "La pausa de AWDL necesita el asistente";
+"Install the administrator helper to pause AWDL automatically while you play, or turn the pause on by hand in Gaming & Streaming." = "Instala el asistente de administrador para pausar AWDL automáticamente mientras juegas, o activa la pausa a mano en Juegos y streaming.";
+"Following sessions needs the administrator helper. Without it, Pervigil won't ask for your password in the background, so the lid setting stays as it is." = "Seguir las sesiones requiere el asistente de administrador. Sin él, Pervigil no pedirá tu contraseña en segundo plano, así que el ajuste de la tapa se queda como está.";
+"Following sessions needs the administrator helper. Without it, Pervigil won't ask for your password in the background, so the sleep setting stays as it is." = "Seguir las sesiones requiere el asistente de administrador. Sin él, Pervigil no pedirá tu contraseña en segundo plano, así que el ajuste de reposo se queda como está.";
+"Allow Once" = "Permitir una vez";
+"Asks for your password now. Lasts until Pervigil quits." = "Pide tu contraseña ahora. Dura hasta que Pervigil se cierre.";
+"Following sessions needs the administrator helper. Without it, Pervigil asks for your password only when you choose Allow Once, and that lasts until it quits." = "Seguir las sesiones requiere el asistente de administrador. Sin él, Pervigil solo pide tu contraseña cuando eliges Permitir una vez, y dura hasta que se cierre.";
