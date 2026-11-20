@@ -2,23 +2,27 @@ import SwiftUI
 import AppKit
 
 /// Template images for the system menu bar, rendered from ``BrandMark``: the
-/// solid mark while a session runs, its outline while idle. Template
-/// (monochrome) so macOS tints them for the bar's appearance and highlight
-/// state, exactly like an SF Symbol. Outline rather than a dimmed mark for
-/// idle, because macOS already dims every status item on an inactive display
-/// and a dimmed idle state would be lost there.
+/// solid mark always, so the bar shows the logo itself, plus a small dot at
+/// the lower right whenever the Mac is held awake. Template (monochrome) so
+/// macOS tints them for the bar's appearance and highlight state, exactly
+/// like an SF Symbol. A badge rather than a dimmed idle mark, because macOS
+/// already dims every status item on an inactive display.
 @MainActor
 enum MenuBarIcon {
     /// The canvas every state shares. The status item never widens for
     /// changed label content (see ``MenuBarLabel``), so all states, the
     /// hidden sliver aside, use this one size.
-    static let canvas = CGSize(width: 16, height: 18)
+    static let canvas = CGSize(width: 18, height: 18)
     /// The mark's height inside the canvas, about a cap height taller than
     /// the menu bar's text so it sits level with SF Symbols next to it.
     static let markHeight: CGFloat = 15
-    /// The idle outline's width, drawn entirely inside the mark so the solid
-    /// and outline states share one footprint.
+    /// The outline width for the pause and low-battery states, drawn entirely
+    /// inside the mark so every state shares one footprint.
     static let outlineWidth: CGFloat = 1.2
+    /// The awake badge: a dot at the mark's lower right, with a transparent
+    /// gap cut around it so it reads at menu-bar size.
+    nonisolated static let badgeRadius: CGFloat = 2.4
+    nonisolated static let badgeGap: CGFloat = 1.2
 
     static let idle = render(.idle)
     static let active = render(.active)
@@ -61,7 +65,9 @@ enum MenuBarIcon {
 
     private static var markRect: CGRect {
         let width = markHeight * BrandMark.aspectRatio
-        return CGRect(x: (canvas.width - width) / 2, y: (canvas.height - markHeight) / 2,
+        // Left-aligned with the old 16 pt canvas's inset, leaving the extra
+        // width on the right for the awake badge.
+        return CGRect(x: (16 - width) / 2, y: (canvas.height - markHeight) / 2,
                       width: width, height: markHeight)
     }
 
@@ -79,8 +85,21 @@ enum MenuBarIcon {
                 p.closeSubpath()
                 return p.copy(using: &fit) ?? p
             }
+            // The awake badge: punch a gap, then the dot, over whatever the
+            // state drew.
+            func badge() {
+                let center = CGPoint(x: rect.maxX + 0.6, y: rect.maxY - 1.6)
+                ctx.saveGState()
+                ctx.setBlendMode(.clear)
+                let gap = badgeRadius + badgeGap
+                ctx.fillEllipse(in: CGRect(x: center.x - gap, y: center.y - gap, width: gap * 2, height: gap * 2))
+                ctx.restoreGState()
+                ctx.setFillColor(ink)
+                ctx.fillEllipse(in: CGRect(x: center.x - badgeRadius, y: center.y - badgeRadius,
+                                           width: badgeRadius * 2, height: badgeRadius * 2))
+            }
             switch state {
-            case .active, .held:
+            case .idle, .active, .held:
                 ctx.setFillColor(ink)
                 ctx.addPath(mark)
                 ctx.fillPath(using: .evenOdd)
@@ -88,6 +107,7 @@ enum MenuBarIcon {
                     ctx.addPath(fitted([CGPoint(x: 251, y: 334), CGPoint(x: 435, y: 438), CGPoint(x: 251, y: 542)]))
                     ctx.fillPath()
                 }
+                if state != .idle { badge() }
                 return true
             case .timed(let eighths):
                 // The block without its left bar, then the bar as a track
@@ -105,6 +125,7 @@ enum MenuBarIcon {
                 ctx.addPath(fitted([CGPoint(x: 0, y: 650 - height), CGPoint(x: 190, y: 650 - height),
                                     CGPoint(x: 190, y: 650), CGPoint(x: 0, y: 650)]))
                 ctx.fillPath()
+                badge()
                 return true
             case .paused:
                 var t = fit
@@ -122,7 +143,7 @@ enum MenuBarIcon {
                 ctx.addPath(fitted([CGPoint(x: 384, y: 300), CGPoint(x: 456, y: 300), CGPoint(x: 456, y: 576), CGPoint(x: 384, y: 576)]))
                 ctx.fillPath()
                 return true
-            case .idle, .lowBattery:
+            case .lowBattery:
                 break
             }
 
