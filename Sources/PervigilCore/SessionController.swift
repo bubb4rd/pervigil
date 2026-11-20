@@ -1272,7 +1272,7 @@ public final class SessionController {
     /// A short, localized human duration like "30 minutes", "1 hour", or
     /// "2 hours, 15 minutes". `DateComponentsFormatter` follows the app's
     /// language and each language's plural rules, so no per-unit strings table.
-    static func humanDuration(_ seconds: TimeInterval) -> String {
+    public static func humanDuration(_ seconds: TimeInterval) -> String {
         // Defensive: imported settings can carry huge or non-finite
         // durations, and `Int(_:)` traps outside its range.
         guard seconds.isFinite, seconds > 0,
