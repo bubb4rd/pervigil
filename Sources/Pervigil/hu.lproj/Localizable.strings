@@ -938,6 +938,9 @@
 "Low Power Mode is active." = "Az alacsony töltöttségű mód aktív.";
 "Initializing the helper…" = "A segéd indítása…";
 "Updating the helper…" = "A segéd frissítése…";
+"held for" = "tartva ennyi ideje";
+"awake for" = "ébren ennyi ideje";
+"sleeps in" = "alvás ennyi múlva";
 "Cursor warp" = "Kurzorugrás";
 "F15 key" = "F15 billentyű";
 "Shift key" = "Shift billentyű";

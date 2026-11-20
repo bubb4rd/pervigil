@@ -286,7 +286,8 @@
 "Lease: %@" = "租約：%@";
 "Lid can close" = "可以闔蓋";
 "No battery" = "無電池";
-"No time limit, on for %@" = "無時間限制，已開啟 %@";
+"No time limit" = "無時間限制";
+"Agents finished" = "代理程式已完成";
 "On a call" = "通話中";
 "On, dims when idle" = "開啟，閒置時調暗";
 "Paused, %d%%" = "已暫停，%d%%";

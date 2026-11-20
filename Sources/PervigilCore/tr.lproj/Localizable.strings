@@ -286,7 +286,8 @@
 "Lease: %@" = "Kira: %@";
 "Lid can close" = "Kapak kapatılabilir";
 "No battery" = "Pil yok";
-"No time limit, on for %@" = "Süre sınırı yok, %@ süredir açık";
+"No time limit" = "Süre sınırı yok";
+"Agents finished" = "Ajanlar bitirdi";
 "On a call" = "Görüşmede";
 "On, dims when idle" = "Açık, boştayken kararır";
 "Paused, %d%%" = "Duraklatıldı, %d%%";

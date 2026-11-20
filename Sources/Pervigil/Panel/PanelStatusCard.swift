@@ -122,6 +122,9 @@ struct PanelStatusCard: View {
                     .opacity(stopHovered ? 0.45 : 1)
                     .accessibilityLabel(L("Time left"))
                     .accessibilityValue(MenuBarLabel.format(countdown))
+            } else if let clock = status.clock {
+                StatusClock(clock: clock)
+                    .opacity(stopHovered ? 0.45 : 1)
             }
             ZStack {
                 if let action = status.stop {
@@ -423,5 +426,45 @@ struct ProgressLine: View {
         }
         .frame(height: 3)
         .accessibilityHidden(true)
+    }
+}
+
+/// The clock in the countdown's spot when nothing counts down: how long
+/// triggers or a no-limit session have held the Mac, or, in amber, the grace
+/// window before it may sleep. A small caption above says which.
+private struct StatusClock: View {
+    let clock: PanelClock
+
+    private var caption: String {
+        switch clock {
+        case .heldFor: L("held for")
+        case .awakeFor: L("awake for")
+        case .grace: L("sleeps in")
+        }
+    }
+    private var seconds: TimeInterval {
+        switch clock {
+        case .heldFor(let t), .awakeFor(let t), .grace(let t): t
+        }
+    }
+    private var isGrace: Bool {
+        if case .grace = clock { return true }
+        return false
+    }
+
+    var body: some View {
+        VStack(alignment: .trailing, spacing: 0) {
+            Text(caption)
+                .font(.system(size: 10, weight: .medium))
+                .foregroundStyle(isGrace ? AnyShapeStyle(Color.panelAmberText) : AnyShapeStyle(.secondary))
+            Text(MenuBarLabel.format(seconds))
+                .font(.system(size: 22, weight: .medium))
+                .monospacedDigit()
+                .contentTransition(.numericText(countsDown: isGrace))
+                .foregroundStyle(isGrace ? AnyShapeStyle(Color.panelAmberText) : AnyShapeStyle(.primary))
+        }
+        .accessibilityElement(children: .ignore)
+        .accessibilityLabel(caption)
+        .accessibilityValue(MenuBarLabel.format(seconds))
     }
 }

@@ -58,9 +58,35 @@ private func status(_ input: PanelInput) -> PanelStatus {
 
 @Test func indefiniteSessionShowsHowLongItHasRun() {
     let s = status(PanelInput(now: noon, isActive: true, elapsed: 360))
-    #expect(s.subtitle == "No time limit, on for 6:00")
+    #expect(s.subtitle == "No time limit")
+    #expect(s.clock == .awakeFor(360))
     #expect(s.countdown == nil)
     #expect(s.progress == nil)
+}
+
+@Test func triggerHeldSessionShowsHowLongItHasBeenHeld() {
+    let reasons = [PanelReason(kind: .agent, source: .agent("claude"), label: "Claude Code is working", id: "a")]
+    let s = status(PanelInput(now: noon, isActive: true, elapsed: 754, triggersEnabled: true, ruleCount: 4, reasons: reasons))
+    #expect(s.clock == .heldFor(754))
+    #expect(s.countdown == nil)
+}
+
+@Test func graceOnlyShowsTheGraceClockInsteadOfAChip() {
+    let reasons = [PanelReason(kind: .grace, source: .symbol("clock"), label: "Agents finished", countdown: 158, id: "g")]
+    let s = status(PanelInput(now: noon, isActive: true, elapsed: 900, triggersEnabled: true, ruleCount: 4, reasons: reasons))
+    #expect(s.clock == .grace(158))
+    #expect(s.reasons.isEmpty)
+    #expect(s.subtitle == "Agents finished")
+}
+
+@Test func graceBesideAnActiveTriggerKeepsTheHeldClock() {
+    let reasons = [
+        PanelReason(kind: .call, source: .symbol("mic"), label: "On a call", id: "c"),
+        PanelReason(kind: .grace, source: .symbol("clock"), label: "Agents finished", countdown: 158, id: "g"),
+    ]
+    let s = status(PanelInput(now: noon, isActive: true, elapsed: 900, triggersEnabled: true, ruleCount: 4, reasons: reasons))
+    #expect(s.clock == .heldFor(900))
+    #expect(s.reasons == reasons)
 }
 
 @Test func triggerHeldSessionShowsReasonsAndSetsTriggersAside() {

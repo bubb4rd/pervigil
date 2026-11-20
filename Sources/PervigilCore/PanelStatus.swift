@@ -111,6 +111,17 @@ extension TriggerRule {
 /// The status card's content: what the panel says, top to bottom, for one
 /// tick. A pure function of ``PanelInput`` so every branch is unit-tested with
 /// a fixed clock instead of living in a view.
+/// What fills the big number's spot when there is no countdown: how long the
+/// Mac has been held, or the grace window before it may sleep.
+public enum PanelClock: Equatable, Sendable {
+    /// Triggers or a lease have held the Mac this long.
+    case heldFor(TimeInterval)
+    /// A manual session with no time limit has run this long.
+    case awakeFor(TimeInterval)
+    /// Only a grace window is left; the Mac may sleep when it ends.
+    case grace(TimeInterval)
+}
+
 public struct PanelStatus: Equatable, Sendable {
     public enum State: Equatable, Sendable { case awake, canSleep, paused }
     public enum Tone: Equatable, Sendable { case normal, warning }
@@ -147,6 +158,8 @@ public struct PanelStatus: Equatable, Sendable {
     /// not the user, is holding the Mac.
     public var heldByAutomation: Bool
     public var tiles: GuardTileValues
+    /// The clock in the countdown's spot when there is no countdown.
+    public var clock: PanelClock? = nil
 }
 
 /// The second line of each guard tile.
@@ -273,6 +286,17 @@ extension PanelStatus {
             status.reasons = input.reasons
             status.stop = input.triggersControlling ? .setTriggersAside : .endLeases
             if input.reasons.isEmpty { status.subtitle = L("Held by your triggers") }
+            // Only grace windows left: the big amber clock says when the Mac
+            // may sleep, so the chip would repeat it. Otherwise show how long
+            // the Mac has been held.
+            let graceLeft = input.reasons.filter { $0.kind == .grace }.compactMap(\.countdown).max()
+            if let graceLeft, input.reasons.allSatisfy({ $0.kind == .grace }) {
+                status.clock = .grace(graceLeft)
+                status.reasons = []
+                status.subtitle = L("Agents finished")
+            } else {
+                status.clock = .heldFor(input.elapsed)
+            }
         } else if let remaining = input.remaining {
             let end = input.now.addingTimeInterval(remaining)
             status.subtitle = calendar.isDate(end, inSameDayAs: input.now)
@@ -283,7 +307,8 @@ extension PanelStatus {
                 status.progress = min(1, max(0, remaining / total))
             }
         } else {
-            status.subtitle = L("No time limit, on for %@", formatDuration(input.elapsed))
+            status.subtitle = L("No time limit")
+            status.clock = .awakeFor(input.elapsed)
         }
 
         if tiles.batteryWarning, let percent = input.batteryPercent {

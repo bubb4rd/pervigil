@@ -938,6 +938,9 @@
 "Low Power Mode is active." = "低電力モードが有効です。";
 "Initializing the helper…" = "ヘルパーを初期化中…";
 "Updating the helper…" = "ヘルパーを更新中…";
+"held for" = "維持中";
+"awake for" = "起動中";
+"sleeps in" = "スリープまで";
 "Cursor warp" = "カーソルワープ";
 "F15 key" = "F15 キー";
 "Shift key" = "Shift キー";
