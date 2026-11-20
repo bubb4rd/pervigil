@@ -22,6 +22,23 @@ enum MenuBarIcon {
 
     static let idle = render(.idle)
     static let active = render(.active)
+    /// A trigger or automation lease holds the Mac: the solid mark with a
+    /// small triangle filling the play cutout, the panel button's sign.
+    static let held = render(.held)
+    /// A safety pause (battery or thermal): the outer outline with two pause
+    /// bars where the play cutout was. Play turns into pause, which reads at
+    /// menu-bar size where a thin yellow band did not.
+    static let paused = render(.paused)
+    /// A timed session: the solid mark with the left bar draining, quantized
+    /// to eighths so only eight images ever exist. Index 0 is nearly empty,
+    /// 7 is full.
+    static let timedLevels: [NSImage] = (1...8).map { render(.timed(eighths: $0)) }
+
+    /// The timed image for a remaining share, 0 through 1.
+    static func timed(level: Double) -> NSImage {
+        let eighths = min(8, max(1, Int((level * 8).rounded(.up))))
+        return timedLevels[eighths - 1]
+    }
     /// The battery pause: the idle outline with its lowest band filled in
     /// the system's low-power yellow, the last of the charge. The band is the
     /// only colored ink, subtle but unambiguous next to the plain outline.
@@ -40,7 +57,7 @@ enum MenuBarIcon {
         return image
     }()
 
-    private enum State { case idle, active, lowBattery }
+    private enum State: Equatable { case idle, active, lowBattery, held, paused, timed(eighths: Int) }
 
     private static var markRect: CGRect {
         let width = markHeight * BrandMark.aspectRatio
@@ -55,11 +72,58 @@ enum MenuBarIcon {
             let mark = BrandMark.path(fitting: rect)
             let ink = state == .lowBattery ? NSColor.labelColor.cgColor : NSColor.black.cgColor
 
-            if state == .active {
+            var fit = BrandMark.transform(fitting: rect)
+            func fitted(_ points: [CGPoint]) -> CGPath {
+                let p = CGMutablePath()
+                p.addLines(between: points)
+                p.closeSubpath()
+                return p.copy(using: &fit) ?? p
+            }
+            switch state {
+            case .active, .held:
                 ctx.setFillColor(ink)
                 ctx.addPath(mark)
                 ctx.fillPath(using: .evenOdd)
+                if state == .held {
+                    ctx.addPath(fitted([CGPoint(x: 251, y: 334), CGPoint(x: 435, y: 438), CGPoint(x: 251, y: 542)]))
+                    ctx.fillPath()
+                }
                 return true
+            case .timed(let eighths):
+                // The block without its left bar, then the bar as a track
+                // and the remaining share filled from the bottom.
+                ctx.setFillColor(ink)
+                ctx.addPath(fitted([CGPoint(x: 0, y: 0), CGPoint(x: 562, y: 0), CGPoint(x: 562, y: 650),
+                                    CGPoint(x: 190, y: 650), CGPoint(x: 190, y: 645), CGPoint(x: 557, y: 438),
+                                    CGPoint(x: 190, y: 231), CGPoint(x: 0, y: 124)]))
+                ctx.fillPath()
+                let height = 419 * CGFloat(eighths) / 8
+                ctx.setFillColor(NSColor.black.withAlphaComponent(0.32).cgColor)
+                ctx.addPath(fitted([CGPoint(x: 0, y: 231), CGPoint(x: 190, y: 231), CGPoint(x: 190, y: 650), CGPoint(x: 0, y: 650)]))
+                ctx.fillPath()
+                ctx.setFillColor(ink)
+                ctx.addPath(fitted([CGPoint(x: 0, y: 650 - height), CGPoint(x: 190, y: 650 - height),
+                                    CGPoint(x: 190, y: 650), CGPoint(x: 0, y: 650)]))
+                ctx.fillPath()
+                return true
+            case .paused:
+                var t = fit
+                let outer = BrandMark.silhouette().copy(using: &t) ?? BrandMark.silhouette()
+                ctx.saveGState()
+                ctx.addPath(outer)
+                ctx.clip()
+                ctx.setStrokeColor(ink)
+                ctx.setLineWidth(outlineWidth * 2)
+                ctx.addPath(outer)
+                ctx.strokePath()
+                ctx.restoreGState()
+                ctx.setFillColor(ink)
+                ctx.addPath(fitted([CGPoint(x: 250, y: 300), CGPoint(x: 322, y: 300), CGPoint(x: 322, y: 576), CGPoint(x: 250, y: 576)]))
+                ctx.addPath(fitted([CGPoint(x: 384, y: 300), CGPoint(x: 456, y: 300), CGPoint(x: 456, y: 576), CGPoint(x: 384, y: 576)]))
+                ctx.fillPath()
+                return true
+            case .idle, .lowBattery:
+                break
             }
 
             // Clip to the mark and stroke at twice the width: an inner

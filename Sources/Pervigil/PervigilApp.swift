@@ -112,7 +112,7 @@ private struct MenuBarLabelView: View {
     var body: some View {
         HStack(spacing: 3) {
             MenuBarLabel(session: model.session, showCountdown: model.showCountdownInMenuBar,
-                         presentation: model.advancedMenuLayout)
+                         presentation: model.advancedMenuLayout, automation: model.heldByAutomation)
             // MenuBarExtra extracts text and images from its label; a shape
             // overlay is not a reliable status-item indicator.
             if updater.updateAvailable {
