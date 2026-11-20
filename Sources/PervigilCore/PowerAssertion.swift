@@ -62,7 +62,7 @@ public final class IOKitPowerAssertionManager: PowerAsserting {
         var failures: Set<PowerAssertionKind> = []
         // Create assertions newly wanted.
         for kind in kinds where ids[kind] == nil {
-            if !create(kind, reason: reason.isEmpty ? "Pervigil is brewing" : reason) {
+            if !create(kind, reason: reason.isEmpty ? "Pervigil is keeping the Mac awake" : reason) {
                 failures.insert(kind)
             }
         }
