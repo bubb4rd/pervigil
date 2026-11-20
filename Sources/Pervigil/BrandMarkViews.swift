@@ -178,12 +178,12 @@ struct BrandMarkShape: Shape {
 }
 
 /// The mark for real windows, where color runs normally: the brand gradient
-/// (#6EAFF6 to #007AFF) when active, a secondary outline when idle. `fill` is
-/// the blend between them, 0 (outline) through 1 (solid); ``BrandMarkView``
-/// animates it as a short crossfade.
+/// (#6EAFF6 to #007AFF) when active, the solid mark in the secondary color
+/// when idle. `fill` is the blend between them, 0 (idle) through 1 (active);
+/// ``BrandMarkView`` animates it as a short crossfade.
 struct BrandMarkGlyph: View {
     var fill: CGFloat
-    /// The battery pause: the idle outline with its lowest band in the
+    /// The battery pause: the idle mark with its lowest band in the
     /// low-power yellow, matching ``MenuBarIcon/pausedLowBattery`` so the
     /// menu header and the bar tell the same story.
     var lowBattery = false
@@ -201,14 +201,11 @@ struct BrandMarkGlyph: View {
 
     var body: some View {
         GeometryReader { geo in
-            // The outline width tracks the mark's size, matching the menu
-            // bar's proportions (1.2 pt on a 15 pt mark).
-            let lineWidth = max(1, geo.size.height * MenuBarIcon.outlineWidth / MenuBarIcon.markHeight)
             ZStack {
                 ZStack {
                     BrandMarkShape()
-                        .stroke(Color.secondary, lineWidth: lineWidth * 2)
-                    // Over the outline, so the band reads as one solid level.
+                        .fill(Color.secondary, style: Self.eoFill)
+                    // Over the mark, so the band reads as one solid level.
                     if lowBattery {
                         Color(nsColor: .systemYellow)
                             .frame(height: geo.size.height * BrandMark.lowBatteryLevel)
@@ -231,8 +228,8 @@ struct BrandMarkGlyph: View {
 }
 
 /// The brand mark with its session state, for the menu header and other real
-/// windows: solid in the brand gradient while a session runs, a quiet outline
-/// while idle, and the outline with a low yellow band during the battery
+/// windows: solid in the brand gradient while a session runs, solid in a quiet
+/// secondary color while idle, and that with a low yellow band during the battery
 /// pause. A state change is a short crossfade, and instant under Reduce
 /// Motion. The menu bar *label* is a static template image of the same mark
 /// (``MenuBarIcon``), since a `MenuBarExtra` label is snapshotted.
