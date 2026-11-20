@@ -1,8 +1,8 @@
 import SwiftUI
 import PervigilCore
 
-/// Automatic or Manual, and the duration chips. With triggers off there is
-/// only manual control, so the switch is not shown. In Automatic the trigger
+/// Automatic or Manual, and the duration chips. The switch always shows, so a
+/// new user can find Automatic: choosing it turns triggers on. In Automatic the trigger
 /// section below does the explaining; in Manual the chips start a session in
 /// one click, and re-time a running one.
 struct PanelSessionSection: View {
@@ -20,17 +20,23 @@ struct PanelSessionSection: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: PanelTokens.sectionGap) {
-            if model.triggersEnabled {
-                Picker(L("Keep awake mode"), selection: Binding(
-                    get: { model.triggersPaused ? ControlMode.manual : .automatic },
-                    set: { $0 == .manual ? model.pauseTriggers() : model.resumeTriggers() }
-                )) {
-                    Text("Automatic").tag(ControlMode.automatic)
-                    Text("Manual").tag(ControlMode.manual)
+            Picker(L("Keep awake mode"), selection: Binding(
+                get: { triggersControlling ? ControlMode.automatic : .manual },
+                set: { mode in
+                    switch mode {
+                    case .automatic:
+                        if !model.triggersEnabled { model.triggersEnabled = true }
+                        model.resumeTriggers()
+                    case .manual:
+                        if model.triggersEnabled { model.pauseTriggers() }
+                    }
                 }
-                .pickerStyle(.segmented)
-                .labelsHidden()
+            )) {
+                Text("Automatic").tag(ControlMode.automatic)
+                Text("Manual").tag(ControlMode.manual)
             }
+            .pickerStyle(.segmented)
+            .labelsHidden()
             if !triggersControlling {
                 chips
             }
@@ -67,13 +73,11 @@ struct PanelSessionSection: View {
                 inlineEditor(editor)
                     .transition(.opacity.combined(with: .move(edge: .top)))
             }
-            if model.triggersEnabled {
-                Text("Manual sets your triggers aside without changing them.")
-                    .font(.system(size: 11))
-                    .foregroundStyle(.tertiary)
-                    .fixedSize(horizontal: false, vertical: true)
-                    .padding(.horizontal, 2)
-            }
+            Text("Manual sets your triggers aside without changing them.")
+                .font(.system(size: 11))
+                .foregroundStyle(.tertiary)
+                .fixedSize(horizontal: false, vertical: true)
+                .padding(.horizontal, 2)
         }
         .animation(.snappy(duration: 0.25), value: editor)
     }
