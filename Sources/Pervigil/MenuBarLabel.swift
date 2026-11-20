@@ -18,6 +18,8 @@ struct MenuBarLabel: View {
     var showCountdown: Bool = false
     /// Applied only when customization is explicitly enabled.
     var presentation: MenuLayout? = nil
+    /// A trigger or automation lease, not the user, holds the Mac.
+    var automation: Bool = false
 
     /// Drives the countdown text once a second. `remaining` is a computed
     /// property (reads the live clock) that Observation doesn't track, so
@@ -90,12 +92,17 @@ struct MenuBarLabel: View {
     }
 
     private var icon: NSImage {
-        if session.pausedByBattery { return MenuBarIcon.pausedLowBattery }
-        return session.isActive ? MenuBarIcon.active : MenuBarIcon.idle
+        if session.pausedByBattery || session.pausedByThermal { return MenuBarIcon.paused }
+        guard session.isActive else { return MenuBarIcon.idle }
+        if let remaining = session.remaining, let total = session.mode.duration, total > 0 {
+            return MenuBarIcon.timed(level: remaining / total)
+        }
+        return automation ? MenuBarIcon.held : MenuBarIcon.active
     }
 
     private var accessibilityText: String {
         if session.pausedByBattery { return L("Pervigil: paused, battery low") }
+        if session.pausedByThermal { return L("Pervigil: paused") }
         return session.isActive ? L("Pervigil: awake") : L("Pervigil: idle")
     }
 
