@@ -81,6 +81,10 @@ from catalog_menu_redesign import (
     SHARED_FROM_APP_TO_CORE,
     SHARED_FROM_CORE_TO_APP,
 )
+from catalog_settings_redesign import (
+    APP as SETTINGS_REDESIGN_APP,
+    SHARED_FROM_CORE_TO_APP as SETTINGS_SHARED_FROM_CORE_TO_APP,
+)
 
 
 def merge_overlay(catalog: dict, lang: str, table: dict, name: str):
@@ -124,6 +128,9 @@ def merge_extra_langs():
     for key in SHARED_FROM_APP_TO_CORE:
         CORE[key] = dict(APP[key])
     for key in SHARED_FROM_CORE_TO_APP:
+        APP[key] = dict(CORE[key])
+    APP.update(SETTINGS_REDESIGN_APP)
+    for key in SETTINGS_SHARED_FROM_CORE_TO_APP:
         APP[key] = dict(CORE[key])
 
 
