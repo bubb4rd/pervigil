@@ -217,24 +217,25 @@ private struct GuardTile: View {
     var body: some View {
         ZStack(alignment: .trailing) {
             Button(action: toggle) {
-                HStack(spacing: 7) {
+                HStack(spacing: 6) {
                     Image(systemName: symbol)
-                        .font(.system(size: 12, weight: .semibold))
-                        .frame(width: 24, height: 24)
+                        .font(.system(size: 11.5, weight: .semibold))
+                        .frame(width: 22, height: 22)
                         .foregroundStyle(isOn || warning ? Color.white : Color.secondary)
                         .background(RoundedRectangle(cornerRadius: 7, style: .continuous).fill(iconFill))
                     VStack(alignment: .leading, spacing: 1) {
-                        Text(title).font(.system(size: 12, weight: .semibold)).lineLimit(1)
+                        Text(title).font(.system(size: 12, weight: .semibold)).lineLimit(1).minimumScaleFactor(0.85)
                         Text(value)
                             .font(.system(size: 11, weight: isOn || warning ? .medium : .regular))
                             .foregroundStyle(valueInk)
                             .lineLimit(1)
+                            .minimumScaleFactor(0.85)
                             .monospacedDigit()
                     }
                     Spacer(minLength: 0)
                 }
-                .padding(.leading, 6)
-                .padding(.trailing, 19)
+                .padding(.leading, 5)
+                .padding(.trailing, 17)
                 .padding(.vertical, 7)
                 .contentShape(Rectangle())
             }
@@ -247,7 +248,7 @@ private struct GuardTile: View {
                 Image(systemName: "chevron.down")
                     .font(.system(size: 9, weight: .bold))
                     .rotationEffect(.degrees(isOpen ? 180 : 0))
-                    .frame(width: 18, height: 22)
+                    .frame(width: 16, height: 22)
                     .contentShape(Rectangle())
             }
             .buttonStyle(.plain)
