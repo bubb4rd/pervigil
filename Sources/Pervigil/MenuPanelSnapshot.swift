@@ -21,13 +21,15 @@ final class MenuPanelSnapshot {
     struct HeldByLine: Equatable {
         var processName: String
         var effect: String
+        /// The holding process, so the panel can show its app's icon.
+        var pid: Int32
     }
 
     func pulse(elapsed: TimeInterval, external: PowerAssertionInfo?) {
         self.elapsed = elapsed
         tick &+= 1
         if let external, let effect = external.effect {
-            heldBy = HeldByLine(processName: external.processName, effect: effect)
+            heldBy = HeldByLine(processName: external.processName, effect: effect, pid: external.pid)
         } else {
             heldBy = nil
         }
