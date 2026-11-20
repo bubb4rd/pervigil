@@ -897,7 +897,7 @@ public final class SessionController {
         let desired = desiredAssertions(systemIdleSeconds: userIdle, display: effectiveDisplay)
         assertions.apply(
             desired,
-            reason: "Pervigil is brewing"
+            reason: "Pervigil is keeping the Mac awake"
         )
         // Surface create failures: a session can be "active" in state while
         // IOPMAssertionCreateWithName quietly refused, which would otherwise
