@@ -103,6 +103,11 @@ public struct MenuLayout: Codable, Equatable, Sendable {
     public var maxAgentRows: Int = 5
     public var showMenuBarIcon = true
     public var menuBarTextStyle: MenuBarTextStyle = .existing
+    /// The redesigned panel's section layout. The row-level fields above are
+    /// kept so older builds can still read a saved layout; a layout saved
+    /// before sections existed is mapped onto them once, when decoded (see
+    /// ``PanelLayout/init(migrating:)``).
+    public var panel: PanelLayout = .standard
 
     public static let widthRange = 240...480
     public static let standardWidth = 280
@@ -148,6 +153,7 @@ public struct MenuLayout: Codable, Equatable, Sendable {
             layout.maxTriggerRows = 5
             layout.maxAgentRows = 3
         }
+        layout.panel = PanelLayout(migrating: layout)
         return layout
     }
 
@@ -212,6 +218,7 @@ public struct MenuLayout: Codable, Equatable, Sendable {
         copy.compactSectionCount = min(max(compactSectionCount, 1), MenuLayoutSection.allCases.count)
         copy.maxTriggerRows = min(max(maxTriggerRows, 1), 50)
         copy.maxAgentRows = min(max(maxAgentRows, 1), 20)
+        copy.panel = panel.normalized()
         // Text-only labels need an idle fallback. Existing/hidden text cannot
         // be the sole carrier, or the menu-bar entry disappears while idle.
         if !showMenuBarIcon && [.existing, .iconOnly].contains(menuBarTextStyle) {
@@ -224,7 +231,7 @@ public struct MenuLayout: Codable, Equatable, Sendable {
         case sectionOrder, itemOrder, placements, hiddenSections, hiddenItems, compactItems, collapsedSections
         case compactMode, compactSectionCount, showExpandToggle, showSectionTitles, showDividers
         case density, headerStyle, controlStyle, panelWidth, adaptiveSessionControls, showAgentDetails, onlyActiveTriggers, maxTriggerRows, maxAgentRows
-        case showMenuBarIcon, menuBarTextStyle
+        case showMenuBarIcon, menuBarTextStyle, panel
     }
     public init(from decoder: Decoder) throws {
         self.init()
@@ -262,6 +269,9 @@ public struct MenuLayout: Codable, Equatable, Sendable {
         showAgentDetails = (try? c.decode(Bool.self, forKey: .showAgentDetails)) ?? showAgentDetails
         onlyActiveTriggers = (try? c.decode(Bool.self, forKey: .onlyActiveTriggers)) ?? onlyActiveTriggers
         showMenuBarIcon = (try? c.decode(Bool.self, forKey: .showMenuBarIcon)) ?? showMenuBarIcon
+        // A layout saved before the section redesign has no panel yet: derive
+        // it from the rows it had, so hidden controls stay hidden.
+        panel = (try? c.decode(PanelLayout.self, forKey: .panel)) ?? PanelLayout(migrating: self)
         self = normalized()
     }
     public func encode(to encoder: Encoder) throws {
@@ -290,6 +300,7 @@ public struct MenuLayout: Codable, Equatable, Sendable {
         try c.encode(value.maxAgentRows, forKey: .maxAgentRows)
         try c.encode(value.showMenuBarIcon, forKey: .showMenuBarIcon)
         try c.encode(value.menuBarTextStyle, forKey: .menuBarTextStyle)
+        try c.encode(value.panel, forKey: .panel)
     }
 }
 
