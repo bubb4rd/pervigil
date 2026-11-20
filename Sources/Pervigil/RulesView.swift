@@ -91,18 +91,6 @@ struct RulesView: View {
 
             addConditionMenus
             processField
-
-            // Heat deliberately isn't a condition here: a "too hot" rule that
-            // merely stops satisfying could be overridden by any other rule in
-            // "any" mode. Point the people who come looking to the real thing.
-            // Laptops only, like the Thermal section itself: a desktop has no
-            // lid, so there is no section to point at.
-            if model.machineHasBattery {
-                Text("Looking for heat? \u{201C}Pause when running hot\u{201D} lives in General \u{25B8} Thermal: a safety net that overrides these rules when the Mac runs hot with the lid closed.")
-                    .font(.caption)
-                    .foregroundStyle(.secondary)
-                    .fixedSize(horizontal: false, vertical: true)
-            }
         }
         .onChange(of: model.rules.count) { _, _ in
             // The rule rows use positional ids, so a removal elsewhere renumbers
