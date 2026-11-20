@@ -5,10 +5,23 @@ Versions follow [Semantic Versioning](https://semver.org). Releases up to
 1.30.0 shipped as Keepresso, which Pervigil is forked from; their entries are
 kept as written.
 
-## [Unreleased]
+## [2.0.0] - 2026-11-20
 
 ### Changed
 
+- **New menu.** A status card at the top says whether the Mac is awake, why,
+  and until when; press the mark to start or stop. Triggers show the apps
+  holding the Mac with their own icons, durations are one-click chips, and
+  the lid, battery, display, and Stay Active guards are tiles. Customize Menu
+  now works by sections.
+- **New Preferences window.** A sidebar with search replaces the tab strip,
+  and each page opens with a live picture of its settings: a reminder
+  timeline that previews each notification, the wake-to-sleep flow in
+  Automation, and what is holding the Mac awake right now in Activity.
+  General is split into General, Menu Bar, Keep Awake, and Lid & Battery;
+  Disk and Display are now Devices; the administrator helper has its own page.
+- Keeping the Mac awake with the lid closed is one choice: Never, With each
+  session, or Always.
 - Renamed to Pervigil, an unofficial fork of Keepresso, with its own mark, app
   icon, bundle identifiers (`io.github.bubb4rd.pervigil`), URL scheme
   (`pervigil://`), CLI (`pervigil`), MCP server (`pervigil-mcp`), and update
