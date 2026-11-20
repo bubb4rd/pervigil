@@ -73,6 +73,20 @@ use Xcode 27.0; the app's minimum deployment target remains macOS 14.
 - The generated `Pervigil.xcodeproj` is not checked in. Re-run `xcodegen generate`
   after pulling changes or editing `project.yml`.
 - **Closed-display mode** changes a system setting (`pmset disablesleep`), so it
-  asks for your administrator password when you turn it on.
+  asks for your administrator password when you turn it on. Only a click asks:
+  background automation never shows a password dialog, it shows "Needs helper"
+  instead.
+- A build that isn't in `/Applications` leaves the helper alone, so its
+  privileged features always take the password path. For screenshot or QA runs
+  that must never touch root at all, switch prompts off:
+
+  ```sh
+  defaults write io.github.bubb4rd.pervigil PervigilDisablePrivileged -bool YES
+  # or, for one launch:
+  PERVIGIL_DISABLE_PRIVILEGED=1 open -n path/to/Pervigil.app
+  ```
+
+  (`open` doesn't pass the environment through on every macOS version; the
+  default always works.) Delete the default to turn prompts back on.
 - A build you make yourself is for your own use. Most people just download the
   notarized release build instead.

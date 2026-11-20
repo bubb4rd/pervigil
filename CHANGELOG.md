@@ -5,7 +5,21 @@ Versions follow [Semantic Versioning](https://semver.org). Releases up to
 1.30.0 shipped as Keepresso, which Pervigil is forked from; their entries are
 kept as written.
 
-## [2.0.0] - 2026-11-20
+## [Unreleased]
+
+### Fixed
+
+- Without the administrator helper, Pervigil no longer asks for your password
+  by itself. A password dialog (titled "osascript") could appear at launch
+  and again with each session, with nothing explaining why. Background
+  automation now never asks: Closed Lid, the AWDL game pause, and turning off
+  a lid setting left on all wait for the helper, and the Closed Lid tile reads
+  "Needs helper" with Install Helper and Allow Once. Allow Once asks a single
+  time and lasts until Pervigil quits. Cancelling it is remembered.
+- The password dialog now says what Pervigil needs the password for.
+- New installs without the helper start with Closed Lid off. Welcome still
+  offers it next to the helper.
+
 
 ### Changed
 

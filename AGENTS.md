@@ -75,6 +75,7 @@ open Pervigil.xcodeproj    # build/run the Pervigil scheme with Cmd-R
 # The checks CI runs besides the build and tests
 python3 tools/localization/check_all.py
 bash scripts/check-versions.sh
+bash scripts/check-admin-prompts.sh
 python3 scripts/check-location-permission.py
 ```
 
@@ -115,6 +116,11 @@ threshold.
 - The controller and anything it touches are `@MainActor`.
 - A new feature generally means: a Core component + protocol + tests first, then
   thin SwiftUI in the app.
+- Background automation must never trigger an administrator prompt. Only a
+  direct user action may, and only through `AdminPrompting`
+  (`PervigilCore/AdminPrompting.swift`), which refuses `.automation`. Without
+  the helper, automation reports a "needs helper" state instead.
+  `scripts/check-admin-prompts.sh` fails CI on any other admin prompt.
 
 ## Writing and UI style
 
