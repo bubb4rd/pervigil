@@ -273,6 +273,14 @@ final class AppModel {
     /// features share its reading within a tick.
     let lidState = CachedLidState()
     private let connectivityPower = IOKitPowerSourceMonitor()
+    /// The live battery reading, for the panel's battery guard tile.
+    var powerReading: PowerSourceSnapshot { connectivityPower.current }
+    /// The app on a call / the game in front, resolved at most every couple
+    /// of seconds while the panel is open (see `AppModel+Panel.swift`).
+    @ObservationIgnored var panelContextCache: (at: Date, context: PanelSourceContext)?
+    /// The duration chip that started the running manual session, so the
+    /// panel can keep "Until…" or "Custom…" selected. In memory only.
+    var panelDurationChoice: PanelDurationChoice?
     @ObservationIgnored private var sawLowPowerHelperError = false
 
     var hotspotConfig: HotspotFallbackConfig {
@@ -4074,7 +4082,7 @@ final class AppModel {
     /// enclosing `.app` bundle read from the executable path (so an Electron
     /// helper maps to its parent app), then a running-app lookup by pid, and
     /// finally the raw bundle id CoreAudio reported (still matchable by prefix).
-    private static func resolveCapturingApp(pid: pid_t, rawBundleID: String) -> (name: String, bundleID: String) {
+    static func resolveCapturingApp(pid: pid_t, rawBundleID: String) -> (name: String, bundleID: String) {
         if let path = executablePath(forPID: pid),
            let url = CoreMediaActivityMonitor.enclosingAppBundleURL(forExecutablePath: path),
            let bundle = Bundle(url: url),

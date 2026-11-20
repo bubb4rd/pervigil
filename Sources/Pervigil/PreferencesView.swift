@@ -663,13 +663,7 @@ private struct GeneralTab: View {
     }
 
     private func presenceMethodLabel(_ method: ActivitySimulationMethod) -> String {
-        switch method {
-        case .powerWarp: return L("Power / cursor warp")
-        case .f15: return L("F15 key every 60 s")
-        case .shift: return L("Shift every 60 s")
-        case .specifiedKey: return L("Specified key")
-        case .mouseMove: return L("Mouse move")
-        }
+        method.menuLabel
     }
 
     /// Idle waits offered by the "Only after idle" keep-active mode.
