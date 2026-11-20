@@ -9,6 +9,11 @@ public enum SleepSettingResult: Equatable, Sendable {
     case cancelled
     /// The command ran but failed, with a message to surface.
     case failed(String)
+    /// Nothing was changed because it would have taken an administrator
+    /// prompt the caller may not show (automation without the helper; see
+    /// ``AdminPromptPolicy``). Not an error: the host surfaces a "needs
+    /// helper" state instead.
+    case needsAuthorization
 }
 
 /// Controls macOS's system-wide "disable sleep" flag (`pmset disablesleep`).
@@ -24,9 +29,10 @@ public protocol SleepSettingControlling: AnyObject, Sendable {
     /// (e.g. `pmset` failed to run).
     func isSleepDisabled() -> Bool?
 
-    /// Set the global `disablesleep` flag, prompting for administrator rights.
+    /// Set the global `disablesleep` flag. Without the helper this needs an
+    /// administrator prompt, which only a `.userAction` origin may show.
     /// Blocking: it waits for the user to answer the prompt.
-    func setSleepDisabled(_ disabled: Bool) -> SleepSettingResult
+    func setSleepDisabled(_ disabled: Bool, origin: PromptOrigin) -> SleepSettingResult
 }
 
 /// Drives the "closed-display mode" toggle. Owns no timer and no persistence:
@@ -336,7 +342,7 @@ public final class ClosedDisplayController {
     /// so the UI doesn't freeze while the user answers, then re-reads the actual
     /// resulting state.
     @discardableResult
-    public func set(_ enabled: Bool) async -> SleepSettingResult {
+    public func set(_ enabled: Bool, origin: PromptOrigin) async -> SleepSettingResult {
         // Ignore a second toggle while a prompt is already up, so we never stack
         // two authorization dialogs.
         guard !isBusy else { return .cancelled }
@@ -344,9 +350,9 @@ public final class ClosedDisplayController {
         readGeneration += 1
         defer { isBusy = false }
         let control = self.control
-        let result = await Task.detached { control.setSleepDisabled(enabled) }.value
+        let result = await Task.detached { control.setSleepDisabled(enabled, origin: origin) }.value
         switch result {
-        case .applied, .cancelled:
+        case .applied, .cancelled, .needsAuthorization:
             lastError = nil
         case .failed(let message):
             lastError = message
@@ -359,11 +365,15 @@ public final class ClosedDisplayController {
 }
 
 /// Real ``SleepSettingControlling`` backed by `pmset`. Reads state from
-/// `pmset -g` and writes via `osascript`'s "with administrator privileges",
-/// which shows the standard macOS authorization dialog. Not `@MainActor`: the
+/// `pmset -g` and writes through ``AdminPrompting``, which shows the standard
+/// macOS authorization dialog (for a user action only). Not `@MainActor`: the
 /// write blocks on the user's prompt, so callers run it off the main actor.
 public final class PMSetSleepControl: SleepSettingControlling {
-    public init() {}
+    private let prompter: AdminPrompting
+
+    public init(prompter: AdminPrompting = OsascriptAdminPrompter()) {
+        self.prompter = prompter
+    }
 
     public func isSleepDisabled() -> Bool? {
         Self.parseSleepDisabled(from: run("/usr/bin/pmset", ["-g"]))
@@ -378,22 +388,18 @@ public final class PMSetSleepControl: SleepSettingControlling {
         return PMSet.value(forKey: "SleepDisabled", in: output) == 1
     }
 
-    public func setSleepDisabled(_ disabled: Bool) -> SleepSettingResult {
-        // `pmset disablesleep` needs root. osascript's "with administrator
-        // privileges" pops the standard auth dialog and runs the command as root.
+    public func setSleepDisabled(_ disabled: Bool, origin: PromptOrigin) -> SleepSettingResult {
+        // `pmset disablesleep` needs root, which here means the prompter's
+        // authorization dialog.
         let command = "/usr/bin/pmset -a disablesleep \(disabled ? 1 : 0)"
-        let script = "do shell script \"\(command)\" with administrator privileges"
-        let result = runForResult("/usr/bin/osascript", ["-e", script])
-        guard let result else {
-            return .failed(L("Couldn't run the sleep setting command."))
+        switch prompter.runAsRoot(command, feature: .sleepSetting, origin: origin) {
+        case .succeeded: return .applied
+        case .cancelled: return .cancelled
+        case .refused: return .needsAuthorization
+        case .launchFailed: return .failed(L("Couldn't run the sleep setting command."))
+        case .failed(let message):
+            return .failed(message.isEmpty ? L("The sleep setting couldn't be changed.") : message)
         }
-        if result.status == 0 { return .applied }
-        // osascript reports a user-cancelled auth prompt as error -128.
-        if result.stderr.contains("-128") || result.stderr.localizedCaseInsensitiveContains("cancel") {
-            return .cancelled
-        }
-        let message = result.stderr.trimmingCharacters(in: .whitespacesAndNewlines)
-        return .failed(message.isEmpty ? L("The sleep setting couldn't be changed.") : message)
     }
 
     // MARK: - Shelling out
@@ -414,25 +420,6 @@ public final class PMSetSleepControl: SleepSettingControlling {
             guard process.terminationStatus == 0 else { return nil }
             let output = String(decoding: data, as: UTF8.self)
             return output.isEmpty ? nil : output
-        } catch {
-            return nil
-        }
-    }
-
-    /// Run a command and return its exit status plus stderr, or `nil` if it
-    /// couldn't be launched. Used for the write, where the failure reason matters.
-    private func runForResult(_ path: String, _ arguments: [String]) -> (status: Int32, stderr: String)? {
-        let process = Process()
-        process.executableURL = URL(fileURLWithPath: path)
-        process.arguments = arguments
-        process.standardOutput = FileHandle.nullDevice
-        let errPipe = Pipe()
-        process.standardError = errPipe
-        do {
-            try process.run()
-            let data = errPipe.fileHandleForReading.readDataToEndOfFile()
-            process.waitUntilExit()
-            return (process.terminationStatus, String(decoding: data, as: UTF8.self))
         } catch {
             return nil
         }

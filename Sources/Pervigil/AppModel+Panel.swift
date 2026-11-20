@@ -43,6 +43,7 @@ extension AppModel {
             batteryThreshold: pauseBelowBatteryPercent,
             lidOn: closedDisplayEnabled || closedDisplayOnlyWhileBrewing,
             lidOnlyWhileAwake: closedDisplayOnlyWhileBrewing,
+            lidNeedsHelper: closedLidNeedsHelper,
             preventDisplaySleep: options.preventDisplaySleep,
             dimsWhenIdle: options.dimDisplayAfter != nil,
             stayActiveMethod: simulateUserActivity ? activitySimulationMethod.shortLabel : nil)

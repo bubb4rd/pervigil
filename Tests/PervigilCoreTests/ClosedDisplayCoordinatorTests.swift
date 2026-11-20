@@ -12,7 +12,8 @@ private func conditions(
     automationAuthorized: Bool = true,
     automationFailed: Bool = false,
     settingIsOn: Bool? = false,
-    settingIsBusy: Bool = false
+    settingIsBusy: Bool = false,
+    fallbackDeclined: Bool = false
 ) -> ClosedDisplayCoordinator.Conditions {
     .init(
         onlyWhileBrewing: onlyWhileBrewing,
@@ -22,7 +23,8 @@ private func conditions(
         automationAuthorized: automationAuthorized,
         automationFailed: automationFailed,
         settingIsOn: settingIsOn,
-        settingIsBusy: settingIsBusy
+        settingIsBusy: settingIsBusy,
+        fallbackDeclined: fallbackDeclined
     )
 }
 
@@ -40,26 +42,35 @@ private func conditions(
 }
 
 @MainActor
-@Test func engagePromptIsAnnouncedOnceOnTheSessionEdge() {
+@Test func needsHelperIsSurfacedOncePerRun() {
     let coordinator = ClosedDisplayCoordinator()
     let start = conditions(brewing: true, helperInstalled: false, automationAuthorized: false)
-    #expect(coordinator.tick(start).contains(.announceEngagePrompt))
-    // Same session, so a cancelled prompt isn't followed by a focus steal every
-    // second for the rest of it.
-    #expect(!coordinator.tick(start).contains(.announceEngagePrompt))
+    #expect(coordinator.tick(start).contains(.surfaceNeedsAuthorization))
+    // Not again this session...
+    #expect(!coordinator.tick(start).contains(.surfaceNeedsAuthorization))
+    // ...nor on the next one: a notice per session start would be its own nag.
+    _ = coordinator.tick(conditions(brewing: false, helperInstalled: false, automationAuthorized: false))
+    #expect(!coordinator.tick(start).contains(.surfaceNeedsAuthorization))
 }
 
 @MainActor
-@Test func engagePromptIsSilentWithTheHelperOrAnExistingAuthorization() {
+@Test func needsHelperIsSilentWithTheHelperAnAuthorizationOrADecline() {
     let withHelper = ClosedDisplayCoordinator()
     #expect(!withHelper.tick(
         conditions(brewing: true, helperInstalled: true, automationAuthorized: false)
-    ).contains(.announceEngagePrompt))
+    ).contains(.surfaceNeedsAuthorization))
 
     let alreadyAuthorized = ClosedDisplayCoordinator()
     #expect(!alreadyAuthorized.tick(
         conditions(brewing: true, helperInstalled: false, automationAuthorized: true)
-    ).contains(.announceEngagePrompt))
+    ).contains(.surfaceNeedsAuthorization))
+
+    // The user said no to the password once; that answer stands across
+    // launches (the flag is persisted), so a fresh coordinator stays quiet.
+    let declined = ClosedDisplayCoordinator()
+    #expect(!declined.tick(
+        conditions(brewing: true, helperInstalled: false, automationAuthorized: false, fallbackDeclined: true)
+    ).contains(.surfaceNeedsAuthorization))
 }
 
 @MainActor
@@ -95,7 +106,7 @@ private func conditions(
     // until the re-read lands.
     let released = coordinator.tick(conditions(automationHolding: false, settingIsOn: true))
     #expect(released.contains(.refreshThenEnforce(delay: ClosedDisplayCoordinator.mirrorDelay)))
-    #expect(!released.contains(.clearForeignHold(announce: false)))
+    #expect(!released.contains(.clearForeignHold(origin: .automation)))
 }
 
 @MainActor
@@ -136,47 +147,51 @@ private func conditions(
 @Test func anIdleForeignHoldIsClearedOnce() {
     let coordinator = ClosedDisplayCoordinator()
     let foreign = conditions(settingIsOn: true)
-    #expect(coordinator.tick(foreign).contains(.clearForeignHold(announce: false)))
+    #expect(coordinator.tick(foreign).contains(.clearForeignHold(origin: .automation)))
     // A write that doesn't take isn't retried every second.
-    #expect(!coordinator.tick(foreign).contains(.clearForeignHold(announce: false)))
+    #expect(!coordinator.tick(foreign).contains(.clearForeignHold(origin: .automation)))
 }
 
 @MainActor
 @Test func aForeignHoldIsLeftAloneDuringASession() {
     let coordinator = ClosedDisplayCoordinator()
     let brewingWithHold = conditions(brewing: true, settingIsOn: true)
-    #expect(!coordinator.tick(brewingWithHold).contains(.clearForeignHold(announce: false)))
+    #expect(!coordinator.tick(brewingWithHold).contains(.clearForeignHold(origin: .automation)))
 }
 
 @MainActor
 @Test func aSessionRearmsTheForeignHoldClear() {
     let coordinator = ClosedDisplayCoordinator()
-    #expect(coordinator.tick(conditions(settingIsOn: true)).contains(.clearForeignHold(announce: false)))
+    #expect(coordinator.tick(conditions(settingIsOn: true)).contains(.clearForeignHold(origin: .automation)))
     // The session hands the setting back, and its release may restore a hold
     // that was set outside the automation.
     _ = coordinator.tick(conditions(brewing: true, settingIsOn: true))
-    #expect(coordinator.tick(conditions(settingIsOn: true)).contains(.clearForeignHold(announce: false)))
+    #expect(coordinator.tick(conditions(settingIsOn: true)).contains(.clearForeignHold(origin: .automation)))
 }
 
 @MainActor
-@Test func withoutTheHelperTheClearIsAnnouncedAndOfferedOncePerRun() {
+@Test func withoutTheHelperAnUnattendedClearNeverHappens() {
+    // Clearing without the helper takes a password, and nobody asked for one.
     let coordinator = ClosedDisplayCoordinator()
     let foreign = conditions(helperInstalled: false, settingIsOn: true)
-    #expect(coordinator.tick(foreign).contains(.clearForeignHold(announce: true)))
-    // A cancelled prompt must not be re-offered, even once the latch is armed
-    // again by a session.
-    _ = coordinator.tick(conditions(brewing: true, helperInstalled: false, settingIsOn: true))
-    #expect(!coordinator.tick(foreign).contains(.clearForeignHold(announce: true)))
+    for _ in 0..<5 {
+        let actions = coordinator.tick(foreign)
+        #expect(!actions.contains(.clearForeignHold(origin: .automation)))
+        #expect(!actions.contains(.clearForeignHold(origin: .userAction)))
+    }
+    #expect(coordinator.enforce(foreign) == nil)
 }
 
 @MainActor
-@Test func aPromptTheUserIsAlreadyAnsweringNeedsNoNotice() {
+@Test func aUserActionMayClearWithoutTheHelper() {
+    // The user just toggled the feature: they are at the keyboard, so this
+    // clear may show the password dialog.
     let coordinator = ClosedDisplayCoordinator()
     let action = coordinator.enforce(
         conditions(helperInstalled: false, settingIsOn: true),
         allowPrompt: true
     )
-    #expect(action == .clearForeignHold(announce: false))
+    #expect(action == .clearForeignHold(origin: .userAction))
 }
 
 @MainActor
@@ -190,9 +205,9 @@ private func conditions(
     // The tick still pulses the automation, it just doesn't enforce.
     let ticked = coordinator.tick(foreign)
     #expect(ticked.contains(.runAutoTick(brewing: false)))
-    #expect(!ticked.contains(.clearForeignHold(announce: false)))
+    #expect(!ticked.contains(.clearForeignHold(origin: .automation)))
     #expect(coordinator.endRefresh(token, settingIsOn: true))
-    #expect(coordinator.enforce(foreign) == .clearForeignHold(announce: false))
+    #expect(coordinator.enforce(foreign) == .clearForeignHold(origin: .automation))
 }
 
 @MainActor
@@ -212,24 +227,24 @@ private func conditions(
     #expect(!coordinator.endRefresh(old, settingIsOn: false))
     #expect(coordinator.enforce(conditions(settingIsOn: true)) == nil)
     #expect(coordinator.endRefresh(new, settingIsOn: true))
-    #expect(coordinator.enforce(conditions(settingIsOn: true)) == .clearForeignHold(announce: false))
+    #expect(coordinator.enforce(conditions(settingIsOn: true)) == .clearForeignHold(origin: .automation))
 }
 
 @MainActor
 @Test func aConfirmedOffSettingArmsTheClearAgain() {
     let coordinator = ClosedDisplayCoordinator()
-    #expect(coordinator.tick(conditions(settingIsOn: true)).contains(.clearForeignHold(announce: false)))
+    #expect(coordinator.tick(conditions(settingIsOn: true)).contains(.clearForeignHold(origin: .automation)))
     // The read confirms the clear took, so a hold taken later in this same idle
     // stretch is still caught.
     let token = coordinator.beginRefresh()
     #expect(coordinator.endRefresh(token, settingIsOn: false))
-    #expect(coordinator.enforce(conditions(settingIsOn: true)) == .clearForeignHold(announce: false))
+    #expect(coordinator.enforce(conditions(settingIsOn: true)) == .clearForeignHold(origin: .automation))
 }
 
 @MainActor
 @Test func anUnreadableSettingLeavesTheLatchAlone() {
     let coordinator = ClosedDisplayCoordinator()
-    #expect(coordinator.tick(conditions(settingIsOn: true)).contains(.clearForeignHold(announce: false)))
+    #expect(coordinator.tick(conditions(settingIsOn: true)).contains(.clearForeignHold(origin: .automation)))
     let token = coordinator.beginRefresh()
     // nil is "couldn't read", not "confirmed off": nothing proves the clear took.
     #expect(coordinator.endRefresh(token, settingIsOn: nil))
@@ -239,7 +254,7 @@ private func conditions(
 @MainActor
 @Test func turningTheFeatureOnArmsTheClear() {
     let coordinator = ClosedDisplayCoordinator()
-    #expect(coordinator.tick(conditions(settingIsOn: true)).contains(.clearForeignHold(announce: false)))
+    #expect(coordinator.tick(conditions(settingIsOn: true)).contains(.clearForeignHold(origin: .automation)))
     coordinator.rearmForeignHoldClear()
-    #expect(coordinator.enforce(conditions(settingIsOn: true)) == .clearForeignHold(announce: false))
+    #expect(coordinator.enforce(conditions(settingIsOn: true)) == .clearForeignHold(origin: .automation))
 }

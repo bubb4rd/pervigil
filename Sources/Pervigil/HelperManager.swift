@@ -131,6 +131,12 @@ final class HelperManager {
         self.client = client
         self.dumper = dumper
         self.appUpdatedSinceLastRun = appUpdatedSinceLastRun
+        if !managesDaemon {
+            // Dev builds, DerivedData and QA snapshot copies land here. Their
+            // helper features take the password fallback, which only a direct
+            // user action may trigger (see `AdminPromptPolicy`).
+            NSLog("Pervigil: running outside /Applications, so the helper is left alone. Privileged features prompt only from a direct user action.")
+        }
         refresh()
     }
 

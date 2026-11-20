@@ -87,6 +87,11 @@ public struct PervigilSettings: Codable, Equatable, Sendable {
     /// turned off (see ``ClosedDisplayAutoController/onlyWhileBrewing``).
     /// Off by default.
     public var closedDisplayOnlyWhileBrewing: Bool
+    /// The user cancelled the fallback password prompt for "Only while
+    /// awake" closed-display mode (no helper installed). Automation never
+    /// prompts anyway; this silences the "needs helper" notice across
+    /// launches until the user acts on the feature again.
+    public var closedLidFallbackDeclined: Bool
     /// What the closed-display watchdog does with the panel while the lid is
     /// shut (see ``ClosedLidDisplayPolicy``). `displayOff` by default, which
     /// preserves the long-standing behavior.
@@ -158,6 +163,7 @@ public struct PervigilSettings: Codable, Equatable, Sendable {
         awdlNotifications: Bool = false,
         awdlGraceSeconds: TimeInterval = 60,
         closedDisplayOnlyWhileBrewing: Bool = false,
+        closedLidFallbackDeclined: Bool = false,
         closedLidDisplayPolicy: ClosedLidDisplayPolicy = .displayOff,
         hotKey: HotKeyShortcut? = nil,
         startOnLaunch: Bool = false,
@@ -201,6 +207,7 @@ public struct PervigilSettings: Codable, Equatable, Sendable {
         self.awdlNotifications = awdlNotifications
         self.awdlGraceSeconds = Self.normalizedPositiveInterval(awdlGraceSeconds) ?? 60
         self.closedDisplayOnlyWhileBrewing = closedDisplayOnlyWhileBrewing
+        self.closedLidFallbackDeclined = closedLidFallbackDeclined
         self.closedLidDisplayPolicy = closedLidDisplayPolicy
         self.hotKey = Self.sanitizedHotKey(hotKey)
         self.startOnLaunch = startOnLaunch
@@ -317,6 +324,7 @@ public struct PervigilSettings: Codable, Equatable, Sendable {
         awdlGraceSeconds = Self.normalizedPositiveInterval(
             try c.decodeIfPresent(TimeInterval.self, forKey: .awdlGraceSeconds) ?? 60) ?? 60
         closedDisplayOnlyWhileBrewing = try c.decodeIfPresent(Bool.self, forKey: .closedDisplayOnlyWhileBrewing) ?? false
+        closedLidFallbackDeclined = try c.decodeIfPresent(Bool.self, forKey: .closedLidFallbackDeclined) ?? false
         // Decoded as a raw string, not the enum: a value persisted by an older
         // build (like the branch-only `keepDark`) must fall back to the
         // default, never throw. A throw here discards the entire blob and the
@@ -494,12 +502,15 @@ public final class UserDefaultsSettingsStore: SettingsStore {
 // MARK: - Fresh-install defaults
 
 extension PervigilSettings {
-    /// Session-scoped closed-display for first launch only: nothing
-    /// persisted yet means a fresh install, which starts safe. Anything
-    /// saved (even a corrupt blob) passes through untouched, so existing
-    /// installs keep whatever they had, including off.
-    public func withFreshInstallDefaults(hasStoredSettings: Bool) -> PervigilSettings {
-        guard !hasStoredSettings else { return self }
+    /// Session-scoped closed-display for first launch only, and only when the
+    /// helper daemon is installed: nothing persisted yet means a fresh
+    /// install, which starts safe. Without the helper the feature would need
+    /// an administrator prompt the automation may not show, so it starts off
+    /// and Welcome offers it next to the helper instead. Anything saved (even
+    /// a corrupt blob) passes through untouched, so existing installs keep
+    /// whatever they had, including off.
+    public func withFreshInstallDefaults(hasStoredSettings: Bool, helperInstalled: Bool) -> PervigilSettings {
+        guard !hasStoredSettings, helperInstalled else { return self }
         var copy = self
         copy.closedDisplayOnlyWhileBrewing = true
         return copy

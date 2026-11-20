@@ -59,6 +59,10 @@ public enum AWDLWatchdogStartResult: Equatable, Sendable {
     /// The user dismissed the administrator-password prompt.
     case cancelled
     case failed(String)
+    /// Nothing started because it would have taken an administrator prompt
+    /// the caller may not show (automation without the helper; see
+    /// ``AdminPromptPolicy``).
+    case needsAuthorization
 }
 
 /// System-touching seam for the watchdog helper: a root loop that lives as
@@ -66,8 +70,8 @@ public enum AWDLWatchdogStartResult: Equatable, Sendable {
 /// file exists.
 ///
 /// The privilege design keeps macOS happy without a permanent daemon, and
-/// asks for the password exactly once per app run: the first activation
-/// spawns the helper (ONE administrator prompt); after that, toggling on and
+/// asks for the password at most once per app run: the first activation from
+/// a user action spawns the helper (ONE administrator prompt); after that, toggling on and
 /// off is just creating and deleting the flag file, no prompts. The helper
 /// watches the app's pid, so an app crash or quit tears it down and restores
 /// `awdl0` on its own.
@@ -82,7 +86,9 @@ public protocol AWDLWatchdogLaunching: AnyObject, Sendable {
     func removeFlag()
     /// Spawn the root helper loop. Blocking: it waits for the user to answer
     /// the administrator prompt. Called once per app run, on first activation.
-    func startHelper(appPID: Int32) -> AWDLWatchdogStartResult
+    /// An `.automation` origin never prompts: a backend that would need one
+    /// returns ``AWDLWatchdogStartResult/needsAuthorization`` instead.
+    func startHelper(appPID: Int32, origin: PromptOrigin) -> AWDLWatchdogStartResult
     /// Message to surface when ``createFlag()`` fails, naming what actually
     /// failed in this backend (a file write here, an XPC call in the daemon).
     var engageFailureMessage: String { get }
@@ -95,19 +101,22 @@ extension AWDLWatchdogLaunching {
 }
 
 /// Real backend: the flag lives in Application Support, and the loop is
-/// spawned as root via `osascript`'s "with administrator privileges" (the same
-/// admin seam ``PMSetSleepControl`` uses), backgrounded so the prompt returns
-/// as soon as the loop is running.
+/// spawned as root through ``AdminPrompting`` (the same admin seam
+/// ``PMSetSleepControl`` uses), backgrounded so the prompt returns as soon as
+/// the loop is running.
 public final class OsascriptAWDLWatchdog: AWDLWatchdogLaunching {
     private let flagURL: URL
     private let ownerPID: Int32
+    private let prompter: AdminPrompting
 
     public init(
         flagURL: URL = OsascriptAWDLWatchdog.defaultFlagURL,
-        ownerPID: Int32 = ProcessInfo.processInfo.processIdentifier
+        ownerPID: Int32 = ProcessInfo.processInfo.processIdentifier,
+        prompter: AdminPrompting = OsascriptAdminPrompter()
     ) {
         self.flagURL = flagURL
         self.ownerPID = ownerPID
+        self.prompter = prompter
     }
 
     public static var defaultFlagURL: URL {
@@ -129,19 +138,16 @@ public final class OsascriptAWDLWatchdog: AWDLWatchdogLaunching {
         try? FileManager.default.removeItem(at: flagURL)
     }
 
-    public func startHelper(appPID: Int32) -> AWDLWatchdogStartResult {
+    public func startHelper(appPID: Int32, origin: PromptOrigin) -> AWDLWatchdogStartResult {
         let command = Self.watchdogCommand(flagPath: flagURL.path, appPID: appPID)
-        let script = "do shell script \"\(Self.appleScriptEscaped(command))\" with administrator privileges"
-        guard let result = runForResult("/usr/bin/osascript", ["-e", script]) else {
-            return .failed(L("Couldn't run the watchdog command."))
+        switch prompter.runAsRoot(command, feature: .awdlPause, origin: origin) {
+        case .succeeded: return .started
+        case .cancelled: return .cancelled
+        case .refused: return .needsAuthorization
+        case .launchFailed: return .failed(L("Couldn't run the watchdog command."))
+        case .failed(let message):
+            return .failed(message.isEmpty ? L("The watchdog couldn't be started.") : message)
         }
-        if result.status == 0 { return .started }
-        // osascript reports a user-cancelled auth prompt as error -128.
-        if result.stderr.contains("-128") || result.stderr.localizedCaseInsensitiveContains("cancel") {
-            return .cancelled
-        }
-        let message = result.stderr.trimmingCharacters(in: .whitespacesAndNewlines)
-        return .failed(message.isEmpty ? L("The watchdog couldn't be started.") : message)
     }
 
     /// The root helper, backgrounded so `do shell script` returns immediately.
@@ -186,28 +192,7 @@ public final class OsascriptAWDLWatchdog: AWDLWatchdogLaunching {
 
     /// Escape a shell command for embedding in an AppleScript string literal.
     static func appleScriptEscaped(_ command: String) -> String {
-        command
-            .replacingOccurrences(of: "\\", with: "\\\\")
-            .replacingOccurrences(of: "\"", with: "\\\"")
-    }
-
-    /// Run a command and return its exit status plus stderr, or `nil` if it
-    /// couldn't be launched. Mirrors ``PMSetSleepControl``'s helper.
-    private func runForResult(_ path: String, _ arguments: [String]) -> (status: Int32, stderr: String)? {
-        let process = Process()
-        process.executableURL = URL(fileURLWithPath: path)
-        process.arguments = arguments
-        process.standardOutput = FileHandle.nullDevice
-        let errPipe = Pipe()
-        process.standardError = errPipe
-        do {
-            try process.run()
-            let data = errPipe.fileHandleForReading.readDataToEndOfFile()
-            process.waitUntilExit()
-            return (process.terminationStatus, String(decoding: data, as: UTF8.self))
-        } catch {
-            return nil
-        }
+        OsascriptAdminPrompter.appleScriptEscaped(command)
     }
 }
 
@@ -242,15 +227,23 @@ public final class AWDLWatchdogController {
     /// stops what it started, never a manual run).
     private var autoStarted = false
 
-    /// Why auto mode is standing down, so the once-per-session prompt doesn't
-    /// re-appear every tick. Cleared when the gaming bout ends.
+    /// True when a game wanted the pause but starting it would have needed an
+    /// administrator prompt auto mode may not show. Cleared by the next
+    /// successful start. The host shows a "Needs helper" state for it.
+    public private(set) var needsAuthorization = false
+
+    /// Why auto mode is standing down, so the start doesn't re-run every tick.
+    /// Cleared when the gaming bout ends.
     private enum AutoHoldOff {
         case none
         /// A start that failed on its own (a helper that was not answering).
         /// Worth trying again once the helper is healthy, see ``retryEngage()``.
         case failure
-        /// The user cancelled the prompt or turned the watchdog off mid-bout.
-        /// Their answer stands for the rest of the bout.
+        /// The start needed a password prompt auto mode may not show. Lifts
+        /// once a user action authorizes the fallback or the helper installs.
+        case needsAuthorization
+        /// The user turned the watchdog off mid-bout. Their answer stands for
+        /// the rest of the bout.
         case user
     }
     private var autoHoldOff: AutoHoldOff = .none
@@ -293,11 +286,11 @@ public final class AWDLWatchdogController {
     }
 
     /// Activate the watchdog. The first activation of this app run spawns the
-    /// root helper (one administrator prompt); later ones just recreate the
-    /// flag, instantly and prompt-free. Ignores a second call while the
-    /// prompt is already up.
+    /// root helper (one administrator prompt, user actions only); later ones
+    /// just recreate the flag, instantly and prompt-free. Ignores a second
+    /// call while the prompt is already up.
     @discardableResult
-    public func start() async -> AWDLWatchdogStartResult {
+    public func start(origin: PromptOrigin) async -> AWDLWatchdogStartResult {
         guard !isBusy else { return .cancelled }
         isBusy = true
         defer { isBusy = false }
@@ -314,14 +307,17 @@ public final class AWDLWatchdogController {
             return .started
         }
         let pid = self.appPID
-        let result = await Task.detached { launcher.startHelper(appPID: pid) }.value
+        let result = await Task.detached { launcher.startHelper(appPID: pid, origin: origin) }.value
         switch result {
         case .started:
             lastError = nil
             isRunning = true
             helperStarted = true
-        case .cancelled:
+            needsAuthorization = false
+            if autoHoldOff == .needsAuthorization { autoHoldOff = .none }
+        case .cancelled, .needsAuthorization:
             lastError = nil
+            if case .needsAuthorization = result { needsAuthorization = true }
             await Task.detached { launcher.removeFlag() }.value
         case .failed(let message):
             lastError = message
@@ -335,14 +331,14 @@ public final class AWDLWatchdogController {
     public var isAuthorized: Bool { helperStarted }
 
     /// Pre-authorize the helper without pausing AWDL: spawn it (one prompt now,
-    /// in whatever context the caller chose) then immediately drop the flag so
+    /// from the user action that called this) then immediately drop the flag so
     /// `awdl0` stays up. After this, an automatic activation when a game comes
     /// to the front is a prompt-free flag write and never pops a password dialog
     /// over a running game. No-op (and no prompt) once already authorized.
     @discardableResult
     public func prime() async -> AWDLWatchdogStartResult {
         guard !helperStarted, !isBusy else { return .started }
-        let result = await start()
+        let result = await start(origin: .userAction)
         if case .started = result { await stop() }
         return result
     }
@@ -363,12 +359,12 @@ public final class AWDLWatchdogController {
     public func holdAutoOff() { autoHoldOff = .user }
 
     /// Let the next auto tick try starting again. For after an external fix
-    /// (the helper daemon's registration was repaired); without this a failed
-    /// start stays held off until the current game ends. A cancelled prompt or
-    /// a manual off is left alone: recovering the helper is not permission to
+    /// (the helper daemon was installed or its registration repaired); without
+    /// this a held-off start stays held off until the current game ends. A
+    /// manual off is left alone: recovering the helper is not permission to
     /// undo what the user chose.
     public func retryEngage() {
-        if autoHoldOff == .failure { autoHoldOff = .none }
+        if autoHoldOff == .failure || autoHoldOff == .needsAuthorization { autoHoldOff = .none }
     }
 
     /// Stop only an auto-started run; a manual run is left alone. For when auto
@@ -378,19 +374,20 @@ public final class AWDLWatchdogController {
     }
 
     /// Auto mode's once-a-second pulse. Starts the watchdog while a game is
-    /// running (`gamingActive`, decided by the host, one prompt; a cancel holds
-    /// off until the bout ends) and stops it again when the bout is over. Only
-    /// ever stops a run it started, so a manual run survives gaming ending.
+    /// running (`gamingActive`, decided by the host) and stops it again when
+    /// the bout is over. Never prompts: a start that would need a password
+    /// stands down with ``needsAuthorization`` set. Only ever stops a run it
+    /// started, so a manual run survives gaming ending.
     public func autoTick(gamingActive: Bool) async {
         guard autoWithGaming else { return }
         if gamingActive {
             guard !isRunning, !isBusy, autoHoldOff == .none else { return }
-            switch await start() {
+            switch await start(origin: .automation) {
             case .started:
                 autoStarted = true
-            case .cancelled:
-                autoHoldOff = .user
-            case .failed:
+            case .needsAuthorization:
+                autoHoldOff = .needsAuthorization
+            case .cancelled, .failed:
                 autoHoldOff = .failure
             }
         } else {

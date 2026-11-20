@@ -163,6 +163,22 @@ private func status(_ input: PanelInput) -> PanelStatus {
     #expect(off.tiles.stayActive == "Off")
 }
 
+@Test func lidTileSaysNeedsHelperInsteadOfPromising() {
+    // "Only while awake" without the helper or an Allow once: the tile must
+    // not claim the lid can close, and must not read like it is working.
+    let s = status(PanelInput(now: noon, isActive: true, elapsed: 1,
+        lidOn: true, lidOnlyWhileAwake: true, lidNeedsHelper: true))
+    #expect(s.tiles.lid == "Needs helper")
+    #expect(s.tiles.lidNeedsHelper)
+    #expect(s.detail != "Lid can close")
+
+    // A sticky hold is a real setting, not the automation: no lock.
+    let sticky = status(PanelInput(now: noon, isActive: true, elapsed: 1,
+        lidOn: true, lidOnlyWhileAwake: false, lidNeedsHelper: true))
+    #expect(sticky.tiles.lid == "Stays awake")
+    #expect(!sticky.tiles.lidNeedsHelper)
+}
+
 // MARK: - Reasons
 
 @Test func reasonsPutWorkingAgentsFirstThenTriggersThenLeases() {

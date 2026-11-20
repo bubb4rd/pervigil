@@ -167,7 +167,18 @@ struct SettingsPowerPage: View {
             if lidMode == .always {
                 RowNote(text: L("Stays on until you turn it off, even if Pervigil quits. Do not leave it on in a bag."), kind: .warning)
             }
-            if !model.helperInstalled {
+            if model.closedLidNeedsHelper {
+                // Automation never prompts on its own: say so, and offer the
+                // one-click, this-run-only alternative next to the real fix.
+                HStack {
+                    RowNote(text: L("Following sessions needs the administrator helper. Without it, Pervigil asks for your password only when you choose Allow Once, and that lasts until it quits."), kind: .locked)
+                    Spacer(minLength: 8)
+                    Button(L("Allow Once")) { model.allowClosedLidOnce() }
+                        .buttonStyle(.link)
+                        .disabled(busy)
+                    Button(L("Set Up Helper…")) { navigate(.helper, nil) }.buttonStyle(.link)
+                }
+            } else if !model.helperInstalled {
                 HStack {
                     RowNote(text: L("Without the administrator helper, macOS asks for your password once per app run."), kind: .locked)
                     Spacer(minLength: 8)
