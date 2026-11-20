@@ -1,17 +1,17 @@
 # Homebrew Cask for Pervigil.
 #
 # This lives here as the source of truth. To make `brew install --cask pervigil`
-# work, publish it to a tap repo named `bubb4rd/homebrew-pervigil` (a GitHub
-# repo with this file under `Casks/`), after which:
+# work, publish it to the tap repo `bubb4rd/homebrew-tap` (a GitHub repo with
+# this file under `Casks/`), after which:
 #
-#   brew install --cask bubb4rd/pervigil/pervigil
+#   brew install --cask bubb4rd/tap/pervigil
 #
 # Per release: bump `version` and set `sha256` to the DMG's hash
 #   (shasum -a 256 dist/Pervigil-<version>.dmg), then commit to the tap.
 # The `livecheck` block lets `brew livecheck` notice new GitHub releases.
 cask "pervigil" do
-  version "1.30.0"
-  sha256 "dca52220ee843892b450c9f1ae57f762281f2fbd8207df13809a1f936c098075"
+  version "2.0.0"
+  sha256 "9eed664a5bb48369d56e2bb44a1675bc8f3f6f744180aae2d722380080af58e9"
 
   url "https://github.com/bubb4rd/pervigil/releases/download/v#{version}/Pervigil-#{version}.dmg"
   name "Pervigil"

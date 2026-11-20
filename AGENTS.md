@@ -55,7 +55,7 @@ regenerate it with `xcodegen generate`.
 - **Distribution**: the tag-triggered `.github/workflows/release.yml` builds,
   signs, notarizes, and publishes the DMG + signed Sparkle appcast on every `v*`
   tag. Each release also bumps `Casks/pervigil.rb` (`version` + `sha256`) in the
-  `bubb4rd/homebrew-pervigil` tap. The Sparkle updater seam is
+  `bubb4rd/homebrew-tap` tap. The Sparkle updater seam is
   `Sources/Pervigil/Updater.swift`.
 - **Docs**: `docs/BUILDING.md` (build it yourself), `docs/AUTOMATION_SYNC.md`
   (Scheduled AI runs design), `docs/AGENT_BRANDS.md` (agent brand assets).

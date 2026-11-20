@@ -37,7 +37,7 @@ Pervigil manages macOS `IOPMAssertion` power assertions manually or automaticall
 Requires macOS 14 (Sonoma) or later.
 
 ```sh
-brew install --cask bubb4rd/pervigil/pervigil
+brew install --cask bubb4rd/tap/pervigil
 ```
 
 Or download the signed, notarized DMG from [Releases](https://github.com/bubb4rd/pervigil/releases) and move **Pervigil** to Applications.
