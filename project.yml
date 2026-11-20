@@ -105,7 +105,7 @@ targets:
         # Generate the key pair once with Sparkle's `generate_keys` tool and paste
         # the printed public key below (the private key stays in the Keychain).
         SUFeedURL: "https://github.com/bubb4rd/pervigil/releases/latest/download/appcast.xml"
-        SUPublicEDKey: "n3mCQxtsVXbnaHZEzhv5Yfzr94+Y6CzwBk4jHtrCmm4="
+        SUPublicEDKey: "7WMbserL05pUjot45HC33Xnrnt3SYRYmdZ5DAEIVtHE="
         SUEnableAutomaticChecks: true
     entitlements:
       path: Sources/Pervigil/Pervigil.entitlements

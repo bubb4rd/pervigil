@@ -69,9 +69,11 @@ if [ ! -x "$GENERATE_APPCAST" ]; then
 fi
 [ -x "$GENERATE_APPCAST" ] || die "generate_appcast not found — set SPARKLE_BIN to Sparkle's bin/ dir"
 
-info "Signing appcast with Sparkle ($VERSION)"
+SPARKLE_ACCOUNT="${SPARKLE_ACCOUNT:-io.github.bubb4rd.pervigil}"
+info "Signing appcast with Sparkle ($VERSION, account $SPARKLE_ACCOUNT)"
 # Enclosure URLs must point at THIS release's download path on GitHub.
 "$GENERATE_APPCAST" "$DIST_DIR" \
+  --account "$SPARKLE_ACCOUNT" \
   --download-url-prefix "https://github.com/$REPO/releases/download/$TAG/"
 
 APPCAST="$DIST_DIR/appcast.xml"
