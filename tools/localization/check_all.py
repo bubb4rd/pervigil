@@ -64,6 +64,12 @@ SOURCE_COVERAGE = [
             "Sources/Pervigil/HelperSetupView.swift",
             "Sources/Pervigil/PreferencesView.swift",
             "Sources/Pervigil/MenuBarContent.swift",
+            "Sources/Pervigil/Panel/PanelStatusCard.swift",
+            "Sources/Pervigil/Panel/PanelSessionSection.swift",
+            "Sources/Pervigil/Panel/PanelTriggersSection.swift",
+            "Sources/Pervigil/Panel/PanelGuardsSection.swift",
+            "Sources/Pervigil/Panel/PanelFooter.swift",
+            "Sources/Pervigil/AppModel+Panel.swift",
             "Sources/Pervigil/MenuCustomizationView.swift",
             "Sources/Pervigil/MenuBarLabel.swift",
             "Sources/Pervigil/PervigilApp.swift",
@@ -87,7 +93,7 @@ SOURCE_COVERAGE = [
     (
         "CORE",
         CORE,
-        ["Sources/PervigilCore/CaptiveNetwork.swift", "Sources/PervigilCore/SessionController.swift", "Sources/PervigilCore/MachineIdentity.swift"],
+        ["Sources/PervigilCore/CaptiveNetwork.swift", "Sources/PervigilCore/SessionController.swift", "Sources/PervigilCore/MachineIdentity.swift", "Sources/PervigilCore/PanelStatus.swift"],
         [r'\bL\(\s*"((?:[^"\\]|\\.)*)"'],
     ),
 ]
