@@ -938,6 +938,9 @@
 "Low Power Mode is active." = "Режим энергосбережения включён.";
 "Initializing the helper…" = "Запуск помощника…";
 "Updating the helper…" = "Обновление помощника…";
+"held for" = "удерживается";
+"awake for" = "не спит";
+"sleeps in" = "уснёт через";
 "Cursor warp" = "Сдвиг курсора";
 "F15 key" = "Клавиша F15";
 "Shift key" = "Клавиша Shift";

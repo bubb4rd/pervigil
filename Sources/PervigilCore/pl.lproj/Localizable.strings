@@ -286,7 +286,8 @@
 "Lease: %@" = "Dzierżawa: %@";
 "Lid can close" = "Można zamknąć pokrywę";
 "No battery" = "Brak baterii";
-"No time limit, on for %@" = "Bez limitu czasu, włączone od %@";
+"No time limit" = "Bez limitu czasu";
+"Agents finished" = "Agenci skończyli";
 "On a call" = "Trwa rozmowa";
 "On, dims when idle" = "Wł., przyciemnia przy bezczynności";
 "Paused, %d%%" = "Wstrzymano, %d%%";

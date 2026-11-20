@@ -938,6 +938,9 @@
 "Low Power Mode is active." = "低电量模式已启用。";
 "Initializing the helper…" = "正在初始化辅助程序…";
 "Updating the helper…" = "正在更新辅助程序…";
+"held for" = "已保持";
+"awake for" = "已唤醒";
+"sleeps in" = "将在此后睡眠";
 "Cursor warp" = "光标跳转";
 "F15 key" = "F15 键";
 "Shift key" = "Shift 键";

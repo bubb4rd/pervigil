@@ -938,6 +938,9 @@
 "Low Power Mode is active." = "저전력 모드가 켜져 있습니다.";
 "Initializing the helper…" = "도우미 초기화 중…";
 "Updating the helper…" = "도우미 업데이트 중…";
+"held for" = "유지 시간";
+"awake for" = "깨어 있는 시간";
+"sleeps in" = "잠자기까지";
 "Cursor warp" = "커서 워프";
 "F15 key" = "F15 키";
 "Shift key" = "Shift 키";

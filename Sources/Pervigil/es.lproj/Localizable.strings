@@ -938,6 +938,9 @@
 "Low Power Mode is active." = "El modo de bajo consumo está activo.";
 "Initializing the helper…" = "Iniciando el asistente…";
 "Updating the helper…" = "Actualizando el asistente…";
+"held for" = "activo desde hace";
+"awake for" = "despierto desde hace";
+"sleeps in" = "duerme en";
 "Cursor warp" = "Salto del cursor";
 "F15 key" = "Tecla F15";
 "Shift key" = "Tecla Mayús";

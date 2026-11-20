@@ -938,6 +938,9 @@
 "Low Power Mode is active." = "Low Power Mode is active.";
 "Initializing the helper…" = "Initializing the helper…";
 "Updating the helper…" = "Updating the helper…";
+"held for" = "held for";
+"awake for" = "awake for";
+"sleeps in" = "sleeps in";
 "Cursor warp" = "Cursor warp";
 "F15 key" = "F15 key";
 "Shift key" = "Shift key";

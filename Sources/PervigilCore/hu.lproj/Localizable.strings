@@ -286,7 +286,8 @@
 "Lease: %@" = "Bérlet: %@";
 "Lid can close" = "A fedél lecsukható";
 "No battery" = "Nincs akkumulátor";
-"No time limit, on for %@" = "Nincs időkorlát, %@ óta aktív";
+"No time limit" = "Nincs időkorlát";
+"Agents finished" = "Az ügynökök végeztek";
 "On a call" = "Hívásban";
 "On, dims when idle" = "Be, tétlenségnél halványul";
 "Paused, %d%%" = "Szüneteltetve, %d%%";

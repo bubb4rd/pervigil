@@ -286,7 +286,8 @@
 "Lease: %@" = "リース: %@";
 "Lid can close" = "ふたを閉じても大丈夫";
 "No battery" = "バッテリーなし";
-"No time limit, on for %@" = "時間制限なし、%@ 経過";
+"No time limit" = "時間制限なし";
+"Agents finished" = "エージェントが完了";
 "On a call" = "通話中";
 "On, dims when idle" = "オン、アイドル時に暗く";
 "Paused, %d%%" = "一時停止中、%d%%";

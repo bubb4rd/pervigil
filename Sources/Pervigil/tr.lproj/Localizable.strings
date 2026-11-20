@@ -938,6 +938,9 @@
 "Low Power Mode is active." = "Düşük Güç Modu etkin.";
 "Initializing the helper…" = "Yardımcı başlatılıyor…";
 "Updating the helper…" = "Yardımcı güncelleniyor…";
+"held for" = "tutuluyor";
+"awake for" = "uyanık";
+"sleeps in" = "uyku için kalan";
 "Cursor warp" = "İmleç sıçraması";
 "F15 key" = "F15 tuşu";
 "Shift key" = "Shift tuşu";

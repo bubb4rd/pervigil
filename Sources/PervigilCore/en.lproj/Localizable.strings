@@ -286,7 +286,8 @@
 "Lease: %@" = "Lease: %@";
 "Lid can close" = "Lid can close";
 "No battery" = "No battery";
-"No time limit, on for %@" = "No time limit, on for %@";
+"No time limit" = "No time limit";
+"Agents finished" = "Agents finished";
 "On a call" = "On a call";
 "On, dims when idle" = "On, dims when idle";
 "Paused, %d%%" = "Paused, %d%%";
