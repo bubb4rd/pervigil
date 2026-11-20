@@ -153,6 +153,10 @@ public struct PowerAssertionInfo: Equatable, Identifiable, Sendable {
         "NoIdleSleepAssertion": "Preventing system sleep",
         "NoDisplaySleepAssertion": "Preventing display sleep",
         "PreventDiskIdle": "Keeping disks awake",
+        // Transient: WindowServer declares this on every HID event to reset
+        // the idle timer. It does not hold the Mac awake once input stops,
+        // but it surfaces on the menu's "held by" line whenever the user is
+        // moving the mouse. Tracked in ROADMAP.md ("Quieter held by line").
         "UserIsActive": "Declaring the user active",
         "BackgroundTask": "Holding off idle sleep for a background task",
     ]
