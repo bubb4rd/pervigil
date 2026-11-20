@@ -123,7 +123,7 @@ private final class FakeFallbackSleepWatchdog: SleepWatchdogLaunching, @unchecke
         flagPresent = false
         removeCalls += 1
     }
-    func startHelper(appPID: Int32) -> SleepSettingResult {
+    func startHelper(appPID: Int32, origin: PromptOrigin) -> SleepSettingResult {
         startCalls += 1
         return .applied
     }
@@ -132,10 +132,12 @@ private final class FakeFallbackSleepWatchdog: SleepWatchdogLaunching, @unchecke
 private final class FakeFallbackSleepControl: SleepSettingControlling, @unchecked Sendable {
     var reading: Bool? = false
     private(set) var writes: [Bool] = []
+    private(set) var origins: [PromptOrigin] = []
 
     func isSleepDisabled() -> Bool? { reading }
-    func setSleepDisabled(_ disabled: Bool) -> SleepSettingResult {
+    func setSleepDisabled(_ disabled: Bool, origin: PromptOrigin) -> SleepSettingResult {
         writes.append(disabled)
+        origins.append(origin)
         return .applied
     }
 }
@@ -153,7 +155,7 @@ private final class FakeFallbackSleepControl: SleepSettingControlling, @unchecke
 
     #expect(routed.createFlag())
     // "Starting the helper" is a version-checked ping: nothing spawns, no prompt.
-    #expect(routed.startHelper(appPID: 1) == .applied)
+    #expect(routed.startHelper(appPID: 1, origin: .automation) == .applied)
     #expect(routed.isFlagPresent())
     routed.removeFlag()
     #expect(!routed.isFlagPresent())
@@ -173,7 +175,7 @@ private final class FakeFallbackSleepControl: SleepSettingControlling, @unchecke
     )
 
     #expect(routed.createFlag())
-    #expect(routed.startHelper(appPID: 1) == .applied)
+    #expect(routed.startHelper(appPID: 1, origin: .userAction) == .applied)
     #expect(routed.isFlagPresent())
     routed.removeFlag()
 
@@ -242,13 +244,13 @@ private final class FakeFallbackSleepControl: SleepSettingControlling, @unchecke
     )
 
     #expect(routed.createFlag())
-    #expect(routed.startHelper(appPID: 1) == .started)
+    #expect(routed.startHelper(appPID: 1, origin: .automation) == .started)
     routed.removeFlag()
     #expect(client.calls == ["setAWDLHold(true)", "ping", "setAWDLHold(false)"])
 
     // A dead daemon surfaces as a failure, not a hang or a false start.
     client.pingSucceeds = false
-    #expect(routed.startHelper(appPID: 1) == .failed("The Pervigil helper isn't responding."))
+    #expect(routed.startHelper(appPID: 1, origin: .automation) == .failed("The Pervigil helper isn't responding."))
 }
 
 // MARK: - Sleep-setting routing
@@ -266,12 +268,12 @@ private final class FakeFallbackSleepControl: SleepSettingControlling, @unchecke
     fallback.reading = true
     #expect(routed.isSleepDisabled() == true)
 
-    #expect(routed.setSleepDisabled(true) == .applied)
+    #expect(routed.setSleepDisabled(true, origin: .automation) == .applied)
     #expect(client.calls == ["setSleepDisabled(true)"])
     #expect(fallback.writes.isEmpty)
 
     client.holdSucceeds = false
-    #expect(routed.setSleepDisabled(false) == .failed("The Pervigil helper couldn't change the setting."))
+    #expect(routed.setSleepDisabled(false, origin: .automation) == .failed("The Pervigil helper couldn't change the setting."))
 }
 
 @Test func routedSleepControlPromptsViaFallbackWhenHelperMissing() {
@@ -283,8 +285,10 @@ private final class FakeFallbackSleepControl: SleepSettingControlling, @unchecke
         helperInstalled: { false }
     )
 
-    #expect(routed.setSleepDisabled(true) == .applied)
+    #expect(routed.setSleepDisabled(true, origin: .userAction) == .applied)
     #expect(fallback.writes == [true])
+    // The caller's origin reaches the prompting backend untouched.
+    #expect(fallback.origins == [.userAction])
     #expect(client.calls.isEmpty)
 }
 

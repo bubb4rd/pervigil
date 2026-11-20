@@ -20,7 +20,7 @@ struct PanelGuardsSection: View {
                 ForEach(available, id: \.self) { tile in
                     GuardTile(
                         title: title(tile), value: value(tile), symbol: symbol(tile),
-                        isOn: isOn(tile), warning: tile == .battery && tiles.batteryWarning,
+                        isOn: isOn(tile), warning: warning(tile),
                         isOpen: open == tile,
                         toggle: { toggle(tile) },
                         toggleOptions: { withAnimation(.snappy(duration: 0.25)) { open = open == tile ? nil : tile } })
@@ -56,8 +56,17 @@ struct PanelGuardsSection: View {
         }
     }
 
+    private func warning(_ tile: Tile) -> Bool {
+        switch tile {
+        case .battery: tiles.batteryWarning
+        case .lid: tiles.lidNeedsHelper
+        case .display, .stayActive: false
+        }
+    }
+
     private func symbol(_ tile: Tile) -> String {
         switch tile {
+        case .lid where tiles.lidNeedsHelper: "lock"
         case .lid: model.machineHasBattery ? "laptopcomputer" : "moon.zzz"
         case .battery: "battery.50percent"
         case .display: "display"
@@ -76,6 +85,10 @@ struct PanelGuardsSection: View {
 
     private func toggle(_ tile: Tile) {
         switch tile {
+        case .lid where tiles.lidNeedsHelper:
+            // Turning it off is not what a lock asks for: open the drawer that
+            // says why and offers the two ways out.
+            withAnimation(.snappy(duration: 0.25)) { open = .lid }
         case .lid:
             if isOn(.lid) {
                 if model.closedDisplayOnlyWhileBrewing { model.closedDisplayOnlyWhileBrewing = false }
@@ -110,6 +123,9 @@ struct PanelGuardsSection: View {
 
     @ViewBuilder
     private var lidOptions: some View {
+        if model.closedLidNeedsHelper {
+            lidNeedsHelperNotice
+        }
         switchRow("Only while awake", isOn: Binding(
             get: { model.closedDisplayOnlyWhileBrewing },
             set: { model.closedDisplayOnlyWhileBrewing = $0 }
@@ -142,6 +158,35 @@ struct PanelGuardsSection: View {
             .font(.system(size: 11))
             .foregroundStyle(model.closedDisplayEnabled && model.machineHasBattery ? Color.panelAmberText : Color.secondary)
             .fixedSize(horizontal: false, vertical: true)
+    }
+
+    /// Without the helper, "Only while awake" would need a password prompt
+    /// with nobody necessarily at the keyboard, so it stands down instead.
+    /// The helper is the real fix; Allow Once is one prompt, now, from this
+    /// click, for the rest of the run.
+    @ViewBuilder
+    private var lidNeedsHelperNotice: some View {
+        Label {
+            Text(model.machineHasBattery
+                ? L("Following sessions needs the administrator helper. Without it, Pervigil won't ask for your password in the background, so the lid setting stays as it is.")
+                : L("Following sessions needs the administrator helper. Without it, Pervigil won't ask for your password in the background, so the sleep setting stays as it is."))
+                .foregroundStyle(.secondary)
+                .fixedSize(horizontal: false, vertical: true)
+        } icon: {
+            Image(systemName: "lock").foregroundStyle(.secondary)
+        }
+        .font(.system(size: 11))
+        HStack(spacing: 6) {
+            if model.helper.awaitingApproval {
+                Button("Open Login Items") { model.helper.openApprovalSettings() }
+            } else {
+                Button("Install Helper…") { model.installHelper() }
+            }
+            Button("Allow Once") { model.allowClosedLidOnce() }
+                .help(L("Asks for your password now. Lasts until Pervigil quits."))
+                .disabled(model.closedDisplayAutoBusy)
+        }
+        .controlSize(.small)
     }
 
     @ViewBuilder

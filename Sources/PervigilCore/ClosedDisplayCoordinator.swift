@@ -7,8 +7,13 @@ import Foundation
 /// never touches the system: the host samples a ``Conditions`` snapshot, hands
 /// it in, and runs the ``Action``s that come back. That keeps the delicate part
 /// testable without a running app, since the bugs here are all in the
-/// sequencing: edge detection, the once-per-run password prompt, and the
+/// sequencing: edge detection, the once-per-run "needs helper" notice, and the
 /// re-read latch that stops enforcement from acting on a stale setting.
+///
+/// Nothing this type asks for may show a password dialog on its own: without
+/// the helper, automation reports that it needs one (see
+/// ``AdminPromptPolicy``). Only ``enforce(_:allowPrompt:)`` called from a user
+/// action may lead to a prompt.
 ///
 /// The decision of whether a foreign hold should be cleared at all stays in
 /// ``ClosedDisplayAuthority``; this type decides *when* to ask, and remembers
@@ -36,6 +41,10 @@ public final class ClosedDisplayCoordinator {
         public var settingIsOn: Bool?
         /// Whether an administrator prompt for the setting is already on screen.
         public var settingIsBusy: Bool
+        /// Whether the user cancelled a fallback password prompt and hasn't
+        /// acted on the feature since (persisted across launches). Silences
+        /// the "needs helper" notice; the menu still shows the state.
+        public var fallbackDeclined: Bool
 
         public init(
             onlyWhileBrewing: Bool,
@@ -45,7 +54,8 @@ public final class ClosedDisplayCoordinator {
             automationAuthorized: Bool,
             automationFailed: Bool,
             settingIsOn: Bool?,
-            settingIsBusy: Bool
+            settingIsBusy: Bool,
+            fallbackDeclined: Bool = false
         ) {
             self.onlyWhileBrewing = onlyWhileBrewing
             self.brewing = brewing
@@ -55,14 +65,16 @@ public final class ClosedDisplayCoordinator {
             self.automationFailed = automationFailed
             self.settingIsOn = settingIsOn
             self.settingIsBusy = settingIsBusy
+            self.fallbackDeclined = fallbackDeclined
         }
     }
 
     /// A side effect for the host to run, in the order returned.
     public enum Action: Equatable, Sendable {
-        /// Session start with no authorization and no helper: the first engage
-        /// is about to prompt, so focus the app and say what the dialog is for.
-        case announceEngagePrompt
+        /// Session start with no authorization and no helper: the engage will
+        /// stand down rather than prompt, so tell the user (quietly, once per
+        /// app run) that the feature needs the helper or an "Allow once".
+        case surfaceNeedsAuthorization
         /// An engage failed with the helper installed, which should not happen:
         /// suspect a stale daemon registration and check it.
         case verifyHelper
@@ -72,10 +84,10 @@ public final class ClosedDisplayCoordinator {
         /// is in seconds and non-nil only where the helper needs a cycle to
         /// apply a change first.
         case refreshThenEnforce(delay: Int?)
-        /// Clear a hold taken outside the automation. `announce` asks for the
-        /// notification that must precede an otherwise unexplained password
-        /// dialog.
-        case clearForeignHold(announce: Bool)
+        /// Clear a hold taken outside the automation. `origin` is what the
+        /// write may do: a `.userAction` clear may prompt without the helper,
+        /// an `.automation` one only happens with the helper installed.
+        case clearForeignHold(origin: PromptOrigin)
     }
 
     /// Seconds to wait before mirroring an engage or release into the setting's
@@ -95,13 +107,12 @@ public final class ClosedDisplayCoordinator {
     /// Whether a foreign hold was already cleared, so a write that doesn't take
     /// (a failing helper, a cancelled prompt) isn't retried every second.
     private var clearedForeignHold = false
-    /// Whether the password prompt for such a clear was already shown this app
-    /// run, so a cancelled one isn't re-offered every second.
-    private var askedToClearForeignHold = false
+    /// Whether the "needs helper" notice was already sent this app run.
+    private var surfacedNeedsAuthorization = false
     /// Whether a re-read is still in flight. The setting's state is a cache, and
     /// acting on it between an engage/release and its re-read would enforce
-    /// against a stale value (and without the helper, spend this run's one
-    /// password prompt on a no-op).
+    /// against a stale value (and without the helper, ask the user for a
+    /// password to change nothing).
     private var refreshPending = false
     private var refreshGeneration = 0
     private var pollTicks = 0
@@ -121,8 +132,10 @@ public final class ClosedDisplayCoordinator {
         guard conditions.onlyWhileBrewing else { return [] }
         var actions: [Action] = []
         let brewing = conditions.brewing
-        if brewing, !sawBrewing, !conditions.automationAuthorized, !conditions.helperInstalled {
-            actions.append(.announceEngagePrompt)
+        if brewing, !sawBrewing, !surfacedNeedsAuthorization, !conditions.automationAuthorized,
+           !conditions.helperInstalled, !conditions.fallbackDeclined {
+            surfacedNeedsAuthorization = true
+            actions.append(.surfaceNeedsAuthorization)
         }
         sawBrewing = brewing
         // A session hands the setting back to the automation: let the next idle
@@ -157,9 +170,10 @@ public final class ClosedDisplayCoordinator {
     /// Enforce the feature's authority: with it on, idle means the sleep setting
     /// is off, even when the hold was taken outside the automation.
     ///
-    /// `allowPrompt` marks the paths where the user is already at the keyboard
-    /// answering dialogs, which need no notification first and don't spend the
-    /// run's one unattended prompt.
+    /// `allowPrompt` marks the paths where the user is at the keyboard,
+    /// having just acted on the feature: only those may clear without the
+    /// helper, since that clear needs a password prompt. Unattended, a foreign
+    /// hold without the helper is left alone.
     public func enforce(_ conditions: Conditions, allowPrompt: Bool = false) -> Action? {
         guard !conditions.settingIsBusy, !clearedForeignHold else { return nil }
         // Never act on a value a pending re-read is about to replace.
@@ -170,11 +184,10 @@ public final class ClosedDisplayCoordinator {
             brewing: conditions.brewing,
             automationHolding: conditions.automationHolding,
             settingIsOn: conditions.settingIsOn == true,
-            canApply: !needsPassword || allowPrompt || !askedToClearForeignHold
+            canApply: !needsPassword || allowPrompt
         ) else { return nil }
-        if needsPassword { askedToClearForeignHold = true }
         clearedForeignHold = true
-        return .clearForeignHold(announce: needsPassword && !allowPrompt)
+        return .clearForeignHold(origin: allowPrompt ? .userAction : .automation)
     }
 
     /// Claim the next re-read, latching enforcement out until it lands.

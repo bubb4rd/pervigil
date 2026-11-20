@@ -83,7 +83,7 @@ public protocol KeyboardLocking: AnyObject, Sendable {
 /// Real hidutil backend. `hidutil property --set` is the same mechanism some
 /// keyboard-cleaner utilities use; it needs no TCC prompt. On current macOS
 /// the set often requires root, so production lock goes through the helper
-/// or osascript rather than this class alone.
+/// or the admin prompt rather than this class alone.
 public final class HidutilKeyboardRemapper: KeyboardRemapping, @unchecked Sendable {
     private let runner: (String, [String]) -> String?
 
@@ -124,52 +124,41 @@ public final class HidutilKeyboardRemapper: KeyboardRemapping, @unchecked Sendab
     }
 }
 
-/// Privileged hidutil via osascript's "with administrator privileges". Blocks
-/// until the password dialog is answered. The JSON is embedded in the script
-/// as an AppleScript string literal (escaped), not staged in a user-writable
-/// temp file: a same-user process could otherwise swap that file between the
-/// write and root's read, turning the prompt into arbitrary root `hidutil`.
+/// Privileged hidutil through ``AdminPrompting``. Blocks until the password
+/// dialog is answered. The JSON is embedded in the command as one
+/// single-quoted shell word (then escaped into the AppleScript literal), not
+/// staged in a user-writable temp file: a same-user process could otherwise
+/// swap that file between the write and root's read, turning the prompt into
+/// arbitrary root `hidutil`.
 public enum OsascriptKeyboardRemapper: Sendable {
-    public static func apply(_ mapping: KeyboardKeyMapping) -> KeyboardLockResult {
-        let json = mapping.hidutilSetJSON()
-        // Single-line JSON, so escaping backslashes and quotes makes it a safe
-        // AppleScript literal; `quoted form of` then hands it to the shell as
-        // one untouchable argument.
-        let escaped = json
-            .replacingOccurrences(of: "\\", with: "\\\\")
-            .replacingOccurrences(of: "\"", with: "\\\"")
-        let script = """
-        do shell script "/usr/bin/hidutil property --set " & quoted form of "\(escaped)" with administrator privileges
-        """
-        guard let result = runOsascript(script) else { return .overlayOnly }
-        return outcome(status: result.status, stderr: result.stderr)
+    public static func apply(
+        _ mapping: KeyboardKeyMapping,
+        prompter: AdminPrompting,
+        origin: PromptOrigin
+    ) -> KeyboardLockResult {
+        outcome(prompter.runAsRoot(command(for: mapping), feature: .keyboardCleaner, origin: origin))
+    }
+
+    /// The root command for one mapping. Single-line JSON, so single-quoting
+    /// it makes it one untouchable shell argument.
+    static func command(for mapping: KeyboardKeyMapping) -> String {
+        "/usr/bin/hidutil property --set " + OsascriptAWDLWatchdog.shellSingleQuoted(mapping.hidutilSetJSON())
+    }
+
+    /// Maps a prompt outcome onto a lock result. A refused or failed prompt
+    /// falls back to the overlay, never to a second dialog.
+    public static func outcome(_ result: AdminPromptResult) -> KeyboardLockResult {
+        switch result {
+        case .succeeded: return .applied
+        case .cancelled: return .cancelled
+        case .refused, .launchFailed, .failed: return .overlayOnly
+        }
     }
 
     /// Maps osascript's exit and stderr onto a lock result. Factored so tests
     /// cover cancel (`-128`) without spawning SecurityAgent.
     public static func outcome(status: Int32, stderr: String) -> KeyboardLockResult {
-        if status == 0 { return .applied }
-        if stderr.contains("-128") || stderr.localizedCaseInsensitiveContains("cancel") {
-            return .cancelled
-        }
-        return .overlayOnly
-    }
-
-    private static func runOsascript(_ script: String) -> (status: Int32, stderr: String)? {
-        let process = Process()
-        process.executableURL = URL(fileURLWithPath: "/usr/bin/osascript")
-        process.arguments = ["-e", script]
-        process.standardOutput = FileHandle.nullDevice
-        let errPipe = Pipe()
-        process.standardError = errPipe
-        do {
-            try process.run()
-            let data = errPipe.fileHandleForReading.readDataToEndOfFile()
-            process.waitUntilExit()
-            return (process.terminationStatus, String(decoding: data, as: UTF8.self))
-        } catch {
-            return nil
-        }
+        outcome(OsascriptAdminPrompter.outcome(status: status, stderr: stderr))
     }
 }
 

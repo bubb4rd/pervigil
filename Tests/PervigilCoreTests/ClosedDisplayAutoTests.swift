@@ -134,8 +134,13 @@ private final class FakeSleepWatchdogLauncher: SleepWatchdogLaunching, @unchecke
     var createFlagSucceeds = true
     var removeClearsFlag = true
     var engageFailureMessage = "backend says no"
+    /// Stands in for "no helper daemon": starting needs a password prompt, so
+    /// an automation origin is refused the way ``AdminPromptPolicy`` refuses it.
+    var promptRequired = false
     /// Helper spawns, i.e. how often the user was asked for a password.
     var startCalls = 0
+    /// Starts refused because the origin may not prompt.
+    var refusedCalls = 0
 
     func isFlagPresent() -> Bool { flagPresent }
     func createFlag() -> Bool {
@@ -146,7 +151,11 @@ private final class FakeSleepWatchdogLauncher: SleepWatchdogLaunching, @unchecke
     func removeFlag() {
         if removeClearsFlag { flagPresent = false }
     }
-    func startHelper(appPID: Int32) -> SleepSettingResult {
+    func startHelper(appPID: Int32, origin: PromptOrigin) -> SleepSettingResult {
+        if promptRequired, !AdminPromptPolicy.allows(origin) {
+            refusedCalls += 1
+            return .needsAuthorization
+        }
         startCalls += 1
         return result
     }
@@ -250,27 +259,69 @@ private final class FakeSleepWatchdogLauncher: SleepWatchdogLaunching, @unchecke
 }
 
 @MainActor
-@Test func aCancelledPromptHoldsOffUntilTheSessionEnds() async {
+@Test func automationNeverPromptsWithoutAuthorization() async {
+    // No helper and nothing authorized this run: a session start must not
+    // spring a password dialog. The automation stands down and says so.
     let launcher = FakeSleepWatchdogLauncher()
-    launcher.result = .cancelled
+    launcher.promptRequired = true
     let controller = ClosedDisplayAutoController(launcher: launcher, appPID: 1)
     controller.onlyWhileBrewing = true
 
     await controller.autoTick(brewing: true)
     await controller.autoTick(brewing: true)
-    #expect(launcher.startCalls == 1) // cancelled once, not nagged again
-    #expect(!launcher.flagPresent)    // no flag left for a later helper to obey
+    #expect(launcher.startCalls == 0)
+    #expect(launcher.refusedCalls == 1) // held off, not re-tried every tick
+    #expect(controller.needsAuthorization)
+    #expect(controller.lastError == nil) // a state to act on, not an error
+    #expect(!controller.isHolding)
+    #expect(!launcher.flagPresent)      // no flag left for a later helper to obey
 
-    // A new session may ask once more.
+    // A new session still doesn't prompt.
     await controller.autoTick(brewing: false)
-    launcher.result = .applied
     await controller.autoTick(brewing: true)
-    #expect(launcher.startCalls == 2)
-    #expect(controller.isHolding)
+    #expect(launcher.startCalls == 0)
+    #expect(controller.needsAuthorization)
 }
 
 @MainActor
-@Test func closedDisplayAutoSurfacesFailuresButNotCancellations() async {
+@Test func allowOnceAuthorizesTheRunAndTheSessionTakesItsHold() async {
+    // "Allow once" is a user action: one prompt, then the session standing
+    // down mid-brew takes its hold on the next tick, prompt-free.
+    let launcher = FakeSleepWatchdogLauncher()
+    launcher.promptRequired = true
+    let controller = ClosedDisplayAutoController(launcher: launcher, appPID: 1)
+    controller.onlyWhileBrewing = true
+    await controller.autoTick(brewing: true)
+    #expect(controller.needsAuthorization)
+
+    #expect(await controller.prime() == .applied)
+    #expect(launcher.startCalls == 1)
+    #expect(!controller.needsAuthorization)
+    await controller.autoTick(brewing: true)
+    #expect(controller.isHolding)
+    #expect(launcher.startCalls == 1)
+}
+
+@MainActor
+@Test func aCancelledAllowOnceLeavesTheAutomationQuiet() async {
+    let launcher = FakeSleepWatchdogLauncher()
+    launcher.promptRequired = true
+    launcher.result = .cancelled
+    let controller = ClosedDisplayAutoController(launcher: launcher, appPID: 1)
+    controller.onlyWhileBrewing = true
+
+    #expect(await controller.prime() == .cancelled)
+    #expect(launcher.startCalls == 1)
+    #expect(!controller.isAuthorized)
+    #expect(controller.lastError == nil)
+    await controller.autoTick(brewing: true)
+    await controller.autoTick(brewing: false)
+    await controller.autoTick(brewing: true)
+    #expect(launcher.startCalls == 1) // no prompt from automation, ever
+}
+
+@MainActor
+@Test func closedDisplayAutoSurfacesFailuresButNotMissingAuthorization() async {
     let launcher = FakeSleepWatchdogLauncher()
     launcher.result = .failed("no admin rights")
     let controller = ClosedDisplayAutoController(launcher: launcher, appPID: 1)
@@ -280,10 +331,11 @@ private final class FakeSleepWatchdogLauncher: SleepWatchdogLaunching, @unchecke
     #expect(controller.lastError == "no admin rights")
     #expect(!controller.isHolding)
 
-    launcher.result = .cancelled
+    launcher.promptRequired = true
     await controller.autoTick(brewing: false)
     await controller.autoTick(brewing: true)
     #expect(controller.lastError == nil)
+    #expect(controller.needsAuthorization)
     #expect(!controller.isHolding)
 }
 
@@ -302,28 +354,22 @@ private final class FakeSleepWatchdogLauncher: SleepWatchdogLaunching, @unchecke
 }
 
 @MainActor
-@Test func retryEngageLeavesACancelledPromptAlone() async {
-    // The user dismissed the password dialog. A helper check that later comes
-    // back healthy must not turn that "no" into a fresh prompt mid-session.
+@Test func installingTheHelperMidSessionTakesTheHold() async {
+    // The session stood down for want of a password. Once the helper is
+    // installed, the host's retryEngage lets the next tick take the hold
+    // silently, without waiting for the session to end.
     let launcher = FakeSleepWatchdogLauncher()
-    launcher.result = .cancelled
+    launcher.promptRequired = true
     let controller = ClosedDisplayAutoController(launcher: launcher, appPID: 1)
     controller.onlyWhileBrewing = true
-
     await controller.autoTick(brewing: true)
-    #expect(!controller.isHolding)
-    #expect(launcher.startCalls == 1)
+    #expect(controller.needsAuthorization)
 
-    launcher.result = .applied
+    launcher.promptRequired = false // helper installed: starting is a ping
     controller.retryEngage()
     await controller.autoTick(brewing: true)
-    #expect(!controller.isHolding)
-    #expect(launcher.startCalls == 1) // no second prompt
-
-    // The session ending clears it, as it always did.
-    await controller.autoTick(brewing: false)
-    await controller.autoTick(brewing: true)
     #expect(controller.isHolding)
+    #expect(!controller.needsAuthorization)
 }
 
 @MainActor
@@ -429,8 +475,8 @@ private final class FakeSleepWatchdogLauncher: SleepWatchdogLaunching, @unchecke
 }
 
 @Test func noWayToWriteMeansNoClear() {
-    // The host has already spent its one password prompt for this app run and
-    // has no helper daemon to write silently: nothing to do until it can.
+    // No helper daemon to write silently and no user action to justify a
+    // password prompt: nothing to do until one of those changes.
     #expect(!ClosedDisplayAuthority.shouldClearForeignHold(
         onlyWhileBrewing: true, brewing: false, automationHolding: false,
         settingIsOn: true, canApply: false

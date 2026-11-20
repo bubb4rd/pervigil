@@ -131,10 +131,15 @@ final class AppModel {
         let helperInstalled: @Sendable () -> Bool = { [availability = helperManager.availability] in
             availability.isEnabled
         }
+        // Every fallback admin prompt goes through this one prompter, which
+        // refuses automation outright (see ``AdminPromptPolicy``) and logs
+        // each attempt so a bug report shows what asked and when. Dev and QA
+        // runs can switch prompts off entirely.
+        let prompter = Self.makeAdminPrompter()
         self.closedDisplay = ClosedDisplayController(
             control: RoutedSleepControl(
                 helper: helperClient,
-                fallback: PMSetSleepControl(),
+                fallback: PMSetSleepControl(prompter: prompter),
                 helperInstalled: helperInstalled
             ),
             brightness: brightnessBackend
@@ -142,14 +147,14 @@ final class AppModel {
         self.closedDisplayAuto = ClosedDisplayAutoController(
             launcher: RoutedSleepWatchdog(
                 daemon: HelperDaemonSleepWatchdog(helper: helperClient),
-                fallback: OsascriptSleepWatchdog(),
+                fallback: OsascriptSleepWatchdog(prompter: prompter),
                 helperInstalled: helperInstalled
             )
         )
         self.awdl = AWDLWatchdogController(
             launcher: RoutedAWDLWatchdog(
                 daemon: HelperDaemonAWDLWatchdog(helper: helperClient),
-                fallback: OsascriptAWDLWatchdog(),
+                fallback: OsascriptAWDLWatchdog(prompter: prompter),
                 helperInstalled: helperInstalled
             )
         )
@@ -159,11 +164,15 @@ final class AppModel {
                 marker: FileKeyboardLockMarker(),
                 helper: helperClient,
                 helperAvailable: helperInstalled,
-                privilegedApply: { OsascriptKeyboardRemapper.apply($0) }
+                // Lock and unlock are always the user's own click.
+                privilegedApply: { OsascriptKeyboardRemapper.apply($0, prompter: prompter, origin: .userAction) }
             )
         )
         var loaded = store.load()
-            .withFreshInstallDefaults(hasStoredSettings: store.hasStoredSettings)
+            .withFreshInstallDefaults(
+                hasStoredSettings: store.hasStoredSettings,
+                helperInstalled: helperManager.isInstalled
+            )
         if !store.hasStoredSettings {
             // Fresh install: persist the first-launch defaults now, before
             // anything reads them back. Existing blobs are never rewritten
@@ -230,11 +239,10 @@ final class AppModel {
             self.recordForStats(persisted)
         }
         // With one of the auto features on and no helper installed, this run
-        // can hit a password prompt in the background (e.g. a trigger-started
-        // session engaging "Only while brewing"). Its "Pervigil needs your
-        // password" notification only shows if we're authorized to post it, so
-        // secure that now rather than in the same instant the prompt appears.
-        // A no-op once the user has decided either way.
+        // may need to say that the feature is waiting for the helper (the
+        // automation itself never prompts). That notice only shows if we're
+        // authorized to post it, so secure that now. A no-op once the user
+        // has decided either way.
         if !helperManager.isInstalled,
            loaded.closedDisplayOnlyWhileBrewing || loaded.awdlAutoWithGaming {
             notifier.requestAuthorization()
@@ -3238,7 +3246,10 @@ final class AppModel {
     /// After the prompt, the window that owned the toggle is ordered front
     /// again (Welcome, Preferences, …); SecurityAgent otherwise leaves it
     /// buried under every other app.
-    func setClosedDisplay(_ on: Bool, userInitiated: Bool = true) {
+    func setClosedDisplay(_ on: Bool, userInitiated: Bool = true, origin: PromptOrigin? = nil) {
+        // Who is asking decides whether a password prompt may appear: a click
+        // may, automation (safety lifts, foreign-hold clears) never may.
+        let origin = origin ?? (userInitiated ? .userAction : .automation)
         // A user toggling closed-display during a thermal or battery pause has
         // taken over the intent: cancel any pending "restore when safe" so
         // recovery doesn't silently turn it back on against their choice. The
@@ -3248,14 +3259,12 @@ final class AppModel {
             thermalLiftedClosedDisplay = false
             batteryLiftedClosedDisplay = false
         }
-        // Without the helper the write goes through osascript, which shows the
-        // password sheet whoever asked for it. `ClosedDisplayCoordinator`'s
-        // foreign-hold clear runs with `userInitiated: false` and still
-        // prompts, so gate the dance on the helper, not on the caller. The
-        // safety lift/restore paths only call here with the helper installed.
-        let needsAuthDance = !helperInstalled
+        // Without the helper a user-action write shows the password sheet;
+        // an automation one is refused before any dialog. The safety
+        // lift/restore paths only call here with the helper installed.
+        let needsAuthDance = !helperInstalled && origin == .userAction
         runAfterPossibleAuthPrompt(needsPrompt: needsAuthDance) {
-            _ = await self.closedDisplay.set(on)
+            _ = await self.closedDisplay.set(on, origin: origin)
             // A failure through the installed helper points at a stale daemon
             // registration: check and repair it (dedupes, once per run).
             if self.closedDisplay.lastError != nil, self.helperInstalled {
@@ -3355,7 +3364,8 @@ final class AppModel {
                 sound: true
             )
         }
-        let result = await closedDisplay.set(false)
+        // The user pressed "Turn off and quit": their action, so it may prompt.
+        let result = await closedDisplay.set(false, origin: .userAction)
         if case .failed(let message) = result {
             NSLog("Pervigil: quit-time sleep restore failed: %@", message)
         }
@@ -3408,14 +3418,16 @@ final class AppModel {
     /// Whether closed-display mode follows the session instead of staying on
     /// until manually turned off (see
     /// ``ClosedDisplayAutoController/onlyWhileBrewing``). Persisted. Turning it
-    /// on pre-authorizes the root helper now, in this window, so the next
-    /// session start doesn't pop a password dialog out of nowhere. One prompt
+    /// on without the helper pre-authorizes the fallback now, in this window,
+    /// for this app run (the automation never prompts on its own). One prompt
     /// here, prompt-free automation afterward. No-op if already authorized.
     var closedDisplayOnlyWhileBrewing: Bool {
         get { settings.closedDisplayOnlyWhileBrewing }
         set {
             settings.closedDisplayOnlyWhileBrewing = newValue
             closedDisplayAuto.onlyWhileBrewing = newValue
+            // Acting on the feature again lifts an earlier "no" to the password.
+            if newValue { settings.closedLidFallbackDeclined = false }
             persist()
             // Priming exists to front-load the fallback's password prompt into
             // this window; with the helper installed no engage ever prompts,
@@ -3427,7 +3439,7 @@ final class AppModel {
                 // able to say so even behind other windows.
                 notifier.requestAuthorization()
                 runAfterPossibleAuthPrompt(needsPrompt: true) {
-                    await self.closedDisplayAuto.prime()
+                    self.recordClosedLidFallbackAnswer(await self.closedDisplayAuto.prime())
                     // The user is right here answering prompts, so this is the
                     // one moment a fallback clear may ask for the password.
                     // Priming flips the real setting on and off, so re-read it
@@ -3477,10 +3489,55 @@ final class AppModel {
     /// True while the automation's administrator prompt is on screen.
     var closedDisplayAutoBusy: Bool { closedDisplayAuto.isBusy }
 
+    /// "Only while awake" is on but can't act: no helper, and no user action
+    /// has authorized the password fallback this run. The automation never
+    /// prompts on its own, so the menu shows "Needs helper" with the two ways
+    /// out (``installHelper()`` or ``allowClosedLidOnce()``).
+    var closedLidNeedsHelper: Bool {
+        settings.closedDisplayOnlyWhileBrewing && !helperInstalled && !closedDisplayAuto.isAuthorized
+    }
+
+    /// The "Allow once" choice on the Needs helper state: one password prompt
+    /// now, from this click, covering the rest of this app run. A cancel is
+    /// remembered across launches so the "needs helper" notice stops.
+    func allowClosedLidOnce() {
+        guard !closedDisplayAuto.isBusy else { return }
+        settings.closedLidFallbackDeclined = false
+        persist()
+        runAfterPossibleAuthPrompt(needsPrompt: !helperInstalled) {
+            self.recordClosedLidFallbackAnswer(await self.closedDisplayAuto.prime())
+            self.refreshThenEnforceClosedDisplay(allowPrompt: true)
+        }
+    }
+
+    /// Persist the user's answer to the fallback prompt: a cancel stands
+    /// until they act on the feature again, an approval clears it.
+    private func recordClosedLidFallbackAnswer(_ result: SleepSettingResult) {
+        let declined = result == .cancelled
+        guard settings.closedLidFallbackDeclined != declined else { return }
+        settings.closedLidFallbackDeclined = declined
+        persist()
+    }
+
+    /// The prompter every fallback admin path shares. Logs each attempt
+    /// (refusals included) with its feature and origin.
+    nonisolated private static func makeAdminPrompter() -> AdminPrompting {
+        let log: @Sendable (AdminPromptRecord) -> Void = { record in
+            NSLog("Pervigil: admin prompt %@ for %@ (%@)",
+                  String(describing: record.result), record.feature.rawValue, record.origin.rawValue)
+        }
+        if DisabledAdminPrompter.isRequested() {
+            NSLog("Pervigil: privileged prompts are disabled for this run (PervigilDisablePrivileged).")
+            return DisabledAdminPrompter(observer: log)
+        }
+        return OsascriptAdminPrompter(observer: log)
+    }
+
     /// Sequencer for the "only while brewing" automation. It owns the edge
     /// detection and latches; this model only samples the inputs and runs the
     /// side effects it asks for.
     @ObservationIgnored private let closedDisplayCoordinator = ClosedDisplayCoordinator()
+    @ObservationIgnored private var sawHelperInstalled = false
 
     /// The coordinator's view of the world, sampled fresh at each decision.
     private var closedDisplayConditions: ClosedDisplayCoordinator.Conditions {
@@ -3492,7 +3549,8 @@ final class AppModel {
             automationAuthorized: closedDisplayAuto.isAuthorized,
             automationFailed: closedDisplayAuto.lastError != nil,
             settingIsOn: closedDisplay.isEnabled,
-            settingIsBusy: closedDisplay.isBusy
+            settingIsBusy: closedDisplay.isBusy,
+            fallbackDeclined: settings.closedLidFallbackDeclined
         )
     }
 
@@ -3500,18 +3558,14 @@ final class AppModel {
     /// system lives here; everything that decides lives in the coordinator.
     private func perform(_ action: ClosedDisplayCoordinator.Action) {
         switch action {
-        case .announceEngagePrompt:
-            // Without the helper, the first engage of an app run prompts for the
-            // password (e.g. auto mode was enabled in a previous run): become the
-            // active app so the dialog is focused (same reason as
-            // ``setClosedDisplay(_:)``), and say what's happening in a
-            // notification, since the dialog itself is easy to miss and names
-            // "osascript", not Pervigil.
-            NSApp.activate(ignoringOtherApps: true)
+        case .surfaceNeedsAuthorization:
+            // The session wanted the hold, but without the helper taking it
+            // needs a password, and automation never asks. Say so once, quietly:
+            // no sound, no focus steal. The menu tile carries the fix.
             notifier.notify(
-                title: L("Pervigil needs your password"),
-                body: L("Enter your administrator password to switch closed-display mode on for this session."),
-                sound: true
+                title: machineHasBattery ? L("Closed Lid needs the helper") : L("Never Sleep needs the helper"),
+                body: L("Install the administrator helper to follow sessions automatically, or choose Allow Once in the Pervigil menu."),
+                sound: false
             )
         case .verifyHelper:
             verifyHelper()
@@ -3519,19 +3573,10 @@ final class AppModel {
             Task { await closedDisplayAuto.autoTick(brewing: brewing) }
         case .refreshThenEnforce(let delay):
             refreshThenEnforceClosedDisplay(after: delay.map { .seconds($0) })
-        case .clearForeignHold(let announce):
-            if announce {
-                // Never a password dialog out of nowhere: say what it is for
-                // first (the dialog itself names "osascript", not Pervigil).
-                notifier.notify(
-                    title: L("Pervigil needs your password"),
-                    body: machineHasBattery
-                        ? L("No session is running, so closed-display mode should be off. Enter your administrator password to switch it off.")
-                        : L("No session is running, so the sleep override should be off. Enter your administrator password to switch it off."),
-                    sound: true
-                )
-            }
-            setClosedDisplay(false, userInitiated: false)
+        case .clearForeignHold(let origin):
+            // Unattended clears only happen with the helper (silent); a
+            // user-action one may show the password sheet.
+            setClosedDisplay(false, userInitiated: false, origin: origin)
         }
     }
 
@@ -3565,6 +3610,14 @@ final class AppModel {
     /// Once-a-second pulse for closed-display mode's "only while brewing"
     /// automation.
     func closedDisplayAutoTick() {
+        // The helper just became available (installed or approved): features
+        // standing down for want of a password may act now, mid-session.
+        let installed = helperInstalled
+        if installed, !sawHelperInstalled {
+            closedDisplayAuto.retryEngage()
+            awdl.retryEngage()
+        }
+        sawHelperInstalled = installed
         for action in closedDisplayCoordinator.tick(closedDisplayConditions) {
             perform(action)
         }
@@ -3728,7 +3781,7 @@ final class AppModel {
         let dance = on && !helperInstalled && !awdl.isAuthorized
         runAfterPossibleAuthPrompt(needsPrompt: dance) {
             if on {
-                await self.awdl.start()
+                await self.awdl.start(origin: .userAction)
                 // Same stale-registration suspicion as ``setClosedDisplay(_:)``.
                 if self.awdl.lastError != nil, self.helperInstalled {
                     self.verifyHelper()
@@ -3790,7 +3843,8 @@ final class AppModel {
     }
 
     /// Whether auto mode posts a notification when it pauses (a game is detected)
-    /// and resumes AWDL. A password-required notice is always sent regardless.
+    /// and resumes AWDL. The once-per-run "needs the helper" notice is sent
+    /// regardless.
     var awdlNotifications: Bool {
         get { settings.awdlNotifications }
         set {
@@ -3801,6 +3855,8 @@ final class AppModel {
     }
 
     @ObservationIgnored private var wasGameInFront = false
+    /// Whether this run already said auto AWDL is waiting for the helper.
+    @ObservationIgnored private var awdlNeedsHelperNoticeSent = false
     @ObservationIgnored private var wasGamingActive = false
     @ObservationIgnored private var sawAWDLError = false
 
@@ -3880,17 +3936,20 @@ final class AppModel {
     }
 
     /// Fire AWDL notifications on the game-detected and game-ended edges. The
-    /// password-required notice always fires (it may land behind a fullscreen
-    /// game, where the in-window explanation can't be seen); the pause/resume
-    /// notices are gated by ``awdlNotifications``.
+    /// "needs the helper" notice fires once per run regardless (it may land
+    /// behind a fullscreen game, where the in-window explanation can't be
+    /// seen); the pause/resume notices are gated by ``awdlNotifications``.
     private func notifyAWDLEdges(gameInFront: Bool, gamingActive: Bool) {
         defer { wasGameInFront = gameInFront; wasGamingActive = gamingActive }
         if gameInFront, !wasGameInFront {
-            if !awdl.isAuthorized, !awdl.isRunning, !helperInstalled {
+            if !awdl.isAuthorized, !awdl.isRunning, !helperInstalled, !awdlNeedsHelperNoticeSent {
+                // Auto mode never prompts over a game. Say once per run that it
+                // is standing down, quietly, since it may land mid-match.
+                awdlNeedsHelperNoticeSent = true
                 notifier.notify(
-                    title: L("Pervigil needs your password"),
-                    body: L("Enter your administrator password to pause AWDL for this game."),
-                    sound: true
+                    title: L("AWDL pause needs the helper"),
+                    body: L("Install the administrator helper to pause AWDL automatically while you play, or turn the pause on by hand in Gaming & Streaming."),
+                    sound: false
                 )
             }
             if settings.awdlNotifications {

@@ -6,9 +6,9 @@ import Observation
 /// setting on whenever a user-owned flag file exists.
 ///
 /// Same privilege design as ``AWDLWatchdogLaunching``: the first activation
-/// spawns the helper (ONE administrator prompt per app run); after that,
-/// following the session on and off is just creating and deleting the flag
-/// file, no prompts. The helper watches the app's pid, so an app crash or
+/// spawns the helper (ONE administrator prompt per app run, and only from a
+/// user action, see ``AdminPromptPolicy``); after that, following the session
+/// on and off is just creating and deleting the flag file, no prompts. The helper watches the app's pid, so an app crash or
 /// quit restores normal sleep on its own; the manual
 /// ``SleepSettingControlling`` path deliberately has no such teardown (the
 /// global toggle is meant to outlive the app).
@@ -23,7 +23,9 @@ public protocol SleepWatchdogLaunching: AnyObject, Sendable {
     func removeFlag()
     /// Spawn the root helper loop. Blocking: it waits for the user to answer
     /// the administrator prompt. Called once per app run, on first activation.
-    func startHelper(appPID: Int32) -> SleepSettingResult
+    /// An `.automation` origin never prompts: a backend that would need one
+    /// returns ``SleepSettingResult/needsAuthorization`` instead.
+    func startHelper(appPID: Int32, origin: PromptOrigin) -> SleepSettingResult
     /// Message to surface when ``createFlag()`` fails, naming what actually
     /// failed in this backend (a file write here, an XPC call in the daemon).
     var engageFailureMessage: String { get }
@@ -36,19 +38,22 @@ extension SleepWatchdogLaunching {
 }
 
 /// Real backend: the flag lives in Application Support, and the loop is
-/// spawned as root via `osascript`'s "with administrator privileges" (the same
-/// admin seam ``PMSetSleepControl`` and ``OsascriptAWDLWatchdog`` use),
-/// backgrounded so the prompt returns as soon as the loop is running.
+/// spawned as root through ``AdminPrompting`` (the same admin seam
+/// ``PMSetSleepControl`` and ``OsascriptAWDLWatchdog`` use), backgrounded so
+/// the prompt returns as soon as the loop is running.
 public final class OsascriptSleepWatchdog: SleepWatchdogLaunching {
     private let flagURL: URL
     private let ownerPID: Int32
+    private let prompter: AdminPrompting
 
     public init(
         flagURL: URL = OsascriptSleepWatchdog.defaultFlagURL,
-        ownerPID: Int32 = ProcessInfo.processInfo.processIdentifier
+        ownerPID: Int32 = ProcessInfo.processInfo.processIdentifier,
+        prompter: AdminPrompting = OsascriptAdminPrompter()
     ) {
         self.flagURL = flagURL
         self.ownerPID = ownerPID
+        self.prompter = prompter
     }
 
     public static var defaultFlagURL: URL {
@@ -63,19 +68,16 @@ public final class OsascriptSleepWatchdog: SleepWatchdogLaunching {
 
     public func removeFlag() { flag.remove() }
 
-    public func startHelper(appPID: Int32) -> SleepSettingResult {
+    public func startHelper(appPID: Int32, origin: PromptOrigin) -> SleepSettingResult {
         let command = Self.watchdogCommand(flagPath: flagURL.path, appPID: appPID)
-        let script = "do shell script \"\(OsascriptAWDLWatchdog.appleScriptEscaped(command))\" with administrator privileges"
-        guard let result = runForResult("/usr/bin/osascript", ["-e", script]) else {
-            return .failed(L("Couldn't run the sleep watchdog command."))
+        switch prompter.runAsRoot(command, feature: .sleepWatchdog, origin: origin) {
+        case .succeeded: return .applied
+        case .cancelled: return .cancelled
+        case .refused: return .needsAuthorization
+        case .launchFailed: return .failed(L("Couldn't run the sleep watchdog command."))
+        case .failed(let message):
+            return .failed(message.isEmpty ? L("The sleep watchdog couldn't be started.") : message)
         }
-        if result.status == 0 { return .applied }
-        // osascript reports a user-cancelled auth prompt as error -128.
-        if result.stderr.contains("-128") || result.stderr.localizedCaseInsensitiveContains("cancel") {
-            return .cancelled
-        }
-        let message = result.stderr.trimmingCharacters(in: .whitespacesAndNewlines)
-        return .failed(message.isEmpty ? L("The sleep watchdog couldn't be started.") : message)
     }
 
     /// The root helper, backgrounded so `do shell script` returns immediately.
@@ -102,25 +104,6 @@ public final class OsascriptSleepWatchdog: SleepWatchdogLaunching {
             + OsascriptAWDLWatchdog.removeOwnedFlagClause(flag: flag, appPID: appPID)
             + "if [ -n \"$SET\" ]; then /usr/bin/pmset -a disablesleep 0; fi ) </dev/null >/dev/null 2>&1 &"
     }
-
-    /// Run a command and return its exit status plus stderr, or `nil` if it
-    /// couldn't be launched. Mirrors ``PMSetSleepControl``'s helper.
-    private func runForResult(_ path: String, _ arguments: [String]) -> (status: Int32, stderr: String)? {
-        let process = Process()
-        process.executableURL = URL(fileURLWithPath: path)
-        process.arguments = arguments
-        process.standardOutput = FileHandle.nullDevice
-        let errPipe = Pipe()
-        process.standardError = errPipe
-        do {
-            try process.run()
-            let data = errPipe.fileHandleForReading.readDataToEndOfFile()
-            process.waitUntilExit()
-            return (process.terminationStatus, String(decoding: data, as: UTF8.self))
-        } catch {
-            return nil
-        }
-    }
 }
 
 /// Decides when the "only while brewing" automation has to clear a
@@ -136,8 +119,8 @@ public final class OsascriptSleepWatchdog: SleepWatchdogLaunching {
 /// tick clears it instead.
 ///
 /// `canApply` is the host's answer to "is there a way to write the setting
-/// right now": silent through the helper daemon, or a password prompt the host
-/// is willing to show (announced, and at most once per app run).
+/// right now": silent through the helper daemon, or a password prompt from a
+/// user action. Automation alone never prompts (see ``AdminPromptPolicy``).
 public enum ClosedDisplayAuthority {
     public static func shouldClearForeignHold(
         onlyWhileBrewing: Bool,
@@ -236,8 +219,11 @@ public enum QuitSleepCheck {
 /// second with the session's live state. All flips go through the root helper
 /// (see ``SleepWatchdogLaunching``), never through the per-flip admin prompt
 /// of ``SleepSettingControlling``, so after the one authorization the
-/// automation is prompt-free. `@MainActor` like the other controllers; the
-/// blocking admin prompt and file touches run on detached tasks.
+/// automation is prompt-free. The tick itself never prompts: without the
+/// helper daemon and before a user action authorized the fallback this run,
+/// it stands down and raises ``needsAuthorization`` instead. `@MainActor` like
+/// the other controllers; the blocking admin prompt and file touches run on
+/// detached tasks.
 @MainActor
 @Observable
 public final class ClosedDisplayAutoController {
@@ -253,20 +239,25 @@ public final class ClosedDisplayAutoController {
     /// and a second toggle can't stack another prompt.
     public private(set) var isBusy = false
 
+    /// True when a session wanted the hold but taking it would have needed an
+    /// administrator prompt the automation may not show. Cleared by the next
+    /// successful engage. The host shows a "Needs helper" state for it.
+    public private(set) var needsAuthorization = false
+
     /// When on, `disablesleep` follows the session. The host persists this
     /// and mirrors it in.
     public var onlyWhileBrewing = false
 
-    /// Why auto mode is standing down, so the prompt doesn't re-appear every
+    /// Why auto mode is standing down, so the engage doesn't re-run every
     /// tick. Cleared when the current session ends.
     private enum HoldOff {
         case none
         /// An engage that failed on its own (a helper that was not answering).
         /// Worth trying again once the helper is healthy, see ``retryEngage()``.
         case failure
-        /// The user cancelled the password prompt. Their answer stands for the
-        /// rest of the session.
-        case user
+        /// The engage needed a password prompt the automation may not show.
+        /// Lifts on ``allowOnce()`` or once the helper is installed.
+        case needsAuthorization
     }
     private var holdOff: HoldOff = .none
 
@@ -299,15 +290,20 @@ public final class ClosedDisplayAutoController {
     }
 
     /// Pre-authorize the helper without touching the sleep setting: spawn it
-    /// (one prompt now, in whatever context the caller chose, typically the
-    /// Preferences toggle) then immediately drop the flag. After this, the
-    /// engage at the next session start is a prompt-free flag write. No-op
-    /// (and no prompt) once already authorized.
+    /// (one prompt now, from the user action that called this: the
+    /// Preferences toggle, or "Allow once" on the Needs helper state) then
+    /// immediately drop the flag. After this, engaging is a prompt-free flag
+    /// write for the rest of the app run, and a session that was standing
+    /// down takes its hold on the next tick. No-op (and no prompt) once
+    /// already authorized.
     @discardableResult
     public func prime() async -> SleepSettingResult {
         guard !helperStarted, !isBusy else { return .applied }
-        let result = await engage()
-        if case .applied = result { await release() }
+        let result = await engage(origin: .userAction)
+        if case .applied = result {
+            await release()
+            holdOff = .none
+        }
         return result
     }
 
@@ -318,16 +314,15 @@ public final class ClosedDisplayAutoController {
     }
 
     /// Let the next tick try engaging again. For after an external fix (the
-    /// helper daemon's registration was repaired); without this a failed
-    /// engage stays held off until the session ends. A cancelled prompt is
-    /// left alone: recovering the helper is not permission to ask again.
+    /// helper daemon was installed or its registration repaired); without
+    /// this a held-off engage stays held off until the session ends.
     public func retryEngage() {
-        if holdOff == .failure { holdOff = .none }
+        if holdOff != .none { holdOff = .none }
     }
 
-    /// The once-a-second pulse. Engages while a session is active (one prompt
-    /// on the first engage of an app run; a cancel holds off until the session
-    /// ends) and releases when it stops.
+    /// The once-a-second pulse. Engages while a session is active and releases
+    /// when it stops. Never prompts: an engage that would need a password
+    /// stands down with ``needsAuthorization`` set.
     public func autoTick(brewing: Bool) async {
         guard onlyWhileBrewing else { return }
         if brewing {
@@ -337,12 +332,12 @@ public final class ClosedDisplayAutoController {
             // on: drop the latch so this tick takes the hold again.
             if isHolding, !isBusy, !launcher.isFlagPresent() { isHolding = false }
             guard !isHolding, !isBusy, holdOff == .none else { return }
-            switch await engage() {
+            switch await engage(origin: .automation) {
             case .applied:
                 break
-            case .cancelled:
-                holdOff = .user
-            case .failed:
+            case .needsAuthorization:
+                holdOff = .needsAuthorization
+            case .cancelled, .failed:
                 holdOff = .failure
             }
         } else {
@@ -354,10 +349,10 @@ public final class ClosedDisplayAutoController {
     }
 
     /// Disable sleep via the helper. The first call of this app run spawns the
-    /// root helper (one administrator prompt); later ones just recreate the
-    /// flag, instantly and prompt-free.
+    /// root helper (one administrator prompt, user actions only); later ones
+    /// just recreate the flag, instantly and prompt-free.
     @discardableResult
-    private func engage() async -> SleepSettingResult {
+    private func engage(origin: PromptOrigin) async -> SleepSettingResult {
         guard !isBusy else { return .cancelled }
         isBusy = true
         defer { isBusy = false }
@@ -374,14 +369,16 @@ public final class ClosedDisplayAutoController {
             return .applied
         }
         let pid = self.appPID
-        let result = await Task.detached { launcher.startHelper(appPID: pid) }.value
+        let result = await Task.detached { launcher.startHelper(appPID: pid, origin: origin) }.value
         switch result {
         case .applied:
             lastError = nil
             isHolding = true
             helperStarted = true
-        case .cancelled:
+            needsAuthorization = false
+        case .cancelled, .needsAuthorization:
             lastError = nil
+            if case .needsAuthorization = result { needsAuthorization = true }
             await Task.detached { launcher.removeFlag() }.value
             // Same reason as `release()`: if the backend could not let go,
             // stay latched so a later tick retries instead of leaving

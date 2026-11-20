@@ -301,15 +301,39 @@ func unknownMenuKeysDoNotOptUsersIn(expanded: Bool) throws {
     #expect(PervigilSettings(hotKey: fine).hotKey == fine)
 }
 
+@Test func freshInstallKeepsClosedLidOffWithoutHelper() {
+    // Without the helper "Only while awake" would need a password prompt the
+    // automation may not show, so a fresh install leaves it off and Welcome
+    // offers it next to the helper.
+    let fresh = PervigilSettings.default.withFreshInstallDefaults(hasStoredSettings: false, helperInstalled: false)
+    #expect(!fresh.closedDisplayOnlyWhileBrewing)
+    #expect(fresh == PervigilSettings.default)
+}
+
+@Test func freshInstallTurnsClosedLidOnWithHelper() {
+    let fresh = PervigilSettings.default.withFreshInstallDefaults(hasStoredSettings: false, helperInstalled: true)
+    #expect(fresh.closedDisplayOnlyWhileBrewing)
+}
+
+@Test func closedLidFallbackDeclineDefaultsOffAndRoundTrips() throws {
+    let empty = try JSONDecoder().decode(PervigilSettings.self, from: Data("{}".utf8))
+    #expect(!empty.closedLidFallbackDeclined)
+    var settings = PervigilSettings.default
+    settings.closedLidFallbackDeclined = true
+    let decoded = try JSONDecoder().decode(PervigilSettings.self, from: JSONEncoder().encode(settings))
+    #expect(decoded.closedLidFallbackDeclined)
+}
+
 @Test func freshInstallDefaultsOnlyTouchUnsaved() {
-    // A first launch (nothing persisted) starts session-scoped; anything
-    // saved, including an explicit off, passes through untouched.
-    let fresh = PervigilSettings.default.withFreshInstallDefaults(hasStoredSettings: false)
+    // A first launch (nothing persisted) with the helper starts
+    // session-scoped; anything saved, including an explicit off, passes
+    // through untouched.
+    let fresh = PervigilSettings.default.withFreshInstallDefaults(hasStoredSettings: false, helperInstalled: true)
     #expect(fresh.closedDisplayOnlyWhileBrewing)
 
     var savedOff = PervigilSettings.default
     savedOff.closedDisplayOnlyWhileBrewing = false
-    #expect(savedOff.withFreshInstallDefaults(hasStoredSettings: true) == savedOff)
+    #expect(savedOff.withFreshInstallDefaults(hasStoredSettings: true, helperInstalled: true) == savedOff)
 
     // Everything else passes through on a fresh install too.
     #expect(fresh.reminderAfter == PervigilSettings.default.reminderAfter)
@@ -394,7 +418,7 @@ func customizationUpgradePreservesAComplete125SettingsBlob(expanded: Bool) throw
     #expect(upgraded.customizedMenuLayout == nil)
     #expect(upgraded.menuPanelExpanded == expanded)
     #expect(!upgraded.closedDisplayOnlyWhileBrewing)
-    #expect(upgraded.withFreshInstallDefaults(hasStoredSettings: true) == upgraded)
+    #expect(upgraded.withFreshInstallDefaults(hasStoredSettings: true, helperInstalled: true) == upgraded)
 
     // Fields added since 1.25 are dropped at both levels (top level and the
     // nested options), so this checks every old field survives unchanged.

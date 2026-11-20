@@ -50,7 +50,8 @@ public final class HelperDaemonSleepWatchdog: SleepWatchdogLaunching, @unchecked
         lock.unlock()
     }
 
-    public func startHelper(appPID: Int32) -> SleepSettingResult {
+    /// The daemon is already root: no prompt, so the origin doesn't matter.
+    public func startHelper(appPID: Int32, origin: PromptOrigin) -> SleepSettingResult {
         helper.ping() ? .applied : .failed(L("The Pervigil helper isn't responding."))
     }
 
@@ -92,7 +93,8 @@ public final class HelperDaemonAWDLWatchdog: AWDLWatchdogLaunching, @unchecked S
         lock.unlock()
     }
 
-    public func startHelper(appPID: Int32) -> AWDLWatchdogStartResult {
+    /// The daemon is already root: no prompt, so the origin doesn't matter.
+    public func startHelper(appPID: Int32, origin: PromptOrigin) -> AWDLWatchdogStartResult {
         helper.ping() ? .started : .failed(L("The Pervigil helper isn't responding."))
     }
 
@@ -142,8 +144,10 @@ public final class RoutedSleepWatchdog: SleepWatchdogLaunching, @unchecked Senda
         fallback.removeFlag()
     }
 
-    public func startHelper(appPID: Int32) -> SleepSettingResult {
-        helperInstalled() ? daemon.startHelper(appPID: appPID) : fallback.startHelper(appPID: appPID)
+    public func startHelper(appPID: Int32, origin: PromptOrigin) -> SleepSettingResult {
+        helperInstalled()
+            ? daemon.startHelper(appPID: appPID, origin: origin)
+            : fallback.startHelper(appPID: appPID, origin: origin)
     }
 
     public var engageFailureMessage: String {
@@ -182,8 +186,10 @@ public final class RoutedAWDLWatchdog: AWDLWatchdogLaunching, @unchecked Sendabl
         fallback.removeFlag()
     }
 
-    public func startHelper(appPID: Int32) -> AWDLWatchdogStartResult {
-        helperInstalled() ? daemon.startHelper(appPID: appPID) : fallback.startHelper(appPID: appPID)
+    public func startHelper(appPID: Int32, origin: PromptOrigin) -> AWDLWatchdogStartResult {
+        helperInstalled()
+            ? daemon.startHelper(appPID: appPID, origin: origin)
+            : fallback.startHelper(appPID: appPID, origin: origin)
     }
 
     public var engageFailureMessage: String {
@@ -193,7 +199,7 @@ public final class RoutedAWDLWatchdog: AWDLWatchdogLaunching, @unchecked Sendabl
 
 /// ``SleepSettingControlling`` that reads through the plain `pmset -g` backend
 /// (no privileges needed to read) and writes through the daemon when
-/// installed, falling back to the osascript admin prompt when not.
+/// installed, falling back to the admin prompt (user actions only) when not.
 public final class RoutedSleepControl: SleepSettingControlling, @unchecked Sendable {
     private let helper: PrivilegedHelperCalling
     private let fallback: SleepSettingControlling
@@ -213,9 +219,9 @@ public final class RoutedSleepControl: SleepSettingControlling, @unchecked Senda
         fallback.isSleepDisabled()
     }
 
-    public func setSleepDisabled(_ disabled: Bool) -> SleepSettingResult {
+    public func setSleepDisabled(_ disabled: Bool, origin: PromptOrigin) -> SleepSettingResult {
         guard helperInstalled() else {
-            return fallback.setSleepDisabled(disabled)
+            return fallback.setSleepDisabled(disabled, origin: origin)
         }
         return helper.setSleepDisabled(disabled)
             ? .applied

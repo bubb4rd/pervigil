@@ -53,7 +53,7 @@ import Foundation
 private final class PolicyFakeSleepControl: SleepSettingControlling, @unchecked Sendable {
     var disabled = true
     func isSleepDisabled() -> Bool? { disabled }
-    func setSleepDisabled(_ disabled: Bool) -> SleepSettingResult { .applied }
+    func setSleepDisabled(_ disabled: Bool, origin: PromptOrigin) -> SleepSettingResult { .applied }
 }
 
 private final class PolicyFakeLid: LidStateReading, @unchecked Sendable {

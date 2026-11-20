@@ -70,8 +70,13 @@ import Foundation
 private final class FakeWatchdogLauncher: AWDLWatchdogLaunching, @unchecked Sendable {
     var flagPresent = false
     var result: AWDLWatchdogStartResult = .started
+    /// Stands in for "no helper daemon": starting needs a password prompt, so
+    /// an automation origin is refused the way ``AdminPromptPolicy`` refuses it.
+    var promptRequired = false
     /// Helper spawns, i.e. how often the user was asked for a password.
     var startCalls = 0
+    /// Starts refused because the origin may not prompt.
+    var refusedCalls = 0
 
     func isFlagPresent() -> Bool { flagPresent }
     func createFlag() -> Bool {
@@ -79,7 +84,11 @@ private final class FakeWatchdogLauncher: AWDLWatchdogLaunching, @unchecked Send
         return true
     }
     func removeFlag() { flagPresent = false }
-    func startHelper(appPID: Int32) -> AWDLWatchdogStartResult {
+    func startHelper(appPID: Int32, origin: PromptOrigin) -> AWDLWatchdogStartResult {
+        if promptRequired, !AdminPromptPolicy.allows(origin) {
+            refusedCalls += 1
+            return .needsAuthorization
+        }
         startCalls += 1
         return result
     }
@@ -97,7 +106,7 @@ private final class FakeAWDLReader: AWDLStateReading, @unchecked Sendable {
     let controller = AWDLWatchdogController(launcher: launcher, reader: FakeAWDLReader(up: true), appPID: 1)
     #expect(!controller.isRunning)
 
-    let result = await controller.start()
+    let result = await controller.start(origin: .userAction)
     #expect(result == .started)
     #expect(controller.isRunning)
     #expect(controller.lastError == nil)
@@ -114,9 +123,9 @@ private final class FakeAWDLReader: AWDLStateReading, @unchecked Sendable {
     let launcher = FakeWatchdogLauncher()
     let controller = AWDLWatchdogController(launcher: launcher, reader: FakeAWDLReader(up: true), appPID: 1)
 
-    _ = await controller.start()
+    _ = await controller.start(origin: .userAction)
     await controller.stop()
-    let again = await controller.start()
+    let again = await controller.start(origin: .userAction)
     #expect(again == .started)
     #expect(controller.isRunning)
     #expect(launcher.flagPresent)
@@ -196,9 +205,9 @@ private final class FakeAWDLReader: AWDLStateReading, @unchecked Sendable {
 }
 
 @MainActor
-@Test func retryEngageLeavesAManualOffAndACancelledPromptAlone() async {
+@Test func retryEngageLeavesAManualOffAlone() async {
     // A repaired helper is not permission to undo the user's answer. Only a
-    // start that failed on its own is retried.
+    // start that failed on its own (or lacked authorization) is retried.
     let launcher = FakeWatchdogLauncher()
     let controller = AWDLWatchdogController(launcher: launcher, reader: FakeAWDLReader(up: true), appPID: 1)
     controller.autoWithGaming = true
@@ -215,20 +224,6 @@ private final class FakeAWDLReader: AWDLStateReading, @unchecked Sendable {
     await controller.autoTick(gamingActive: false)
     await controller.autoTick(gamingActive: true)
     #expect(controller.isRunning)
-
-    // A cancelled prompt holds off the same way: no second prompt this bout.
-    let cancelling = FakeWatchdogLauncher()
-    cancelling.result = .cancelled
-    let second = AWDLWatchdogController(launcher: cancelling, reader: FakeAWDLReader(up: true), appPID: 1)
-    second.autoWithGaming = true
-
-    await second.autoTick(gamingActive: true)
-    #expect(cancelling.startCalls == 1)
-    cancelling.result = .started
-    second.retryEngage()
-    await second.autoTick(gamingActive: true)
-    #expect(!second.isRunning)
-    #expect(cancelling.startCalls == 1)
 }
 
 @MainActor
@@ -236,7 +231,7 @@ private final class FakeAWDLReader: AWDLStateReading, @unchecked Sendable {
     let launcher = FakeWatchdogLauncher()
     let controller = AWDLWatchdogController(launcher: launcher, reader: FakeAWDLReader(up: true), appPID: 1)
 
-    _ = await controller.start()   // a manual run
+    _ = await controller.start(origin: .userAction)   // a manual run
     await controller.stopIfAuto()
     #expect(controller.isRunning)  // untouched: it wasn't auto-started
 
@@ -256,13 +251,13 @@ private final class FakeAWDLReader: AWDLStateReading, @unchecked Sendable {
     let launcher = FakeWatchdogLauncher()
     launcher.result = .cancelled
     let controller = AWDLWatchdogController(launcher: launcher, reader: FakeAWDLReader(up: true), appPID: 1)
-    _ = await controller.start()
+    _ = await controller.start(origin: .userAction)
     #expect(!launcher.flagPresent)
     #expect(!controller.isRunning)
 
     // The helper never started, so the next attempt prompts again.
     launcher.result = .started
-    _ = await controller.start()
+    _ = await controller.start(origin: .userAction)
     #expect(launcher.startCalls == 2)
     #expect(controller.isRunning)
 }
@@ -272,12 +267,12 @@ private final class FakeAWDLReader: AWDLStateReading, @unchecked Sendable {
     let launcher = FakeWatchdogLauncher()
     launcher.result = .failed("no admin rights")
     let controller = AWDLWatchdogController(launcher: launcher, reader: FakeAWDLReader(up: true), appPID: 1)
-    _ = await controller.start()
+    _ = await controller.start(origin: .userAction)
     #expect(controller.lastError == "no admin rights")
     #expect(!controller.isRunning)
 
     launcher.result = .cancelled
-    _ = await controller.start()
+    _ = await controller.start(origin: .userAction)
     #expect(controller.lastError == nil)
     #expect(!controller.isRunning)
 }
@@ -312,22 +307,36 @@ private final class FakeAWDLReader: AWDLStateReading, @unchecked Sendable {
 }
 
 @MainActor
-@Test func autoModeRespectsACancelUntilTheBoutEnds() async {
+@Test func autoModeNeverPromptsWithoutAuthorization() async {
+    // No helper and nothing authorized this run: a game coming forward must
+    // not pop a password dialog over it. Auto mode stands down and says so.
     let launcher = FakeWatchdogLauncher()
-    launcher.result = .cancelled
+    launcher.promptRequired = true
     let controller = AWDLWatchdogController(launcher: launcher, reader: FakeAWDLReader(up: true), appPID: 1)
     controller.autoWithGaming = true
 
     await controller.autoTick(gamingActive: true)
     await controller.autoTick(gamingActive: true)
-    #expect(launcher.startCalls == 1) // cancelled once, not nagged again
+    #expect(launcher.startCalls == 0)
+    #expect(launcher.refusedCalls == 1) // held off, not re-tried every tick
+    #expect(controller.needsAuthorization)
+    #expect(controller.lastError == nil)
+    #expect(!controller.isRunning)
+    #expect(!launcher.flagPresent)
 
-    // A new bout may ask once more.
+    // A new bout still doesn't prompt.
     await controller.autoTick(gamingActive: false)
-    launcher.result = .started
     await controller.autoTick(gamingActive: true)
-    #expect(launcher.startCalls == 2)
+    #expect(launcher.startCalls == 0)
+
+    // A user action may: one prompt, then auto mode is prompt-free.
+    #expect(await controller.prime() == .started)
+    #expect(launcher.startCalls == 1)
+    #expect(!controller.needsAuthorization)
+    controller.retryEngage()
+    await controller.autoTick(gamingActive: true)
     #expect(controller.isRunning)
+    #expect(launcher.startCalls == 1)
 }
 
 @MainActor
@@ -336,7 +345,7 @@ private final class FakeAWDLReader: AWDLStateReading, @unchecked Sendable {
     let controller = AWDLWatchdogController(launcher: launcher, reader: FakeAWDLReader(up: true), appPID: 1)
     controller.autoWithGaming = true
 
-    _ = await controller.start() // manual
+    _ = await controller.start(origin: .userAction) // manual
     await controller.autoTick(gamingActive: false)
     #expect(controller.isRunning)
 }

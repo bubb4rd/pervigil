@@ -165,6 +165,9 @@ public struct PanelStatus: Equatable, Sendable {
 /// The second line of each guard tile.
 public struct GuardTileValues: Equatable, Sendable {
     public var lid: String
+    /// The lid automation is on but can't act without the helper (or an
+    /// "Allow once" this run), so the tile shows a lock instead of a state.
+    public var lidNeedsHelper: Bool = false
     public var battery: String
     public var batteryWarning: Bool
     public var display: String
@@ -196,6 +199,9 @@ public struct PanelInput: Sendable {
     public var batteryThreshold: Int
     public var lidOn: Bool
     public var lidOnlyWhileAwake: Bool
+    /// "Only while awake" is on, the helper isn't installed, and no user
+    /// action has authorized the password fallback this run.
+    public var lidNeedsHelper: Bool
     public var preventDisplaySleep: Bool
     public var dimsWhenIdle: Bool
     /// The Stay Active method's short name when on, `nil` when off.
@@ -208,7 +214,7 @@ public struct PanelInput: Sendable {
         leaseHeld: Bool = false, reasons: [PanelReason] = [],
         hasBattery: Bool = true, batteryPercent: Int? = nil, onBattery: Bool = false,
         batteryGuardOn: Bool = false, batteryThreshold: Int = 20,
-        lidOn: Bool = false, lidOnlyWhileAwake: Bool = false,
+        lidOn: Bool = false, lidOnlyWhileAwake: Bool = false, lidNeedsHelper: Bool = false,
         preventDisplaySleep: Bool = false, dimsWhenIdle: Bool = false, stayActiveMethod: String? = nil
     ) {
         self.now = now
@@ -230,6 +236,7 @@ public struct PanelInput: Sendable {
         self.batteryThreshold = batteryThreshold
         self.lidOn = lidOn
         self.lidOnlyWhileAwake = lidOnlyWhileAwake
+        self.lidNeedsHelper = lidNeedsHelper
         self.preventDisplaySleep = preventDisplaySleep
         self.dimsWhenIdle = dimsWhenIdle
         self.stayActiveMethod = stayActiveMethod
@@ -316,14 +323,18 @@ extension PanelStatus {
             status.subtitle = L("Battery %d%%. Sleeps at %d%%.", percent, input.batteryThreshold)
             status.detail = L("Plug in to keep going.")
             status.reasons = []
-        } else if input.lidOn && (!input.lidOnlyWhileAwake || input.isActive) && !automation {
+        } else if input.lidOn && (!input.lidOnlyWhileAwake || input.isActive) && !automation
+                    && !(input.lidOnlyWhileAwake && input.lidNeedsHelper) {
             status.detail = L("Lid can close")
         }
         return status
     }
 
     static func tileValues(_ input: PanelInput) -> GuardTileValues {
-        let lid = input.lidOn
+        let lidNeedsHelper = input.lidOn && input.lidOnlyWhileAwake && input.lidNeedsHelper
+        let lid = lidNeedsHelper
+            ? L("Needs helper")
+            : input.lidOn
             ? (input.lidOnlyWhileAwake ? L("During sessions") : L("Stays awake"))
             : L("Sleeps")
         var battery: String
@@ -352,7 +363,7 @@ extension PanelStatus {
             ? (input.dimsWhenIdle ? L("On, dims when idle") : L("Stays on"))
             : L("Can sleep")
         return GuardTileValues(
-            lid: lid, battery: battery, batteryWarning: warning,
+            lid: lid, lidNeedsHelper: lidNeedsHelper, battery: battery, batteryWarning: warning,
             display: display, stayActive: input.stayActiveMethod ?? L("Off"))
     }
 }

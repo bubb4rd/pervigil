@@ -18,7 +18,7 @@ private final class FakeSleepControl: SleepSettingControlling, @unchecked Sendab
 
     func isSleepDisabled() -> Bool? { lock.withLock { _disabled } }
 
-    func setSleepDisabled(_ disabled: Bool) -> SleepSettingResult {
+    func setSleepDisabled(_ disabled: Bool, origin: PromptOrigin) -> SleepSettingResult {
         lock.withLock {
             setCalls.append(disabled)
             if case .applied = _result { _disabled = disabled } // cancel/fail leave it unchanged
@@ -46,7 +46,7 @@ private final class FakeSleepControl: SleepSettingControlling, @unchecked Sendab
 
     // Flip the underlying setting; a non-forced refresh within the freshness
     // window must keep serving the cached value.
-    _ = fake.setSleepDisabled(true)
+    _ = fake.setSleepDisabled(true, origin: .userAction)
     await controller.refresh()
     #expect(controller.isEnabled == false)
 
@@ -55,7 +55,7 @@ private final class FakeSleepControl: SleepSettingControlling, @unchecked Sendab
     #expect(controller.isEnabled == true)
 
     // Force always re-reads.
-    _ = fake.setSleepDisabled(false)
+    _ = fake.setSleepDisabled(false, origin: .userAction)
     await controller.refresh(force: true)
     #expect(controller.isEnabled == false)
 }
@@ -64,7 +64,7 @@ private final class FakeSleepControl: SleepSettingControlling, @unchecked Sendab
 @Test func enablingAppliesAndClearsError() async {
     let fake = FakeSleepControl(initial: false, result: .applied)
     let controller = ClosedDisplayController(control: fake)
-    let result = await controller.set(true)
+    let result = await controller.set(true, origin: .userAction)
     #expect(result == .applied)
     #expect(controller.isEnabled == true)
     #expect(controller.lastError == nil)
@@ -75,7 +75,7 @@ private final class FakeSleepControl: SleepSettingControlling, @unchecked Sendab
 @Test func cancellingLeavesStateAndDoesNotError() async {
     let fake = FakeSleepControl(initial: false, result: .cancelled)
     let controller = ClosedDisplayController(control: fake)
-    let result = await controller.set(true)
+    let result = await controller.set(true, origin: .userAction)
     #expect(result == .cancelled)
     #expect(controller.isEnabled == false) // unchanged: prompt was dismissed
     #expect(controller.lastError == nil)   // cancelling is not a nagging error
@@ -85,7 +85,7 @@ private final class FakeSleepControl: SleepSettingControlling, @unchecked Sendab
 @Test func failureSurfacesMessage() async {
     let fake = FakeSleepControl(initial: false, result: .failed("nope"))
     let controller = ClosedDisplayController(control: fake)
-    let result = await controller.set(true)
+    let result = await controller.set(true, origin: .userAction)
     #expect(result == .failed("nope"))
     #expect(controller.isEnabled == false)
     #expect(controller.lastError == "nope")
