@@ -10,8 +10,8 @@
 #   (shasum -a 256 dist/Pervigil-<version>.dmg), then commit to the tap.
 # The `livecheck` block lets `brew livecheck` notice new GitHub releases.
 cask "pervigil" do
-  version "2.0.0"
-  sha256 "9eed664a5bb48369d56e2bb44a1675bc8f3f6f744180aae2d722380080af58e9"
+  version "2.0.1"
+  sha256 "c5c5068d74a22ce9ab93677dfcd6ed02e813ccd7a53b31608a0ae5791605ee7b"
 
   url "https://github.com/bubb4rd/pervigil/releases/download/v#{version}/Pervigil-#{version}.dmg"
   name "Pervigil"
