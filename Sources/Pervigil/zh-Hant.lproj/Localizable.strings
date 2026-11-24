@@ -1163,8 +1163,12 @@
 "Install the administrator helper to follow sessions automatically, or choose Allow Once in the Pervigil menu." = "安裝系統管理員輔助程式即可自動跟隨工作階段，或在 Pervigil 選單中選擇「允許一次」。";
 "AWDL pause needs the helper" = "暫停 AWDL 需要輔助程式";
 "Install the administrator helper to pause AWDL automatically while you play, or turn the pause on by hand in Gaming & Streaming." = "安裝系統管理員輔助程式即可在遊戲時自動暫停 AWDL，或在「遊戲與串流」中手動開啟暫停。";
-"Following sessions needs the administrator helper. Without it, Pervigil won't ask for your password in the background, so the lid setting stays as it is." = "跟隨工作階段需要系統管理員輔助程式。沒有它，Pervigil 不會在背景要求輸入密碼，因此闔蓋設定維持不變。";
-"Following sessions needs the administrator helper. Without it, Pervigil won't ask for your password in the background, so the sleep setting stays as it is." = "跟隨工作階段需要系統管理員輔助程式。沒有它，Pervigil 不會在背景要求輸入密碼，因此睡眠設定維持不變。";
+"Turning on with sessions needs the administrator helper. Without it, Pervigil won't ask for your password in the background, so the lid setting stays as it is." = "隨工作階段自動開啟需要系統管理員輔助程式。沒有它，Pervigil 不會在背景要求輸入密碼，因此闔蓋設定維持不變。";
+"Turning on with sessions needs the administrator helper. Without it, Pervigil won't ask for your password in the background, so the sleep setting stays as it is." = "隨工作階段自動開啟需要系統管理員輔助程式。沒有它，Pervigil 不會在背景要求輸入密碼，因此睡眠設定維持不變。";
 "Allow Once" = "允許一次";
 "Asks for your password now. Lasts until Pervigil quits." = "現在要求輸入密碼。在 Pervigil 結束前有效。";
-"Following sessions needs the administrator helper. Without it, Pervigil asks for your password only when you choose Allow Once, and that lasts until it quits." = "跟隨工作階段需要系統管理員輔助程式。沒有它，Pervigil 只會在您選擇「允許一次」時要求輸入密碼，並在結束前有效。";
+"Turning on with sessions needs the administrator helper. Without it, Pervigil asks for your password only when you choose Allow Once, and that lasts until it quits." = "隨工作階段自動開啟需要系統管理員輔助程式。沒有它，Pervigil 只會在您選擇「允許一次」時要求輸入密碼，並在結束前有效。";
+"Start Using Pervigil" = "開始使用 Pervigil";
+"Scanning Claude Desktop, Codex, and tokenstat.ai. Checked %@." = "正在掃描 Claude Desktop、Codex 與 tokenstat.ai。已檢查 %@。";
+"%@, next run %@" = "%@，下次執行 %@";
+"Keeps the screen on while Pervigil holds the Mac awake. When off, the screen sleeps on its normal schedule." = "在 Pervigil 保持 Mac 喚醒期間讓螢幕維持開啟。關閉時，螢幕會依正常排程進入睡眠。";

@@ -22,10 +22,12 @@ struct CheckRow: View {
                     .fixedSize(horizontal: false, vertical: true)
 
                 if let remediation = check.remediation {
-                    Text(remediation.hint)
-                        .font(.callout)
-                        .fixedSize(horizontal: false, vertical: true)
-                        .padding(.top, 2)
+                    if !remediation.hint.isEmpty {
+                        Text(remediation.hint)
+                            .font(.callout)
+                            .fixedSize(horizontal: false, vertical: true)
+                            .padding(.top, 2)
+                    }
 
                     HStack(spacing: 10) {
                         if let url = remediation.settingsURL {

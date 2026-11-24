@@ -1163,8 +1163,12 @@
 "Install the administrator helper to follow sessions automatically, or choose Allow Once in the Pervigil menu." = "安装管理员助理以自动跟随会话，或在 Pervigil 菜单中选择“允许一次”。";
 "AWDL pause needs the helper" = "暂停 AWDL 需要助理";
 "Install the administrator helper to pause AWDL automatically while you play, or turn the pause on by hand in Gaming & Streaming." = "安装管理员助理以在游戏时自动暂停 AWDL，或在“游戏与串流”中手动打开暂停。";
-"Following sessions needs the administrator helper. Without it, Pervigil won't ask for your password in the background, so the lid setting stays as it is." = "跟随会话需要管理员助理。没有它，Pervigil 不会在后台索要你的密码，因此合盖设置保持不变。";
-"Following sessions needs the administrator helper. Without it, Pervigil won't ask for your password in the background, so the sleep setting stays as it is." = "跟随会话需要管理员助理。没有它，Pervigil 不会在后台索要你的密码，因此睡眠设置保持不变。";
+"Turning on with sessions needs the administrator helper. Without it, Pervigil won't ask for your password in the background, so the lid setting stays as it is." = "随会话自动开启需要管理员助理。没有它，Pervigil 不会在后台索要你的密码，因此合盖设置保持不变。";
+"Turning on with sessions needs the administrator helper. Without it, Pervigil won't ask for your password in the background, so the sleep setting stays as it is." = "随会话自动开启需要管理员助理。没有它，Pervigil 不会在后台索要你的密码，因此睡眠设置保持不变。";
 "Allow Once" = "允许一次";
 "Asks for your password now. Lasts until Pervigil quits." = "现在索要你的密码。在 Pervigil 退出前有效。";
-"Following sessions needs the administrator helper. Without it, Pervigil asks for your password only when you choose Allow Once, and that lasts until it quits." = "跟随会话需要管理员助理。没有它，Pervigil 仅在你选择“允许一次”时索要密码，并在退出前有效。";
+"Turning on with sessions needs the administrator helper. Without it, Pervigil asks for your password only when you choose Allow Once, and that lasts until it quits." = "随会话自动开启需要管理员助理。没有它，Pervigil 仅在你选择“允许一次”时索要密码，并在退出前有效。";
+"Start Using Pervigil" = "开始使用 Pervigil";
+"Scanning Claude Desktop, Codex, and tokenstat.ai. Checked %@." = "正在扫描 Claude Desktop、Codex 和 tokenstat.ai。已检查 %@。";
+"%@, next run %@" = "%@，下次运行 %@";
+"Keeps the screen on while Pervigil holds the Mac awake. When off, the screen sleeps on its normal schedule." = "当 Pervigil 保持 Mac 唤醒时让屏幕保持开启。关闭后，屏幕会按常规计划进入睡眠。";

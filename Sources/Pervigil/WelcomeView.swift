@@ -512,7 +512,7 @@ struct WelcomeView: View {
                 Spacer()
                 // Trailing: advance, or finish onboarding on the last step.
                 if step.isLast {
-                    Button("Get Started") {
+                    Button("Start Using Pervigil") {
                         model.hasOnboarded = true
                         dismiss()
                     }

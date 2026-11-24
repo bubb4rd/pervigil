@@ -16,8 +16,9 @@ extension Color {
     /// white mark keeps contrast (#3A8FF2 to #0068E0).
     static let panelTileTop = Color(red: 58 / 255, green: 143 / 255, blue: 242 / 255)
     static let panelTileBottom = Color(red: 0, green: 104 / 255, blue: 224 / 255)
-    /// Filled controls (Keep awake, selected chips, the on-tile icon).
-    static let panelAccentSolid = dynamic(light: (0, 107, 224), dark: (10, 116, 240))
+    /// Filled controls (Keep awake, selected chips, the on-tile icon): #006BE0
+    /// in both modes so white labels keep 5:1+ contrast.
+    static let panelAccentSolid = Color(red: 0, green: 107 / 255, blue: 224 / 255)
     /// Accent text and icons on the panel.
     static let panelAccentText = dynamic(light: (0, 89, 194), dark: (130, 187, 249))
     /// Warnings: battery near its limit, a grace countdown, a pause.
@@ -84,7 +85,7 @@ struct PanelStatusCard: View {
                         ReasonStack(reasons: status.reasons).padding(.top, 4)
                     }
                     if let detail = status.detail {
-                        Text(detail).font(.system(size: 11.5)).foregroundStyle(.tertiary)
+                        Text(detail).font(.system(size: 11.5)).foregroundStyle(.secondary)
                     }
                 }
                 .frame(maxWidth: .infinity, alignment: .leading)

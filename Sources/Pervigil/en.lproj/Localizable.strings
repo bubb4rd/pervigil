@@ -1163,8 +1163,12 @@
 "Install the administrator helper to follow sessions automatically, or choose Allow Once in the Pervigil menu." = "Install the administrator helper to follow sessions automatically, or choose Allow Once in the Pervigil menu.";
 "AWDL pause needs the helper" = "AWDL pause needs the helper";
 "Install the administrator helper to pause AWDL automatically while you play, or turn the pause on by hand in Gaming & Streaming." = "Install the administrator helper to pause AWDL automatically while you play, or turn the pause on by hand in Gaming & Streaming.";
-"Following sessions needs the administrator helper. Without it, Pervigil won't ask for your password in the background, so the lid setting stays as it is." = "Following sessions needs the administrator helper. Without it, Pervigil won't ask for your password in the background, so the lid setting stays as it is.";
-"Following sessions needs the administrator helper. Without it, Pervigil won't ask for your password in the background, so the sleep setting stays as it is." = "Following sessions needs the administrator helper. Without it, Pervigil won't ask for your password in the background, so the sleep setting stays as it is.";
+"Turning on with sessions needs the administrator helper. Without it, Pervigil won't ask for your password in the background, so the lid setting stays as it is." = "Turning on with sessions needs the administrator helper. Without it, Pervigil won't ask for your password in the background, so the lid setting stays as it is.";
+"Turning on with sessions needs the administrator helper. Without it, Pervigil won't ask for your password in the background, so the sleep setting stays as it is." = "Turning on with sessions needs the administrator helper. Without it, Pervigil won't ask for your password in the background, so the sleep setting stays as it is.";
 "Allow Once" = "Allow Once";
 "Asks for your password now. Lasts until Pervigil quits." = "Asks for your password now. Lasts until Pervigil quits.";
-"Following sessions needs the administrator helper. Without it, Pervigil asks for your password only when you choose Allow Once, and that lasts until it quits." = "Following sessions needs the administrator helper. Without it, Pervigil asks for your password only when you choose Allow Once, and that lasts until it quits.";
+"Turning on with sessions needs the administrator helper. Without it, Pervigil asks for your password only when you choose Allow Once, and that lasts until it quits." = "Turning on with sessions needs the administrator helper. Without it, Pervigil asks for your password only when you choose Allow Once, and that lasts until it quits.";
+"Start Using Pervigil" = "Start Using Pervigil";
+"Scanning Claude Desktop, Codex, and tokenstat.ai. Checked %@." = "Scanning Claude Desktop, Codex, and tokenstat.ai. Checked %@.";
+"%@, next run %@" = "%@, next run %@";
+"Keeps the screen on while Pervigil holds the Mac awake. When off, the screen sleeps on its normal schedule." = "Keeps the screen on while Pervigil holds the Mac awake. When off, the screen sleeps on its normal schedule.";

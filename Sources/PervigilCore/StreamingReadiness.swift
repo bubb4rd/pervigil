@@ -269,7 +269,7 @@ public extension ReadinessCheck {
                 hint: L("How Game Mode works:"),
                 links: [
                     ReadinessLink(
-                        label: L("Learn more"),
+                        label: L("Read Apple's Game Mode guide"),
                         url: URL(string: "https://support.apple.com/105118")!
                     ),
                 ]
@@ -318,7 +318,7 @@ public extension ReadinessCheck {
                 hint: L("The full story:"),
                 links: [
                     ReadinessLink(
-                        label: L("Read more"),
+                        label: L("Read the AWDL write-up"),
                         url: URL(string: "https://gyorgy.sh/blog/macos-awdl-network-jitter")!
                     ),
                 ]

@@ -171,7 +171,7 @@ struct SettingsPowerPage: View {
                 // Automation never prompts on its own: say so, and offer the
                 // one-click, this-run-only alternative next to the real fix.
                 HStack {
-                    RowNote(text: L("Following sessions needs the administrator helper. Without it, Pervigil asks for your password only when you choose Allow Once, and that lasts until it quits."), kind: .locked)
+                    RowNote(text: L("Turning on with sessions needs the administrator helper. Without it, Pervigil asks for your password only when you choose Allow Once, and that lasts until it quits."), kind: .locked)
                     Spacer(minLength: 8)
                     Button(L("Allow Once")) { model.allowClosedLidOnce() }
                         .buttonStyle(.link)

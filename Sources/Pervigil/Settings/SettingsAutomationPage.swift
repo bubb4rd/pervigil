@@ -371,7 +371,7 @@ struct SettingsAutomationPage: View {
         guard let checked = model.automationsLastChecked else {
             return L("Scanning Claude Desktop, Codex, and tokenstat.ai")
         }
-        return L("Scanning Claude Desktop, Codex, and tokenstat.ai · checked %@", Self.relativeChecked(checked))
+        return L("Scanning Claude Desktop, Codex, and tokenstat.ai. Checked %@.", Self.relativeChecked(checked))
     }
 
     private func runSubtitle(_ automation: ScheduledAutomation) -> String {
@@ -379,7 +379,7 @@ struct SettingsAutomationPage: View {
         guard let next = automation.recurrence.nextOccurrences(after: Date(), count: 1, calendar: .current).first else {
             return automation.source.label
         }
-        return L("%@ · next %@", automation.source.label, Self.wakeStamp.string(from: next))
+        return L("%@, next run %@", automation.source.label, Self.wakeStamp.string(from: next))
     }
 
     private static let wakeStamp: DateFormatter = {

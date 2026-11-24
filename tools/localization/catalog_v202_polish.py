@@ -1,0 +1,111 @@
+# -*- coding: utf-8 -*-
+"""UI copy polish: welcome CTA, descriptive readiness links, Display drawer explanation, and automation run labels."""
+
+LANGS = ["hu", "es", "fr", "de", "zh-Hans", "it", "ja", "ko", "ru", "pt-BR", "tr", "pl", "uk", "zh-Hant"]
+
+
+def _table(rows):
+    return {key: dict(zip(LANGS, values)) for key, values in rows.items()}
+
+
+APP = _table({
+    "Start Using Pervigil": (
+        "Pervigil használatának megkezdése",
+        "Empezar a usar Pervigil",
+        "Commencer à utiliser Pervigil",
+        "Pervigil verwenden",
+        "开始使用 Pervigil",
+        "Inizia a usare Pervigil",
+        "Pervigil を使い始める",
+        "Pervigil 시작하기",
+        "Начать работу с Pervigil",
+        "Começar a usar o Pervigil",
+        "Pervigil’i Kullanmaya Başla",
+        "Zacznij korzystać z Pervigil",
+        "Почати користуватися Pervigil",
+        "開始使用 Pervigil",
+    ),
+    "Scanning Claude Desktop, Codex, and tokenstat.ai. Checked %@.": (
+        "A Claude Desktop, a Codex és a tokenstat.ai vizsgálata. Ellenőrizve: %@.",
+        "Buscando en Claude Desktop, Codex y tokenstat.ai. Comprobado %@.",
+        "Recherche dans Claude Desktop, Codex et tokenstat.ai. Vérifié %@.",
+        "Claude Desktop, Codex und tokenstat.ai werden durchsucht. Geprüft %@.",
+        "正在扫描 Claude Desktop、Codex 和 tokenstat.ai。已检查 %@。",
+        "Scansione di Claude Desktop, Codex e tokenstat.ai. Controllato %@.",
+        "Claude Desktop、Codex、tokenstat.ai をスキャン中。確認: %@。",
+        "Claude Desktop, Codex, tokenstat.ai 스캔 중. 확인됨: %@.",
+        "Сканирование Claude Desktop, Codex и tokenstat.ai. Проверено %@.",
+        "Verificando o Claude Desktop, o Codex e o tokenstat.ai. Verificado %@.",
+        "Claude Desktop, Codex ve tokenstat.ai taranıyor. %@ denetlendi.",
+        "Skanowanie Claude Desktop, Codex i tokenstat.ai. Sprawdzono %@.",
+        "Сканування Claude Desktop, Codex і tokenstat.ai. Перевірено %@.",
+        "正在掃描 Claude Desktop、Codex 與 tokenstat.ai。已檢查 %@。",
+    ),
+    "%@, next run %@": (
+        "%@, következő futtatás: %@",
+        "%@, próxima ejecución: %@",
+        "%@, prochaine exécution : %@",
+        "%@, nächster Lauf %@",
+        "%@，下次运行 %@",
+        "%@, prossima esecuzione %@",
+        "%@、次回実行 %@",
+        "%@, 다음 실행 %@",
+        "%@, следующий запуск %@",
+        "%@, próxima execução %@",
+        "%@, sonraki çalıştırma %@",
+        "%@, następne uruchomienie %@",
+        "%@, наступний запуск %@",
+        "%@，下次執行 %@",
+    ),
+    "Keeps the screen on while Pervigil holds the Mac awake. When off, the screen sleeps on its normal schedule.": (
+        "Bekapcsolva tartja a képernyőt, amíg a Pervigil ébren tartja a Macet. Kikapcsolva a képernyő a megszokott ütemezés szerint alszik el.",
+        "Mantiene la pantalla encendida mientras Pervigil mantiene despierto el Mac. Si está desactivada, la pantalla entra en reposo según su horario normal.",
+        "Garde l’écran allumé tant que Pervigil maintient le Mac éveillé. Désactivé, l’écran se met en veille selon son réglage habituel.",
+        "Hält den Bildschirm an, solange Pervigil den Mac wach hält. Wenn ausgeschaltet, geht der Bildschirm nach dem normalen Zeitplan in den Ruhezustand.",
+        "当 Pervigil 保持 Mac 唤醒时让屏幕保持开启。关闭后，屏幕会按常规计划进入睡眠。",
+        "Mantiene lo schermo acceso mentre Pervigil tiene sveglio il Mac. Se disattivato, lo schermo va in stop come di consueto.",
+        "Pervigil が Mac を起動したままにしている間、画面を点灯し続けます。オフの場合、画面は通常どおりスリープします。",
+        "Pervigil이 Mac을 깨어 있게 유지하는 동안 화면을 켜 둡니다. 끄면 화면이 평소 일정대로 잠자기에 들어갑니다.",
+        "Оставляет экран включённым, пока Pervigil удерживает Mac от сна. Если выключено, экран засыпает по обычному расписанию.",
+        "Mantém a tela ligada enquanto o Pervigil mantém o Mac acordado. Quando desativada, a tela entra em repouso no horário normal.",
+        "Pervigil Mac’i uyanık tutarken ekranı açık tutar. Kapalıyken ekran normal zamanlamasına göre uykuya geçer.",
+        "Utrzymuje włączony ekran, gdy Pervigil nie pozwala Macowi zasnąć. Po wyłączeniu ekran usypia według zwykłego harmonogramu.",
+        "Тримає екран увімкненим, поки Pervigil утримує Mac від сну. Коли вимкнено, екран засинає за звичайним розкладом.",
+        "在 Pervigil 保持 Mac 喚醒期間讓螢幕維持開啟。關閉時，螢幕會依正常排程進入睡眠。",
+    ),
+})
+
+CORE = _table({
+    "Read Apple's Game Mode guide": (
+        "Az Apple Játékmód útmutatójának elolvasása",
+        "Leer la guía de Apple sobre el modo Juego",
+        "Lire le guide Apple du mode Jeu",
+        "Apples Anleitung zum Spielmodus lesen",
+        "阅读 Apple 的游戏模式指南",
+        "Leggi la guida di Apple sulla modalità Gioco",
+        "Apple のゲームモードガイドを読む",
+        "Apple의 게임 모드 가이드 읽기",
+        "Открыть руководство Apple по Игровому режиму",
+        "Ler o guia da Apple sobre o Modo de Jogo",
+        "Apple’ın Oyun Modu kılavuzunu okuyun",
+        "Przeczytaj przewodnik Apple o Trybie gry",
+        "Прочитати посібник Apple щодо режиму гри",
+        "閱讀 Apple 的遊戲模式指南",
+    ),
+    "Read the AWDL write-up": (
+        "Az AWDL-leírás elolvasása",
+        "Leer el artículo sobre AWDL",
+        "Lire l’article sur AWDL",
+        "Den AWDL-Artikel lesen",
+        "阅读 AWDL 技术说明",
+        "Leggi l’approfondimento su AWDL",
+        "AWDL の解説記事を読む",
+        "AWDL 설명 글 읽기",
+        "Прочитать статью об AWDL",
+        "Ler o artigo sobre AWDL",
+        "AWDL yazısını okuyun",
+        "Przeczytaj artykuł o AWDL",
+        "Прочитати статтю про AWDL",
+        "閱讀 AWDL 技術說明",
+    ),
+})

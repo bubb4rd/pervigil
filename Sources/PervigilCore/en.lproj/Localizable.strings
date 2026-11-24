@@ -294,7 +294,7 @@
 "Plug in to keep going." = "Plug in to keep going.";
 "Plug in to resume." = "Plug in to resume.";
 "Plugged in" = "Plugged in";
-"Press the mark or pick a duration" = "Press the mark or pick a duration";
+"Click Keep awake or pick a duration" = "Click Keep awake or pick a duration";
 "Sleeps" = "Sleeps";
 "Stays awake" = "Stays awake";
 "Stays on" = "Stays on";
@@ -311,3 +311,5 @@
 "Pervigil needs your password to pause AWDL (AirDrop, Handoff and Continuity)." = "Pervigil needs your password to pause AWDL (AirDrop, Handoff and Continuity).";
 "Pervigil needs your password to lock or unlock the keyboard for cleaning." = "Pervigil needs your password to lock or unlock the keyboard for cleaning.";
 "Needs helper" = "Needs helper";
+"Read Apple's Game Mode guide" = "Read Apple's Game Mode guide";
+"Read the AWDL write-up" = "Read the AWDL write-up";

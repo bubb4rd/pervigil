@@ -294,7 +294,7 @@
 "Plug in to keep going." = "続けるには電源に接続してください。";
 "Plug in to resume." = "再開するには電源に接続してください。";
 "Plugged in" = "電源接続中";
-"Press the mark or pick a duration" = "マークを押すか時間を選んでください";
+"Click Keep awake or pick a duration" = "「スリープ防止」をクリックするか時間を選んでください";
 "Sleeps" = "スリープ";
 "Stays awake" = "スリープしない";
 "Stays on" = "点灯したまま";
@@ -311,3 +311,5 @@
 "Pervigil needs your password to pause AWDL (AirDrop, Handoff and Continuity)." = "AWDL（AirDrop、Handoff、連係）を一時停止するため、Pervigil にパスワードが必要です。";
 "Pervigil needs your password to lock or unlock the keyboard for cleaning." = "掃除のためにキーボードをロックまたはロック解除するため、Pervigil にパスワードが必要です。";
 "Needs helper" = "ヘルパーが必要";
+"Read Apple's Game Mode guide" = "Apple のゲームモードガイドを読む";
+"Read the AWDL write-up" = "AWDL の解説記事を読む";

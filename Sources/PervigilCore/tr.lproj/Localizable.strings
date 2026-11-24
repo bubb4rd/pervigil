@@ -294,7 +294,7 @@
 "Plug in to keep going." = "Devam etmek için prize takın.";
 "Plug in to resume." = "Sürdürmek için prize takın.";
 "Plugged in" = "Prize takılı";
-"Press the mark or pick a duration" = "İşarete basın veya bir süre seçin";
+"Click Keep awake or pick a duration" = "Uyanık tut’a tıklayın veya bir süre seçin";
 "Sleeps" = "Uyur";
 "Stays awake" = "Uyanık kalır";
 "Stays on" = "Açık kalır";
@@ -311,3 +311,5 @@
 "Pervigil needs your password to pause AWDL (AirDrop, Handoff and Continuity)." = "Pervigil, AWDL’yi (AirDrop, Handoff ve Süreklilik) duraklatmak için parolanızı istiyor.";
 "Pervigil needs your password to lock or unlock the keyboard for cleaning." = "Pervigil, temizlik için klavyeyi kilitlemek veya kilidini açmak üzere parolanızı istiyor.";
 "Needs helper" = "Yardımcı gerekli";
+"Read Apple's Game Mode guide" = "Apple’ın Oyun Modu kılavuzunu okuyun";
+"Read the AWDL write-up" = "AWDL yazısını okuyun";

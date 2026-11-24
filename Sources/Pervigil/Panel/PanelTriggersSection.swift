@@ -72,7 +72,7 @@ struct PanelTriggersSection: View {
                     .font(.system(size: 12.5, weight: tone == .unmet ? .regular : .medium))
                     .foregroundStyle(tone == .unmet ? Color.secondary : Color.primary)
                 if let note = note(for: state.rule) {
-                    Text(note).font(.system(size: 11.5)).foregroundStyle(.tertiary)
+                    Text(note).font(.system(size: 11.5)).foregroundStyle(.secondary)
                 }
             }
             .lineLimit(1)

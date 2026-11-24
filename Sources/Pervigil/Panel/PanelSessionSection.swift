@@ -75,7 +75,7 @@ struct PanelSessionSection: View {
             }
             Text("Manual sets your triggers aside without changing them.")
                 .font(.system(size: 11))
-                .foregroundStyle(.tertiary)
+                .foregroundStyle(.secondary)
                 .fixedSize(horizontal: false, vertical: true)
                 .padding(.horizontal, 2)
         }
@@ -151,7 +151,7 @@ struct PanelSessionSection: View {
         if editor == .until {
             Text("If that time already passed today, it means tomorrow.")
                 .font(.system(size: 11))
-                .foregroundStyle(.tertiary)
+                .foregroundStyle(.secondary)
                 .padding(.horizontal, 2)
         }
     }

@@ -35,8 +35,8 @@ private func status(_ input: PanelInput) -> PanelStatus {
 
 @Test func idleWithoutTriggersPointsAtTheControls() {
     let paused = status(PanelInput(now: noon, isActive: false, triggersEnabled: true, triggersPaused: true, ruleCount: 4))
-    #expect(paused.subtitle == "Press the mark or pick a duration")
-    #expect(status(PanelInput(now: noon, isActive: false)).subtitle == "Press the mark or pick a duration")
+    #expect(paused.subtitle == "Click Keep awake or pick a duration")
+    #expect(status(PanelInput(now: noon, isActive: false)).subtitle == "Click Keep awake or pick a duration")
 }
 
 @Test func timedSessionShowsEndTimeCountdownAndProgress() {

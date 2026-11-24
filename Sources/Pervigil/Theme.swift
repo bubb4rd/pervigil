@@ -18,11 +18,12 @@ extension Color {
     static let brandMarkBottom = Color(red: 0 / 255, green: 122 / 255, blue: 255 / 255)
 
     /// Claude's terracotta, used to tint claude session rows: #D97757 in dark
-    /// mode (the Claude Code console spinner), the deeper #C15F3C in light.
+    /// mode (the Claude Code console spinner), the deeper #A64422 in light so
+    /// small status labels keep 4.5:1+ contrast on the light frosted panel.
     static let claudeAccent = Color(nsColor: NSColor(name: nil) { appearance in
         appearance.isDarkAppearance
             ? NSColor(srgbRed: 217 / 255, green: 119 / 255, blue: 87 / 255, alpha: 1)
-            : NSColor(srgbRed: 193 / 255, green: 95 / 255, blue: 60 / 255, alpha: 1)
+            : NSColor(srgbRed: 166 / 255, green: 68 / 255, blue: 34 / 255, alpha: 1)
     })
 
     /// For tools whose mark is monochrome (Grok, Codex, Cursor, Antigravity):

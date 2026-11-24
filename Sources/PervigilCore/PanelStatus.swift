@@ -276,7 +276,7 @@ extension PanelStatus {
             if input.triggersControlling && input.ruleCount > 0 {
                 sub = input.ruleCount == 1 ? L("Watching 1 trigger") : L("Watching %d triggers", input.ruleCount)
             } else {
-                sub = L("Press the mark or pick a duration")
+                sub = L("Click Keep awake or pick a duration")
             }
             return PanelStatus(
                 state: .canSleep, tone: .normal, title: L("Can sleep"), subtitle: sub, detail: nil,

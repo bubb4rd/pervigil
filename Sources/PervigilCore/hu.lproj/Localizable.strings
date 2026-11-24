@@ -294,7 +294,7 @@
 "Plug in to keep going." = "Csatlakoztasd a töltőt a folytatáshoz.";
 "Plug in to resume." = "Csatlakoztasd a töltőt az újraindításhoz.";
 "Plugged in" = "Csatlakoztatva";
-"Press the mark or pick a duration" = "Nyomd meg a jelet, vagy válassz időtartamot";
+"Click Keep awake or pick a duration" = "Kattints az Ébren tartás gombra, vagy válassz időtartamot";
 "Sleeps" = "Alszik";
 "Stays awake" = "Ébren marad";
 "Stays on" = "Bekapcsolva marad";
@@ -311,3 +311,5 @@
 "Pervigil needs your password to pause AWDL (AirDrop, Handoff and Continuity)." = "A Pervigil a jelszavát kéri az AWDL (AirDrop, Handoff és Folytonosság) szüneteltetéséhez.";
 "Pervigil needs your password to lock or unlock the keyboard for cleaning." = "A Pervigil a jelszavát kéri a billentyűzet tisztításhoz való zárolásához vagy feloldásához.";
 "Needs helper" = "Segéd kell";
+"Read Apple's Game Mode guide" = "Az Apple Játékmód útmutatójának elolvasása";
+"Read the AWDL write-up" = "Az AWDL-leírás elolvasása";

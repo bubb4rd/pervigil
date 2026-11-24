@@ -168,8 +168,8 @@ struct PanelGuardsSection: View {
     private var lidNeedsHelperNotice: some View {
         Label {
             Text(model.machineHasBattery
-                ? L("Following sessions needs the administrator helper. Without it, Pervigil won't ask for your password in the background, so the lid setting stays as it is.")
-                : L("Following sessions needs the administrator helper. Without it, Pervigil won't ask for your password in the background, so the sleep setting stays as it is."))
+                ? L("Turning on with sessions needs the administrator helper. Without it, Pervigil won't ask for your password in the background, so the lid setting stays as it is.")
+                : L("Turning on with sessions needs the administrator helper. Without it, Pervigil won't ask for your password in the background, so the sleep setting stays as it is."))
                 .foregroundStyle(.secondary)
                 .fixedSize(horizontal: false, vertical: true)
         } icon: {
@@ -225,6 +225,10 @@ struct PanelGuardsSection: View {
             }}
         ))
         .disabled(!session.options.preventDisplaySleep)
+        Text("Keeps the screen on while Pervigil holds the Mac awake. When off, the screen sleeps on its normal schedule.")
+            .font(.system(size: 11))
+            .foregroundStyle(.secondary)
+            .fixedSize(horizontal: false, vertical: true)
     }
 
     @ViewBuilder

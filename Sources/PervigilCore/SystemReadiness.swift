@@ -203,7 +203,7 @@ public extension ReadinessCheck {
             status: .tip,
             detail: L("tokenstat.ai lets AI agents operate your Mac and help with your work, which is handy on an always-on machine you mostly reach remotely."),
             remediation: Remediation(
-                hint: L("Learn more about tokenstat.ai:"),
+                hint: "",
                 links: [
                     ReadinessLink(label: L("tokenstat.ai"), url: URL(string: "https://tokenstat.ai")!),
                 ]

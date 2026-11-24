@@ -294,7 +294,7 @@
 "Plug in to keep going." = "Conecta el cargador para continuar.";
 "Plug in to resume." = "Conecta el cargador para reanudar.";
 "Plugged in" = "Conectado";
-"Press the mark or pick a duration" = "Pulsa la marca o elige una duración";
+"Click Keep awake or pick a duration" = "Haz clic en Mantener despierto o elige una duración";
 "Sleeps" = "Reposa";
 "Stays awake" = "Sigue despierto";
 "Stays on" = "Sigue encendida";
@@ -311,3 +311,5 @@
 "Pervigil needs your password to pause AWDL (AirDrop, Handoff and Continuity)." = "Pervigil necesita tu contraseña para pausar AWDL (AirDrop, Handoff y Continuidad).";
 "Pervigil needs your password to lock or unlock the keyboard for cleaning." = "Pervigil necesita tu contraseña para bloquear o desbloquear el teclado para limpiarlo.";
 "Needs helper" = "Requiere asistente";
+"Read Apple's Game Mode guide" = "Leer la guía de Apple sobre el modo Juego";
+"Read the AWDL write-up" = "Leer el artículo sobre AWDL";

@@ -294,7 +294,7 @@
 "Plug in to keep going." = "接上電源以繼續。";
 "Plug in to resume." = "接上電源以恢復。";
 "Plugged in" = "已接上電源";
-"Press the mark or pick a duration" = "按下標誌或選擇時長";
+"Click Keep awake or pick a duration" = "按一下「保持喚醒」或選擇時長";
 "Sleeps" = "睡眠";
 "Stays awake" = "保持喚醒";
 "Stays on" = "保持開啟";
@@ -311,3 +311,5 @@
 "Pervigil needs your password to pause AWDL (AirDrop, Handoff and Continuity)." = "Pervigil 需要您的密碼來暫停 AWDL（AirDrop、Handoff 與接續互通）。";
 "Pervigil needs your password to lock or unlock the keyboard for cleaning." = "Pervigil 需要您的密碼來鎖定或解鎖鍵盤以便清潔。";
 "Needs helper" = "需要輔助程式";
+"Read Apple's Game Mode guide" = "閱讀 Apple 的遊戲模式指南";
+"Read the AWDL write-up" = "閱讀 AWDL 技術說明";
