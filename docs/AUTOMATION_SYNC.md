@@ -38,7 +38,7 @@ with the lid shut).
 4. For a run that lasts longer than the window, the agent can take over with a
    **lease** and the Mac stays awake until the agent releases it (below).
 
-Installing the wake needs the administrator helper (Preferences ▸ General), the
+Installing the wake needs the administrator helper (Preferences ▸ Administrator Helper), the
 same as the manual scheduled-wake feature.
 
 ## Creating a local task to sync

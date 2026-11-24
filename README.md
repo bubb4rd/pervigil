@@ -42,7 +42,7 @@ brew install --cask bubb4rd/tap/pervigil
 
 Or download the signed, notarized DMG from [Releases](https://github.com/bubb4rd/pervigil/releases) and move **Pervigil** to Applications.
 
-Updates are delivered via [Sparkle](https://sparkle-project.org) (see [CHANGELOG.md](CHANGELOG.md)). To uninstall, remove the optional administrator helper in **Preferences → General**, then quit the app and run `brew uninstall --cask pervigil` (add `--zap` to clear preferences and caches).
+Updates are delivered via [Sparkle](https://sparkle-project.org) (see [CHANGELOG.md](CHANGELOG.md)). To uninstall, remove the optional administrator helper in **Preferences → Administrator Helper**, then quit the app and run `brew uninstall --cask pervigil` (add `--zap` to clear preferences and caches).
 
 ## Features
 

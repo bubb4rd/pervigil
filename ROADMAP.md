@@ -22,7 +22,6 @@ This release adds local inference and unattended-host capabilities on top of Per
 - **Bonjour wake on demand**: Tracked as a separate prototype until wake reliability is verified across sleep states.
 - **Weak-signal hotspot switching**: Proactive Wi-Fi fallback before a full disconnect, tracked on a separate track.
 - **Companion iOS app**: Separate product track.
-- **Quieter "held by" menu line**: The menu often shows "WindowServer: declaring the user active". That is WindowServer's transient `UserIsActive` assertion, which macOS creates on every mouse or keyboard event to reset the idle timer. It never keeps the Mac awake once input stops, so it is noise on a line meant to explain a Mac that won't sleep. Because the line picks the first match alphabetically by process name, it can also hide a real sleep blocker. Options: skip `UserIsActive` on the menu line (the Activity pane would still list it), or rank system and display sleep holds first. See `AppModel.topExternalAssertion()`.
 
 > [!NOTE]
 > A built-in Prometheus HTTP endpoint is intentionally left out. The CLI `pervigil metrics --prometheus` output supports Grafana and monitoring pipelines without opening a listening network port.
