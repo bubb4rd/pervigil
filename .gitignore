@@ -66,3 +66,4 @@ docs/HELPER_RECOVERY.md
 # Raw brand/design exports (large PNGs). The vector source of truth lives in
 # docs/assets/brand; see its README.
 media/
+design/

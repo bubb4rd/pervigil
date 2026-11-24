@@ -5,6 +5,29 @@ Versions follow [Semantic Versioning](https://semver.org). Releases up to
 1.30.0 shipped as Keepresso, which Pervigil is forked from; their entries are
 kept as written.
 
+## [2.0.1] - 2026-11-23
+
+### Changed
+
+- **Clearer Lid Closed and Screen controls.** Renamed the Closed Lid and Display
+  tiles to **Lid Closed** and **Screen** with shorter, unambiguous status labels
+  (`Sleeps`, `With keep-awake`, `Stays awake`, `Turns off`, `Stays on`,
+  `Dims when idle`), brightness icons instead of an external-monitor glyph, and
+  a single **When you step away** picker in the Screen drawer replacing the two
+  mutually exclusive idle switches.
+- **Better readability and copy across the app.** Raised faint panel helper and
+  grace text to secondary contrast, deepened light-mode Claude terracotta and
+  dark-mode solid accent blue for 4.5:1+ contrast, clarified helper notices and
+  onboarding/setup links, and updated all 15 localizations.
+
+### Fixed
+
+- The menu's "held by" line now ignores WindowServer's transient `UserIsActive`
+  assertion and ranks real system and display sleep holds first (the Activity
+  page still lists every assertion).
+- Fixed a timezone-dependent Codex rollout test that failed on hosts west of
+  UTC.
+
 ## [2.0.0] - 2026-11-20
 
 ### Changed
