@@ -154,12 +154,46 @@ public struct PowerAssertionInfo: Equatable, Identifiable, Sendable {
         "NoDisplaySleepAssertion": "Preventing display sleep",
         "PreventDiskIdle": "Keeping disks awake",
         // Transient: WindowServer declares this on every HID event to reset
-        // the idle timer. It does not hold the Mac awake once input stops,
-        // but it surfaces on the menu's "held by" line whenever the user is
-        // moving the mouse. Tracked in ROADMAP.md ("Quieter held by line").
+        // the idle timer. It does not hold the Mac awake once input stops, so
+        // `menuPriority` skips it on the menu's "held by" line while Activity
+        // still lists it.
         "UserIsActive": "Declaring the user active",
         "BackgroundTask": "Holding off idle sleep for a background task",
     ]
+
+    /// Relative importance for the menu's one-line "held by" summary, where
+    /// lower ranks first. `nil` excludes transient assertions (`UserIsActive`)
+    /// and unknown bookkeeping types so they never crowd out real sleep holds.
+    public var menuPriority: Int? {
+        switch type {
+        case "PreventSystemSleep", "PreventUserIdleSystemSleep", "NoIdleSleepAssertion":
+            return 0
+        case "PreventUserIdleDisplaySleep", "NoDisplaySleepAssertion":
+            return 1
+        case "PreventDiskIdle":
+            return 2
+        case "BackgroundTask":
+            return 3
+        default:
+            return nil
+        }
+    }
+
+    /// Picks the single external assertion most worth surfacing on the menu's
+    /// "held by" line: skips assertions owned by `excludingPID`, ignores
+    /// transient `UserIsActive` and bookkeeping types, and prefers system and
+    /// display sleep holds over disk or background-task assertions. Preserves
+    /// input order on ties.
+    public static func topExternal(
+        in assertions: [PowerAssertionInfo],
+        excludingPID: Int32
+    ) -> PowerAssertionInfo? {
+        assertions
+            .filter { $0.pid != excludingPID }
+            .compactMap { info in info.menuPriority.map { (priority: $0, info: info) } }
+            .min { $0.priority < $1.priority }?
+            .info
+    }
 }
 
 /// Abstraction over the system-wide assertion list so the UI layer and tests

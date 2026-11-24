@@ -391,8 +391,10 @@ final class AppModel {
     /// Pervigil (or nothing) is holding one. Lets the menu explain a Mac that
     /// won't sleep even while Pervigil is idle. Display-only and TTL-cached.
     func topExternalAssertion() -> PowerAssertionInfo? {
-        let myPID = ProcessInfo.processInfo.processIdentifier
-        return menuAssertionCache.current().first { $0.effect != nil && $0.pid != myPID }
+        PowerAssertionInfo.topExternal(
+            in: menuAssertionCache.current(),
+            excludingPID: ProcessInfo.processInfo.processIdentifier
+        )
     }
 
     // MARK: - Menu panel snapshot

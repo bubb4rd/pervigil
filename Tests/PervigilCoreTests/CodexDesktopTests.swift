@@ -333,8 +333,11 @@ private let desktopCommand =
     try FileManager.default.setAttributes(
         [.modificationDate: Date(timeIntervalSince1970: 1_900_000_000)], ofItemAtPath: other.path)
 
-    // Pin "now" inside that calendar day so today/yesterday lookup hits `day`.
-    let now = Date(timeIntervalSince1970: 1_787_529_600) // 2026-08-24 00:00 UTC+0 approx
+    // Pin "now" at local noon on that calendar day so today/yesterday lookup
+    // hits `day` regardless of the test host's timezone.
+    var cal = Calendar(identifier: .gregorian)
+    cal.timeZone = .current
+    let now = cal.date(from: DateComponents(year: 2026, month: 8, day: 24, hour: 12))!
     let found = PSAgentActivityMonitor.codexRolloutWrite(
         forSessionId: sessionId, home: root.path, now: now)
     #expect(found == written)

@@ -113,7 +113,29 @@ private func makeController(now: @escaping () -> Date) -> SessionController {
     #expect(info("PreventUserIdleDisplaySleep").effect == "Preventing display sleep")
     #expect(info("PreventUserIdleSystemSleep").effect == "Preventing system sleep")
     #expect(info("NoIdleSleepAssertion").effect == "Preventing system sleep")
+    #expect(info("UserIsActive").effect == "Declaring the user active")
     #expect(info("SomeInternalBookkeepingType").effect == nil)
+}
+
+@Test func topExternalAssertionSkipsUserIsActiveAndRanksSleepHoldsFirst() {
+    let myPID: Int32 = 42
+    let own = PowerAssertionInfo(id: "own", pid: myPID, processName: "Pervigil", type: "PreventUserIdleSystemSleep", name: "own")
+    let hid = PowerAssertionInfo(id: "hid", pid: 10, processName: "WindowServer", type: "UserIsActive", name: "hid")
+    let bg = PowerAssertionInfo(id: "bg", pid: 11, processName: "Backup", type: "BackgroundTask", name: "bg")
+    let disk = PowerAssertionInfo(id: "disk", pid: 12, processName: "DiskAgent", type: "PreventDiskIdle", name: "disk")
+    let display = PowerAssertionInfo(id: "disp", pid: 13, processName: "Zoom", type: "PreventUserIdleDisplaySleep", name: "call")
+    let system = PowerAssertionInfo(id: "sys", pid: 14, processName: "Zebra", type: "PreventUserIdleSystemSleep", name: "encode")
+
+    // Own assertions and transient UserIsActive never surface on the menu line.
+    #expect(PowerAssertionInfo.topExternal(in: [own, hid], excludingPID: myPID) == nil)
+    // System sleep hold outranks alphabetically earlier background, disk, display, and UserIsActive assertions.
+    #expect(PowerAssertionInfo.topExternal(in: [own, bg, disk, hid, display, system], excludingPID: myPID) == system)
+    // Without a system hold, display sleep outranks disk and background tasks.
+    #expect(PowerAssertionInfo.topExternal(in: [bg, disk, hid, display], excludingPID: myPID) == display)
+    // Without sleep holds, disk outranks background task.
+    #expect(PowerAssertionInfo.topExternal(in: [bg, disk, hid], excludingPID: myPID) == disk)
+    // BackgroundTask still surfaces if nothing stronger is held.
+    #expect(PowerAssertionInfo.topExternal(in: [hid, bg], excludingPID: myPID) == bg)
 }
 
 @Test func realAssertionListerReadsWithoutCrashing() {
