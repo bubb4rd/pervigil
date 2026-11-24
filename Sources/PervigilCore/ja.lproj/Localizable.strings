@@ -323,3 +323,6 @@
 "The screen turns off when the lid closes. Remote sessions see a turned-off screen." = "ふたを閉じると画面がオフになります。リモートセッションでは画面がオフに見えます。";
 "The screen stays black at 0% brightness so Screen Sharing and remote sessions keep working." = "画面は輝度 0% の黒画面のまま維持され、画面共有やリモートセッションが継続します。";
 "Pervigil leaves the screen alone when the lid closes." = "ふたを閉じても Pervigil は画面を変更しません。";
+"Paused, the Mac went to sleep" = "一時停止、Mac がスリープ";
+"Resumed after sleep" = "スリープ後に再開";
+"Pervigil quit" = "Pervigil を終了";

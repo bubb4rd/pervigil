@@ -323,3 +323,6 @@
 "The screen turns off when the lid closes. Remote sessions see a turned-off screen." = "A képernyő kikapcsol, amikor becsukod a fedelet. A távoli munkamenetek kikapcsolt képernyőt látnak.";
 "The screen stays black at 0% brightness so Screen Sharing and remote sessions keep working." = "A képernyő 0% fényerőn fekete marad, hogy a Képernyőmegosztás és a távoli munkamenetek tovább működjenek.";
 "Pervigil leaves the screen alone when the lid closes." = "A Pervigil nem nyúl a képernyőhöz, amikor becsukod a fedelet.";
+"Paused, the Mac went to sleep" = "Szüneteltetve, a Mac alvó módba lépett";
+"Resumed after sleep" = "Folytatva alvás után";
+"Pervigil quit" = "A Pervigil kilépett";

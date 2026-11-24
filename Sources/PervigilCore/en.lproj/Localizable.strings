@@ -323,3 +323,6 @@
 "The screen turns off when the lid closes. Remote sessions see a turned-off screen." = "The screen turns off when the lid closes. Remote sessions see a turned-off screen.";
 "The screen stays black at 0% brightness so Screen Sharing and remote sessions keep working." = "The screen stays black at 0% brightness so Screen Sharing and remote sessions keep working.";
 "Pervigil leaves the screen alone when the lid closes." = "Pervigil leaves the screen alone when the lid closes.";
+"Paused, the Mac went to sleep" = "Paused, the Mac went to sleep";
+"Resumed after sleep" = "Resumed after sleep";
+"Pervigil quit" = "Pervigil quit";

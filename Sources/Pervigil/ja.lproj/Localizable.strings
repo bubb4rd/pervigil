@@ -1184,5 +1184,6 @@
 "Keeps the screen lit while Pervigil holds the Mac awake. When off, the Mac stays awake while the screen turns off on its normal schedule." = "Pervigil が Mac のスリープを防いでいる間、画面を点灯したままにします。オフの場合、Mac は起動したままで画面は通常どおりオフになります。";
 "Follows the session while “Only during keep-awake” is on." = "「スリープ防止中のみ」がオンの間はセッションに連動します。";
 "Enable “Only during keep-awake” so closed-display follows each keep-awake session (your triggers or a manual session) and turns off when nothing is holding the Mac awake." = "「スリープ防止中のみ」を有効にすると、クラムシェル動作が各セッション（トリガーまたは手動）に連動し、保持するものがなくなるとオフになります。";
+"Pervigil stopped unexpectedly" = "Pervigil が予期せず停止";
 "Stays awake" = "スリープしない";
 "Turns off" = "オフになる";

@@ -323,3 +323,6 @@
 "The screen turns off when the lid closes. Remote sessions see a turned-off screen." = "Kapak kapandığında ekran kapanır. Uzak oturumlar kapalı bir ekran görür.";
 "The screen stays black at 0% brightness so Screen Sharing and remote sessions keep working." = "Ekran Paylaşımı ve uzak oturumların çalışmaya devam etmesi için ekran %0 parlaklıkta siyah kalır.";
 "Pervigil leaves the screen alone when the lid closes." = "Kapak kapandığında Pervigil ekrana dokunmaz.";
+"Paused, the Mac went to sleep" = "Duraklatıldı, Mac uyku moduna geçti";
+"Resumed after sleep" = "Uykudan sonra devam edildi";
+"Pervigil quit" = "Pervigil kapatıldı";

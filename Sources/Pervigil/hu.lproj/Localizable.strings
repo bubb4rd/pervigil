@@ -1184,5 +1184,6 @@
 "Keeps the screen lit while Pervigil holds the Mac awake. When off, the Mac stays awake while the screen turns off on its normal schedule." = "Világítva tartja a képernyőt, amíg a Pervigil ébren tartja a Macet. Kikapcsolva a Mac ébren marad, a képernyő pedig a szokásos ütemezés szerint kikapcsol.";
 "Follows the session while “Only during keep-awake” is on." = "Követi a munkamenetet, amíg a „Csak ébrentartás közben” be van kapcsolva.";
 "Enable “Only during keep-awake” so closed-display follows each keep-awake session (your triggers or a manual session) and turns off when nothing is holding the Mac awake." = "Kapcsold be a „Csak ébrentartás közben” opciót, hogy a csukott fedeles mód kövesse minden ébrentartási munkamenetet (triggerek vagy kézi), és kikapcsoljon, ha semmi nem tartja ébren a Macet.";
+"Pervigil stopped unexpectedly" = "A Pervigil váratlanul leállt";
 "Stays awake" = "Ébren marad";
 "Turns off" = "Kikapcsol";

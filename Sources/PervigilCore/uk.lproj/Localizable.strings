@@ -323,3 +323,6 @@
 "The screen turns off when the lid closes. Remote sessions see a turned-off screen." = "Екран вимикається після закриття кришки. Віддалені сеанси бачать вимкнений екран.";
 "The screen stays black at 0% brightness so Screen Sharing and remote sessions keep working." = "Екран залишається чорним на 0% яскравості, щоб Спільний екран і віддалені сеанси продовжували працювати.";
 "Pervigil leaves the screen alone when the lid closes." = "Pervigil не чіпає екран після закриття кришки.";
+"Paused, the Mac went to sleep" = "Призупинено, Mac перейшов у режим сну";
+"Resumed after sleep" = "Поновлено після сну";
+"Pervigil quit" = "Pervigil закрито";

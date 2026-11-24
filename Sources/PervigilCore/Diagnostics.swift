@@ -23,6 +23,11 @@ public enum SessionEventKind: String, Codable, Equatable, Sendable {
     case leaseReleased
     case batteryPaused
     case thermalPaused
+    /// macOS went to sleep: the session stood down until a full wake.
+    case sleepPaused
+    /// The app quit (or, written on the next launch, died) mid-session, so
+    /// awake stats close the session where it really ended.
+    case appExited
     case startRefused
 }
 
