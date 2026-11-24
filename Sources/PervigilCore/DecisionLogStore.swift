@@ -43,6 +43,18 @@ public protocol LogPersisting: AnyObject, Sendable {
     func load() -> Data
     /// Replace the whole file (used after rotation).
     func replace(_ data: Data)
+    /// The last `maxBytes` of the file (the first line may be cut).
+    func loadTail(maxBytes: Int) -> Data
+    /// Overwrite the liveness marker (see ``DecisionLogPersister/heartbeat(at:)``).
+    func writeHeartbeat(_ data: Data)
+    /// The liveness marker, or empty when missing.
+    func loadHeartbeat() -> Data
+}
+
+public extension LogPersisting {
+    func loadTail(maxBytes: Int) -> Data { load().suffix(maxBytes) }
+    func writeHeartbeat(_ data: Data) {}
+    func loadHeartbeat() -> Data { Data() }
 }
 
 /// Real store: `~/Library/Application Support/Pervigil/decision-log.jsonl`.
@@ -84,6 +96,43 @@ public final class FileLogStore: LogPersisting, @unchecked Sendable {
         lock.lock()
         defer { lock.unlock() }
         try? data.write(to: fileURL, options: .atomic)
+    }
+
+    public func loadTail(maxBytes: Int) -> Data {
+        lock.lock()
+        defer { lock.unlock() }
+        guard let handle = try? FileHandle(forReadingFrom: fileURL) else { return Data() }
+        defer { try? handle.close() }
+        let size = (try? handle.seekToEnd()) ?? 0
+        let start = size > UInt64(maxBytes) ? size - UInt64(maxBytes) : 0
+        try? handle.seek(toOffset: start)
+        return (try? handle.readToEnd()) ?? Data()
+    }
+
+    /// `decision-log.alive`, next to the log.
+    public var heartbeatURL: URL {
+        fileURL.deletingLastPathComponent().appendingPathComponent("decision-log.alive", isDirectory: false)
+    }
+
+    public func writeHeartbeat(_ data: Data) {
+        try? data.write(to: heartbeatURL, options: .atomic)
+    }
+
+    public func loadHeartbeat() -> Data {
+        (try? Data(contentsOf: heartbeatURL)) ?? Data()
+    }
+}
+
+/// Where a session the previous process never closed really ended. A crash,
+/// a force quit, or a kill from Xcode skips `applicationWillTerminate`, so the
+/// log is left ending on a start that awake stats can't pair.
+public enum DanglingSession {
+    /// The previous process's last heartbeat when it falls inside the
+    /// session, else the start itself: with no evidence the session outlived
+    /// its start, counting nothing beats counting the whole time it was down.
+    public static func closingDate(start: Date, lastAlive: Date?, now: Date) -> Date {
+        guard let lastAlive, lastAlive > start else { return start }
+        return min(lastAlive, now)
     }
 }
 
@@ -197,6 +246,45 @@ public final class DecisionLogPersister {
         } else {
             knownFileBytes = size
         }
+    }
+
+    /// Minimum spacing between heartbeat writes. Bounds how much of a crashed
+    /// session the next launch can miss.
+    public static let heartbeatInterval: TimeInterval = 30
+    private var lastHeartbeatWrite: Date?
+
+    /// Record that a session is still running. The host calls this every tick
+    /// while active; writes are throttled to ``heartbeatInterval`` (a clock
+    /// that jumped backwards writes at once).
+    public func heartbeat(at date: Date) {
+        if let last = lastHeartbeatWrite, date >= last,
+           date.timeIntervalSince(last) < Self.heartbeatInterval { return }
+        lastHeartbeatWrite = date
+        store.writeHeartbeat(Data(String(date.timeIntervalSince1970).utf8))
+    }
+
+    /// The previous heartbeat on disk, if any.
+    public func lastHeartbeat() -> Date? {
+        guard let text = String(data: store.loadHeartbeat(), encoding: .utf8),
+              let seconds = TimeInterval(text.trimmingCharacters(in: .whitespacesAndNewlines))
+        else { return nil }
+        return Date(timeIntervalSince1970: seconds)
+    }
+
+    /// At launch, before this process records anything or heartbeats: when the
+    /// log ends on a start the previous process never closed (it crashed or
+    /// was killed), append the stop at its last heartbeat. Reads only the
+    /// file's tail, so it stays cheap on the launch path. Returns the event
+    /// written, if any.
+    @discardableResult
+    public func closeDanglingSession(reason: String, now: Date = Date()) -> PersistedSessionEvent? {
+        guard let last = DecisionLogCodec.decode(store.loadTail(maxBytes: 4096)).last,
+              last.began
+        else { return nil }
+        let end = DanglingSession.closingDate(start: last.date, lastAlive: lastHeartbeat(), now: now)
+        let event = PersistedSessionEvent(date: end, began: false, reason: reason, kind: .appExited)
+        append(event)
+        return event
     }
 }
 

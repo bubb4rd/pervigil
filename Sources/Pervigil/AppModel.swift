@@ -1238,6 +1238,21 @@ final class AppModel {
         awakeStats = AwakeStatsAggregator.summarize(events: statsHistory)
     }
 
+    /// At launch, before the ticker or any session event: close a session the
+    /// previous process left open (crash, force quit, kill) at its last
+    /// heartbeat, so awake stats neither drop nor stretch it. Must run before
+    /// ``hydrateDecisionLog()`` so the healed stop is part of that load.
+    func closeDanglingDecisionLogSession() {
+        logPersister.closeDanglingSession(reason: L("Pervigil stopped unexpectedly"))
+    }
+
+    /// Per tick: mark the running session alive for the next launch's
+    /// ``closeDanglingDecisionLogSession()``. Throttled in the persister.
+    func decisionLogHeartbeat() {
+        guard session.isActive else { return }
+        logPersister.heartbeat(at: Date())
+    }
+
     /// React to ``NSWorkspace.didWakeNotification``: if the wake matches a
     /// Pervigil schedule with wake-and-brew on, start a session (or apply a
     /// preset).

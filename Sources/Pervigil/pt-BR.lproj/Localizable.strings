@@ -1184,5 +1184,6 @@
 "Keeps the screen lit while Pervigil holds the Mac awake. When off, the Mac stays awake while the screen turns off on its normal schedule." = "Mantém a tela acesa enquanto o Pervigil mantém o Mac acordado. Quando desativada, o Mac fica acordado enquanto a tela desliga no horário normal.";
 "Follows the session while “Only during keep-awake” is on." = "Acompanha a sessão enquanto “Só durante a vigília” estiver ativado.";
 "Enable “Only during keep-awake” so closed-display follows each keep-awake session (your triggers or a manual session) and turns off when nothing is holding the Mac awake." = "Ative “Só durante a vigília” para que o modo de tampa fechada acompanhe cada sessão (seus gatilhos ou uma sessão manual) e desligue quando nada mantiver o Mac acordado.";
+"Pervigil stopped unexpectedly" = "O Pervigil parou inesperadamente";
 "Stays awake" = "Fica acordado";
 "Turns off" = "Desliga";

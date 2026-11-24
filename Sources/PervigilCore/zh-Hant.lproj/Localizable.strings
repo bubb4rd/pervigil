@@ -323,3 +323,6 @@
 "The screen turns off when the lid closes. Remote sessions see a turned-off screen." = "闔蓋時螢幕會關閉。遠端工作階段會看到已關閉的螢幕。";
 "The screen stays black at 0% brightness so Screen Sharing and remote sessions keep working." = "螢幕以 0% 亮度維持黑畫面，讓「螢幕共享」與遠端工作階段繼續運作。";
 "Pervigil leaves the screen alone when the lid closes." = "闔蓋時 Pervigil 不會更動螢幕狀態。";
+"Paused, the Mac went to sleep" = "已暫停，Mac 已進入睡眠";
+"Resumed after sleep" = "睡眠後已恢復";
+"Pervigil quit" = "Pervigil 已結束";

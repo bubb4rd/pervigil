@@ -195,6 +195,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
             self?.model.connectivityTick()
             self?.model.speakerMuteTick()
             self?.model.pulseMenuPanelIfVisible()
+            self?.model.decisionLogHeartbeat()
         }
     )
     /// Listens for the Control Center toggle's Darwin doorbell.
@@ -251,6 +252,9 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         statusItemBridge.install()
         // Give the Shortcuts intents their way to the live model.
         IntentContext.model = model
+        // A session the previous process left open (crash, kill) is closed at
+        // its last heartbeat first, before anything here can log or heartbeat.
+        model.closeDanglingDecisionLogSession()
         // Activity history / awake stats: after the menu bar chrome is up, not
         // on AppModel.init's critical path.
         model.hydrateDecisionLog()
@@ -296,7 +300,31 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         ) { [weak model] _ in
             // `queue: .main` guarantees the main thread; assert that to the
             // compiler rather than letting the call warn as implicitly async.
-            MainActor.assumeIsolated { model?.handleSystemWake() }
+            MainActor.assumeIsolated {
+                // A full wake: lift the sleep stand-down before wake-and-brew
+                // and automation runs decide what to hold.
+                model?.session.systemDidWake()
+                model?.handleSystemWake()
+            }
+        }
+        // Sleep stand-down: once macOS sleeps, hold nothing until a full wake.
+        // Without this, a two-second maintenance dark wake could take an
+        // assertion and keep a closed, unattended Mac running for hours.
+        NSWorkspace.shared.notificationCenter.addObserver(
+            forName: NSWorkspace.willSleepNotification,
+            object: nil,
+            queue: .main
+        ) { [weak model] _ in
+            MainActor.assumeIsolated { model?.session.systemWillSleep() }
+        }
+        // A lit display means a user-visible wake (a dark wake never lights
+        // one), so this also lifts the stand-down if didWake is ever missed.
+        NSWorkspace.shared.notificationCenter.addObserver(
+            forName: NSWorkspace.screensDidWakeNotification,
+            object: nil,
+            queue: .main
+        ) { [weak model] _ in
+            MainActor.assumeIsolated { model?.session.systemDidWake() }
         }
         // The Control Center toggle: consume a command that may have launched
         // us, then keep listening while running.
@@ -396,6 +424,9 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         // "stopped" into the shared widget state: that copy owns it and may be
         // keeping the Mac awake right now.
         if yieldingToPeer { return }
+        // Close the running session in the decision log, so awake stats end
+        // it here instead of at whatever the next launch logs.
+        model.session.recordAppExit()
         // Unlock before we go so a quit mid-wipe does not leave keys dead.
         // Deliberately the synchronous prompt-free restore: termination cannot
         // await a detached task, and a password dialog during quit would be

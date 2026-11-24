@@ -102,7 +102,11 @@ public enum EventHookPolicy {
             return [.batteryPaused, .sessionEnded]
         case .thermalPaused:
             return [.thermalPaused, .sessionEnded]
-        case .startRefused, .none:
+        case .sleepPaused:
+            return [.sessionEnded]
+        // Bookkeeping for awake stats: the app is exiting (or already died),
+        // so there is no point spawning a hook process for it.
+        case .appExited, .startRefused, .none:
             return []
         }
     }

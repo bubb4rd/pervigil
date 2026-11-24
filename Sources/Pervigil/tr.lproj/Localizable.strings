@@ -1184,5 +1184,6 @@
 "Keeps the screen lit while Pervigil holds the Mac awake. When off, the Mac stays awake while the screen turns off on its normal schedule." = "Pervigil Mac’i uyanık tutarken ekranı açık tutar. Kapalıyken Mac uyanık kalır, ekran ise normal zamanlamasına göre kapanır.";
 "Follows the session while “Only during keep-awake” is on." = "“Yalnızca uyanık tutarken” açık olduğu sürece oturumu izler.";
 "Enable “Only during keep-awake” so closed-display follows each keep-awake session (your triggers or a manual session) and turns off when nothing is holding the Mac awake." = "Kapak kapalı modunun her uyanık tutma oturumunu (tetikleyiciler veya manuel oturum) izlemesi ve Mac’i uyanık tutan bir şey kalmadığında kapanması için “Yalnızca uyanık tutarken” seçeneğini açın.";
+"Pervigil stopped unexpectedly" = "Pervigil beklenmedik şekilde durdu";
 "Stays awake" = "Uyanık kalır";
 "Turns off" = "Kapanır";

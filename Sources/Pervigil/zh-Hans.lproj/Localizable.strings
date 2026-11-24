@@ -1184,5 +1184,6 @@
 "Keeps the screen lit while Pervigil holds the Mac awake. When off, the Mac stays awake while the screen turns off on its normal schedule." = "当 Pervigil 保持 Mac 唤醒时让屏幕保持亮起。关闭后，Mac 仍保持唤醒，屏幕会按常规计划关闭。";
 "Follows the session while “Only during keep-awake” is on." = "启用“仅在保持唤醒期间”后会随会话自动开关。";
 "Enable “Only during keep-awake” so closed-display follows each keep-awake session (your triggers or a manual session) and turns off when nothing is holding the Mac awake." = "启用“仅在保持唤醒期间”，让合盖运行跟随每次保持唤醒会话（触发条件或手动会话），并在没有任何内容保持 Mac 唤醒时自动关闭。";
+"Pervigil stopped unexpectedly" = "Pervigil 意外停止";
 "Stays awake" = "保持唤醒";
 "Turns off" = "自动关闭";

@@ -291,7 +291,17 @@ public final class SessionController {
     /// The thermal twin of ``batteryRefusedStarts``.
     public private(set) var thermalRefusedStarts = 0
 
-    /// A manual session a safety pause (battery or thermal) force-stopped,
+    /// True from ``systemWillSleep()`` until ``systemDidWake()``. macOS slept
+    /// despite (or without) our assertions, so it was a forced sleep (lid,
+    /// Apple menu, low battery) or an idle sleep nothing was holding off.
+    /// While it lasts the Mac is asleep or in a dark wake: a two-second
+    /// maintenance window with the display off and nobody at the keyboard.
+    /// Taking an assertion there keeps the Mac in that dark wake for hours on
+    /// battery, so every source (manual, triggers, leases) stands down until
+    /// a full, user-visible wake. Public so the UI can explain the pause.
+    public private(set) var pausedBySleep = false
+
+    /// A manual session a safety pause (battery, thermal, sleep) force-stopped,
     /// remembered so ``reconcile`` restarts it when the pause lifts. Only
     /// manual sessions need this: trigger-gated and lease-held sessions
     /// reactivate through the gate and lease demand on the next tick, and
@@ -401,6 +411,9 @@ public final class SessionController {
         leaseHeld = false
         // Fresh user intent supersedes anything a safety pause remembered.
         safetyPausedManual = nil
+        // An explicit start means someone wants the Mac up now (a click, or
+        // a command they scripted), so it ends the sleep stand-down too.
+        pausedBySleep = false
         let restarted = isActive
         if let options { self.options = options }
         self.mode = mode
@@ -436,6 +449,50 @@ public final class SessionController {
     /// End the current session and release all assertions.
     public func stop(cause: SessionCause = .manual) {
         stop(reason: cause == .manual ? L("Stopped manually") : L("Stopped by a command"))
+    }
+
+    // MARK: - System sleep
+
+    /// The host calls this from `NSWorkspace.willSleepNotification`. Stops a
+    /// running session (logged, so awake stats end it here) and latches
+    /// ``pausedBySleep`` so a dark wake can't re-take an assertion. A manual
+    /// session is remembered and resumes on the full wake, keeping its
+    /// original start so a timed deadline that passed during sleep still ends.
+    public func systemWillSleep() {
+        guard !pausedBySleep else { return }
+        pausedBySleep = true
+        // A just-ended session's pending end action must not fire on wake.
+        cancelPendingEndAction()
+        if isActive {
+            safetyStop(
+                reason: L("Paused, the Mac went to sleep"),
+                effects: .safetyPause(kind: .sleepPaused),
+                notice: nil,
+                resumeReason: L("Resumed after sleep")
+            )
+        }
+    }
+
+    /// The host calls this on a full wake (`NSWorkspace.didWakeNotification`,
+    /// or `screensDidWakeNotification`: a dark wake never lights a display).
+    /// The next reconcile resumes whatever still wants the Mac awake.
+    public func systemDidWake() {
+        pausedBySleep = false
+    }
+
+    /// The host calls this from `applicationWillTerminate`. Logs the end of a
+    /// running session without touching state or firing end effects (the
+    /// process is going away; the OS drops its assertions). Without it the
+    /// log keeps a dangling start that awake stats can't close correctly.
+    public func recordAppExit() {
+        guard isActive else { return }
+        log.record(
+            began: false,
+            reason: L("Pervigil quit"),
+            kind: .appExited,
+            batteryPercent: lastBatteryPercent,
+            at: now()
+        )
     }
 
     /// What effects a stop may fire beyond releasing assertions.
@@ -506,7 +563,7 @@ public final class SessionController {
         }
     }
 
-    /// Force-stop for a safety pause (battery or thermal), remembering a
+    /// Force-stop for a safety pause (battery, thermal, sleep), remembering a
     /// manual session so the pause lifting restarts it. Trigger-gated and
     /// lease-held sessions reactivate through the gate and lease demand, so
     /// only a session the manual toggle owns is recorded; anything else would
@@ -735,6 +792,14 @@ public final class SessionController {
             lastBatteryPercent = percent
         case .onAC, .unknown:
             lastBatteryPercent = nil
+        }
+
+        // Asleep or in a dark wake (see ``pausedBySleep``): hold nothing until
+        // the host reports a full wake. Keep the gate ticking, as the safety
+        // pauses below do, so the first decision after waking is current.
+        if pausedBySleep {
+            triggerGate?.tick()
+            return
         }
 
         if pauseBelowBatteryPercent == nil {

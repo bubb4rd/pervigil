@@ -73,6 +73,7 @@ from catalog_v121_app_windows import APP as V121_APP_WINDOWS
 from catalog_v121_core import CORE as V121_CORE
 from catalog_v122_quit_sleep import APP as V122_QUIT_SLEEP_APP, CORE as V122_QUIT_SLEEP_CORE
 from catalog_v125_battery_resume import CORE as V125_BATTERY_RESUME_CORE
+from catalog_v211_sleep_accounting import APP as V211_SLEEP_APP, CORE as V211_SLEEP_CORE
 from catalog_v201_admin_prompts import APP as V201_ADMIN_PROMPTS_APP, CORE as V201_ADMIN_PROMPTS_CORE
 from catalog_v202_polish import (
     APP as V202_POLISH_APP,
@@ -142,6 +143,8 @@ def merge_extra_langs():
     CORE.update(V201_ADMIN_PROMPTS_CORE)
     APP.update(V202_POLISH_APP)
     CORE.update(V202_POLISH_CORE)
+    APP.update(V211_SLEEP_APP)
+    CORE.update(V211_SLEEP_CORE)
     for key in V202_SHARED_FROM_CORE_TO_APP:
         APP[key] = dict(CORE[key])
 

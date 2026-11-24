@@ -323,3 +323,6 @@
 "The screen turns off when the lid closes. Remote sessions see a turned-off screen." = "Lo schermo si spegne quando chiudi il coperchio. Le sessioni remote vedono uno schermo spento.";
 "The screen stays black at 0% brightness so Screen Sharing and remote sessions keep working." = "Lo schermo resta nero allo 0% di luminosità così Condivisione schermo e le sessioni remote continuano a funzionare.";
 "Pervigil leaves the screen alone when the lid closes." = "Pervigil non tocca lo schermo quando chiudi il coperchio.";
+"Paused, the Mac went to sleep" = "In pausa, il Mac è andato in stop";
+"Resumed after sleep" = "Ripreso dopo lo stop";
+"Pervigil quit" = "Pervigil è stato chiuso";
