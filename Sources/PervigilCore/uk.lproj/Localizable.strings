@@ -313,3 +313,13 @@
 "Needs helper" = "Потрібен помічник";
 "Read Apple's Game Mode guide" = "Прочитати посібник Apple щодо режиму гри";
 "Read the AWDL write-up" = "Прочитати статтю про AWDL";
+"With keep-awake" = "Під час утримання";
+"Never sleeps" = "Ніколи не засинає";
+"Dims when idle" = "Затемнюється при простої";
+"Turns off" = "Вимикається";
+"Turn off" = "Вимкнути";
+"Black, powered" = "Чорний, але активний";
+"Don't change" = "Не змінювати";
+"The screen turns off when the lid closes. Remote sessions see a turned-off screen." = "Екран вимикається після закриття кришки. Віддалені сеанси бачать вимкнений екран.";
+"The screen stays black at 0% brightness so Screen Sharing and remote sessions keep working." = "Екран залишається чорним на 0% яскравості, щоб Спільний екран і віддалені сеанси продовжували працювати.";
+"Pervigil leaves the screen alone when the lid closes." = "Pervigil не чіпає екран після закриття кришки.";

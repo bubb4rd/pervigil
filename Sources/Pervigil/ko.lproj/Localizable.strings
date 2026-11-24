@@ -988,7 +988,7 @@
 "Show %d more agents" = "에이전트 %d개 더 보기";
 "AI agent working" = "AI 에이전트 작업 중";
 "Sleeps as usual" = "평소대로 잠자기";
-"Normally a MacBook sleeps the moment you shut the lid unless a display is attached. This keeps it running with the lid shut and nothing plugged in, on power or battery. “With each session” turns it on when a keep-awake session starts and off when it ends or Pervigil quits, even after a crash. “Always” flips a system setting (pmset disablesleep) that stays in effect until you turn it off, so don't leave a Mac on battery in a bag. “If the lid shuts” picks what the screen does: turn off, stay powered at zero brightness so a remote session stays live, or leave it alone. Both modes need administrator rights: silent with the administrator helper, otherwise macOS asks for your password once per app run." = "일반적으로 MacBook은 디스플레이가 연결되어 있지 않으면 덮개를 닫는 순간 잠듭니다. 이 기능은 덮개를 닫고 아무것도 연결하지 않은 상태에서도 전원이든 배터리든 계속 실행되도록 유지합니다. “세션마다”는 깨어 있게 유지 세션이 시작될 때 켜고, 세션이 끝나거나 Pervigil이 종료될 때 끕니다(충돌 후에도). “항상”은 시스템 설정(pmset disablesleep)을 전환하며 끌 때까지 계속 적용되므로, 배터리로 작동하는 Mac을 가방 안에 두지 마십시오. “덮개를 닫으면”에서는 화면 동작을 선택합니다. 끄기, 원격 세션이 유지되도록 밝기 0으로 전원 유지, 그대로 두기 중 하나입니다. 두 모드 모두 관리자 권한이 필요합니다. 관리자 도우미가 있으면 조용히 처리되고, 없으면 macOS가 앱 실행당 한 번 암호를 요청합니다.";
+"Normally a MacBook sleeps the moment you shut the lid unless a display is attached. This keeps it running with the lid shut and nothing plugged in, on power or battery. “With each session” turns it on when a keep-awake session starts and off when it ends or Pervigil quits, even after a crash. “Always” flips a system setting (pmset disablesleep) that stays in effect until you turn it off, so don't leave a Mac on battery in a bag. “Screen when closed” picks what the screen does: turn off, stay powered at zero brightness so a remote session stays live, or leave it alone. Both modes need administrator rights: silent with the administrator helper, otherwise macOS asks for your password once per app run." = "일반적으로 MacBook은 디스플레이가 연결되어 있지 않으면 덮개를 닫는 순간 잠듭니다. 이 기능은 덮개를 닫고 아무것도 연결하지 않은 상태에서도 전원이든 배터리든 계속 실행되도록 유지합니다. “세션마다”는 깨어 있게 유지 세션이 시작될 때 켜고, 세션이 끝나거나 Pervigil이 종료될 때 끕니다(충돌 후에도). “항상”은 시스템 설정(pmset disablesleep)을 전환하며 끌 때까지 계속 적용되므로, 배터리로 작동하는 Mac을 가방 안에 두지 마십시오. “닫혔을 때 화면”에서는 화면 동작을 선택합니다. 끄기, 원격 세션이 유지되도록 밝기 0으로 전원 유지, 그대로 두기 중 하나입니다. 두 모드 모두 관리자 권한이 필요합니다. 관리자 도우미가 있으면 조용히 처리되고, 없으면 macOS가 앱 실행당 한 번 암호를 요청합니다.";
 "%@ before the end" = "종료 %@ 전";
 "%@ left" = "%@ 남음";
 "%@ window" = "%@ 시간 범위";
@@ -1108,7 +1108,7 @@
 "Status, triggers or durations, guards, and the footer." = "상태, 트리거 또는 지속 시간, 보호, 하단 영역.";
 "Stays on until you turn it off, even if Pervigil quits. Do not leave it on in a bag." = "Pervigil이 종료되어도 끌 때까지 켜진 상태로 유지됩니다. 가방 안에서는 켜 두지 마십시오.";
 "Still hot" = "계속 고온";
-"Stops the Mac from sleeping at all. “With each session” turns it on while a keep-awake session runs and off when it ends or Pervigil quits, even after a crash. “Always” flips a system setting (pmset disablesleep) that stays in effect until you turn it off, even if Pervigil quits. The display still sleeps as usual. Both need administrator rights: silent with the administrator helper, otherwise macOS asks for your password once per app run." = "Mac이 전혀 잠들지 않도록 합니다. “세션마다”는 깨어 있게 유지 세션이 실행되는 동안 켜고, 세션이 끝나거나 Pervigil이 종료될 때 끕니다(충돌 후에도). “항상”은 시스템 설정(pmset disablesleep)을 전환하며, Pervigil이 종료되어도 끌 때까지 계속 적용됩니다. 디스플레이는 평소처럼 잠듭니다. 둘 다 관리자 권한이 필요합니다. 관리자 도우미가 있으면 조용히 처리되고, 없으면 macOS가 앱 실행당 한 번 암호를 요청합니다.";
+"Stops the Mac from sleeping at all. “With each session” turns it on while a keep-awake session runs and off when it ends or Pervigil quits, even after a crash. “Always” flips a system setting (pmset disablesleep) that stays in effect until you turn it off, even if Pervigil quits. The screen still turns off as usual. Both need administrator rights: silent with the administrator helper, otherwise macOS asks for your password once per app run." = "Mac이 전혀 잠들지 않도록 합니다. “세션마다”는 깨어 있게 유지 세션이 실행되는 동안 켜고, 세션이 끝나거나 Pervigil이 종료될 때 끕니다(충돌 후에도). “항상”은 시스템 설정(pmset disablesleep)을 전환하며, Pervigil이 종료되어도 끌 때까지 계속 적용됩니다. 화면은 평소처럼 꺼집니다. 둘 다 관리자 권한이 필요합니다. 관리자 도우미가 있으면 조용히 처리되고, 없으면 macOS가 앱 실행당 한 번 암호를 요청합니다.";
 "Stops" = "중지";
 "Teach your agent to hold a lease for its own work." = "에이전트가 자신의 작업 동안 임대를 보유하도록 설정하십시오.";
 "The Mac keeps running and the screen stays lit: right for a dashboard or a video, and the fastest way to drain a battery." = "Mac이 계속 실행되고 화면도 켜져 있습니다. 대시보드나 동영상에 적합하지만 배터리가 가장 빨리 소모됩니다.";
@@ -1158,7 +1158,7 @@
 "Your Mac has been kept awake for %@." = "Mac이 %@ 동안 깨어 있게 유지되었습니다.";
 "Your keep-awake session ends in about %@." = "깨어 있게 유지 세션이 약 %@ 후에 종료됩니다.";
 "Your keep-awake session has ended." = "깨어 있게 유지 세션이 종료되었습니다.";
-"Closed Lid needs the helper" = "덮개 닫힘에는 도우미가 필요합니다";
+"Lid Closed needs the helper" = "덮개 닫힘에는 도우미가 필요합니다";
 "Never Sleep needs the helper" = "잠자기 안 함에는 도우미가 필요합니다";
 "Install the administrator helper to follow sessions automatically, or choose Allow Once in the Pervigil menu." = "관리자 도우미를 설치하면 세션을 자동으로 따릅니다. 또는 Pervigil 메뉴에서 한 번 허용을 선택하세요.";
 "AWDL pause needs the helper" = "AWDL 일시 정지에는 도우미가 필요합니다";
@@ -1171,4 +1171,18 @@
 "Start Using Pervigil" = "Pervigil 시작하기";
 "Scanning Claude Desktop, Codex, and tokenstat.ai. Checked %@." = "Claude Desktop, Codex, tokenstat.ai 스캔 중. 확인됨: %@.";
 "%@, next run %@" = "%@, 다음 실행 %@";
-"Keeps the screen on while Pervigil holds the Mac awake. When off, the screen sleeps on its normal schedule." = "Pervigil이 Mac을 깨어 있게 유지하는 동안 화면을 켜 둡니다. 끄면 화면이 평소 일정대로 잠자기에 들어갑니다.";
+"Lid Closed" = "덮개 닫힘";
+"Screen" = "화면";
+"Only during keep-awake" = "깨어 있게 유지 중에만";
+"Screen when closed" = "닫혔을 때 화면";
+"Your Mac stays awake when closed, even on battery. Turn this off before putting it in a bag." = "덮개를 닫아도 배터리 사용 중에 Mac이 깨어 있습니다. 가방에 넣기 전에 끄세요.";
+"Your Mac stays awake until you turn this off. The screen still turns off as usual." = "이 설정을 끌 때까지 Mac이 깨어 있습니다. 화면은 평소처럼 꺼집니다.";
+"When you step away" = "자리를 비울 때";
+"Stay bright" = "밝게 유지";
+"Dim after %d min" = "%d분 후 어둡게";
+"Screen saver after %d min" = "%d분 후 화면 보호기";
+"Keeps the screen lit while Pervigil holds the Mac awake. When off, the Mac stays awake while the screen turns off on its normal schedule." = "Pervigil이 Mac을 깨어 있게 유지하는 동안 화면을 켜 둡니다. 끄면 Mac은 깨어 있고 화면은 평소 일정대로 꺼집니다.";
+"Follows the session while “Only during keep-awake” is on." = "“깨어 있게 유지 중에만”이 켜져 있는 동안 세션을 따릅니다.";
+"Enable “Only during keep-awake” so closed-display follows each keep-awake session (your triggers or a manual session) and turns off when nothing is holding the Mac awake." = "“깨어 있게 유지 중에만”을 켜면 덮개 닫힘 모드가 각 세션(트리거 또는 수동 세션)을 따르고 Mac을 깨어 있게 유지하는 항목이 없으면 꺼집니다.";
+"Stays awake" = "깨어 있음";
+"Turns off" = "꺼짐";

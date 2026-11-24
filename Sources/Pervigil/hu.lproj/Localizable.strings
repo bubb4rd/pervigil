@@ -988,7 +988,7 @@
 "Show %d more agents" = "További %d ügynök megjelenítése";
 "AI agent working" = "AI-ügynök dolgozik";
 "Sleeps as usual" = "A szokásos módon alszik";
-"Normally a MacBook sleeps the moment you shut the lid unless a display is attached. This keeps it running with the lid shut and nothing plugged in, on power or battery. “With each session” turns it on when a keep-awake session starts and off when it ends or Pervigil quits, even after a crash. “Always” flips a system setting (pmset disablesleep) that stays in effect until you turn it off, so don't leave a Mac on battery in a bag. “If the lid shuts” picks what the screen does: turn off, stay powered at zero brightness so a remote session stays live, or leave it alone. Both modes need administrator rights: silent with the administrator helper, otherwise macOS asks for your password once per app run." = "Egy MacBook rendszerint elalszik, amint becsukja a fedelét, hacsak nincs kijelző csatlakoztatva. Ez csukott fedéllel és semmi csatlakoztatva is működésben tartja, hálózati tápon vagy akkumulátorról. A „Minden munkamenettel” bekapcsolja, amikor egy ébrentartási munkamenet elindul, és kikapcsolja, amikor véget ér, vagy a Pervigil kilép, akár összeomlás után is. A „Mindig” átállít egy rendszerbeállítást (pmset disablesleep), amely addig marad érvényben, amíg ki nem kapcsolja, ezért ne hagyja az akkumulátorról működő Macet egy táskában. A „Ha a fedél becsukódik” azt választja ki, mit tegyen a képernyő: kikapcsol, nulla fényerőn bekapcsolva marad, hogy a távoli munkamenet aktív maradjon, vagy változatlan marad. Mindkét módhoz rendszergazdai jogok kellenek: a rendszergazdai segéddel csendesen működik, egyébként a macOS alkalmazásindításonként egyszer bekéri a jelszavát.";
+"Normally a MacBook sleeps the moment you shut the lid unless a display is attached. This keeps it running with the lid shut and nothing plugged in, on power or battery. “With each session” turns it on when a keep-awake session starts and off when it ends or Pervigil quits, even after a crash. “Always” flips a system setting (pmset disablesleep) that stays in effect until you turn it off, so don't leave a Mac on battery in a bag. “Screen when closed” picks what the screen does: turn off, stay powered at zero brightness so a remote session stays live, or leave it alone. Both modes need administrator rights: silent with the administrator helper, otherwise macOS asks for your password once per app run." = "Egy MacBook rendszerint elalszik, amint becsukja a fedelét, hacsak nincs kijelző csatlakoztatva. Ez csukott fedéllel és semmi csatlakoztatva is működésben tartja, hálózati tápon vagy akkumulátorról. A „Minden munkamenettel” bekapcsolja, amikor egy ébrentartási munkamenet elindul, és kikapcsolja, amikor véget ér, vagy a Pervigil kilép, akár összeomlás után is. A „Mindig” átállít egy rendszerbeállítást (pmset disablesleep), amely addig marad érvényben, amíg ki nem kapcsolja, ezért ne hagyja az akkumulátorról működő Macet egy táskában. A „Képernyő csukva” azt választja ki, mit tegyen a képernyő: kikapcsol, nulla fényerőn bekapcsolva marad, hogy a távoli munkamenet aktív maradjon, vagy változatlan marad. Mindkét módhoz rendszergazdai jogok kellenek: a rendszergazdai segéddel csendesen működik, egyébként a macOS alkalmazásindításonként egyszer bekéri a jelszavát.";
 "%@ before the end" = "A vége előtt %@";
 "%@ left" = "%@ van hátra";
 "%@ window" = "%@ időablak";
@@ -1108,7 +1108,7 @@
 "Status, triggers or durations, guards, and the footer." = "Állapot, triggerek vagy időtartamok, védelmek és a lábléc.";
 "Stays on until you turn it off, even if Pervigil quits. Do not leave it on in a bag." = "Bekapcsolva marad, amíg ki nem kapcsolja, akkor is, ha a Pervigil kilép. Ne hagyja bekapcsolva egy táskában.";
 "Still hot" = "Még mindig forró";
-"Stops the Mac from sleeping at all. “With each session” turns it on while a keep-awake session runs and off when it ends or Pervigil quits, even after a crash. “Always” flips a system setting (pmset disablesleep) that stays in effect until you turn it off, even if Pervigil quits. The display still sleeps as usual. Both need administrator rights: silent with the administrator helper, otherwise macOS asks for your password once per app run." = "Megakadályozza, hogy a Mac egyáltalán elaludjon. A „Minden munkamenettel” bekapcsolja, amíg egy ébrentartási munkamenet fut, és kikapcsolja, amikor véget ér, vagy a Pervigil kilép, akár összeomlás után is. A „Mindig” átállít egy rendszerbeállítást (pmset disablesleep), amely addig marad érvényben, amíg ki nem kapcsolja, akkor is, ha a Pervigil kilép. A kijelző a szokásos módon alszik el. Mindkettőhöz rendszergazdai jogok kellenek: a rendszergazdai segéddel csendesen működik, egyébként a macOS alkalmazásindításonként egyszer bekéri a jelszavát.";
+"Stops the Mac from sleeping at all. “With each session” turns it on while a keep-awake session runs and off when it ends or Pervigil quits, even after a crash. “Always” flips a system setting (pmset disablesleep) that stays in effect until you turn it off, even if Pervigil quits. The screen still turns off as usual. Both need administrator rights: silent with the administrator helper, otherwise macOS asks for your password once per app run." = "Megakadályozza, hogy a Mac egyáltalán elaludjon. A „Minden munkamenettel” bekapcsolja, amíg egy ébrentartási munkamenet fut, és kikapcsolja, amikor véget ér, vagy a Pervigil kilép, akár összeomlás után is. A „Mindig” átállít egy rendszerbeállítást (pmset disablesleep), amely addig marad érvényben, amíg ki nem kapcsolja, akkor is, ha a Pervigil kilép. A képernyő a szokásos módon kikapcsol. Mindkettőhöz rendszergazdai jogok kellenek: a rendszergazdai segéddel csendesen működik, egyébként a macOS alkalmazásindításonként egyszer bekéri a jelszavát.";
 "Stops" = "Leállítások";
 "Teach your agent to hold a lease for its own work." = "Tanítsa meg az ügynökét, hogy bérletet tartson a saját munkájához.";
 "The Mac keeps running and the screen stays lit: right for a dashboard or a video, and the fastest way to drain a battery." = "A Mac tovább fut, és a képernyő világít: ideális műszerfalhoz vagy videóhoz, és a leggyorsabb módja az akkumulátor lemerítésének.";
@@ -1158,7 +1158,7 @@
 "Your Mac has been kept awake for %@." = "A Macet %@ ideje tartja ébren.";
 "Your keep-awake session ends in about %@." = "Az ébrentartási munkamenet körülbelül %@ múlva véget ér.";
 "Your keep-awake session has ended." = "Az ébrentartási munkamenet véget ért.";
-"Closed Lid needs the helper" = "A Csukott fedél funkcióhoz segéd kell";
+"Lid Closed needs the helper" = "A Fedél csukva funkcióhoz segéd kell";
 "Never Sleep needs the helper" = "A Soha nem alszik funkcióhoz segéd kell";
 "Install the administrator helper to follow sessions automatically, or choose Allow Once in the Pervigil menu." = "Telepítse a rendszergazdai segédet a munkamenetek automatikus követéséhez, vagy válassza az Engedélyezés egyszer lehetőséget a Pervigil menüjében.";
 "AWDL pause needs the helper" = "Az AWDL szüneteltetéséhez segéd kell";
@@ -1171,4 +1171,18 @@
 "Start Using Pervigil" = "Pervigil használatának megkezdése";
 "Scanning Claude Desktop, Codex, and tokenstat.ai. Checked %@." = "A Claude Desktop, a Codex és a tokenstat.ai vizsgálata. Ellenőrizve: %@.";
 "%@, next run %@" = "%@, következő futtatás: %@";
-"Keeps the screen on while Pervigil holds the Mac awake. When off, the screen sleeps on its normal schedule." = "Bekapcsolva tartja a képernyőt, amíg a Pervigil ébren tartja a Macet. Kikapcsolva a képernyő a megszokott ütemezés szerint alszik el.";
+"Lid Closed" = "Fedél csukva";
+"Screen" = "Képernyő";
+"Only during keep-awake" = "Csak ébrentartás közben";
+"Screen when closed" = "Képernyő csukva";
+"Your Mac stays awake when closed, even on battery. Turn this off before putting it in a bag." = "A Mac csukott fedéllel is ébren marad, akkumulátoron is. Kapcsold ki, mielőtt táskába teszed.";
+"Your Mac stays awake until you turn this off. The screen still turns off as usual." = "A Mac ébren marad, amíg ezt ki nem kapcsolod. A képernyő a szokásos módon kikapcsol.";
+"When you step away" = "Ha távol vagy";
+"Stay bright" = "Maradjon világos";
+"Dim after %d min" = "Halványítás %d perc után";
+"Screen saver after %d min" = "Képernyővédő %d perc után";
+"Keeps the screen lit while Pervigil holds the Mac awake. When off, the Mac stays awake while the screen turns off on its normal schedule." = "Világítva tartja a képernyőt, amíg a Pervigil ébren tartja a Macet. Kikapcsolva a Mac ébren marad, a képernyő pedig a szokásos ütemezés szerint kikapcsol.";
+"Follows the session while “Only during keep-awake” is on." = "Követi a munkamenetet, amíg a „Csak ébrentartás közben” be van kapcsolva.";
+"Enable “Only during keep-awake” so closed-display follows each keep-awake session (your triggers or a manual session) and turns off when nothing is holding the Mac awake." = "Kapcsold be a „Csak ébrentartás közben” opciót, hogy a csukott fedeles mód kövesse minden ébrentartási munkamenetet (triggerek vagy kézi), és kikapcsoljon, ha semmi nem tartja ébren a Macet.";
+"Stays awake" = "Ébren marad";
+"Turns off" = "Kikapcsol";

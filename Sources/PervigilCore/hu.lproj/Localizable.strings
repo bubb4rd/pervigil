@@ -313,3 +313,13 @@
 "Needs helper" = "Segéd kell";
 "Read Apple's Game Mode guide" = "Az Apple Játékmód útmutatójának elolvasása";
 "Read the AWDL write-up" = "Az AWDL-leírás elolvasása";
+"With keep-awake" = "Ébrentartással";
+"Never sleeps" = "Soha nem alszik";
+"Dims when idle" = "Tétlenségnél halványul";
+"Turns off" = "Kikapcsol";
+"Turn off" = "Kikapcsolás";
+"Black, powered" = "Fekete, aktív";
+"Don't change" = "Ne módosítsa";
+"The screen turns off when the lid closes. Remote sessions see a turned-off screen." = "A képernyő kikapcsol, amikor becsukod a fedelet. A távoli munkamenetek kikapcsolt képernyőt látnak.";
+"The screen stays black at 0% brightness so Screen Sharing and remote sessions keep working." = "A képernyő 0% fényerőn fekete marad, hogy a Képernyőmegosztás és a távoli munkamenetek tovább működjenek.";
+"Pervigil leaves the screen alone when the lid closes." = "A Pervigil nem nyúl a képernyőhöz, amikor becsukod a fedelet.";

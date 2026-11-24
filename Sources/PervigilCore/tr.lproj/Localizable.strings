@@ -313,3 +313,13 @@
 "Needs helper" = "Yardımcı gerekli";
 "Read Apple's Game Mode guide" = "Apple’ın Oyun Modu kılavuzunu okuyun";
 "Read the AWDL write-up" = "AWDL yazısını okuyun";
+"With keep-awake" = "Uyanık tutarken";
+"Never sleeps" = "Asla uyumaz";
+"Dims when idle" = "Boştayken kararır";
+"Turns off" = "Kapanır";
+"Turn off" = "Kapat";
+"Black, powered" = "Siyah, açık";
+"Don't change" = "Değiştirme";
+"The screen turns off when the lid closes. Remote sessions see a turned-off screen." = "Kapak kapandığında ekran kapanır. Uzak oturumlar kapalı bir ekran görür.";
+"The screen stays black at 0% brightness so Screen Sharing and remote sessions keep working." = "Ekran Paylaşımı ve uzak oturumların çalışmaya devam etmesi için ekran %0 parlaklıkta siyah kalır.";
+"Pervigil leaves the screen alone when the lid closes." = "Kapak kapandığında Pervigil ekrana dokunmaz.";

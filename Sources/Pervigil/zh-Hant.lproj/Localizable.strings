@@ -988,7 +988,7 @@
 "Show %d more agents" = "再顯示 %d 個代理";
 "AI agent working" = "AI 智能體工作中";
 "Sleeps as usual" = "照常睡眠";
-"Normally a MacBook sleeps the moment you shut the lid unless a display is attached. This keeps it running with the lid shut and nothing plugged in, on power or battery. “With each session” turns it on when a keep-awake session starts and off when it ends or Pervigil quits, even after a crash. “Always” flips a system setting (pmset disablesleep) that stays in effect until you turn it off, so don't leave a Mac on battery in a bag. “If the lid shuts” picks what the screen does: turn off, stay powered at zero brightness so a remote session stays live, or leave it alone. Both modes need administrator rights: silent with the administrator helper, otherwise macOS asks for your password once per app run." = "一般而言，只要未連接螢幕，MacBook 在闔蓋的瞬間就會進入睡眠。此選項可讓它在闔蓋且未連接任何裝置時繼續運作，無論使用電源或電池皆然。「隨每次工作階段」會在保持喚醒工作階段開始時開啟，並於工作階段結束或 Pervigil 結束時關閉，即使是當機之後。「永遠」會切換一項系統設定（pmset disablesleep），在您將其關閉前持續生效，因此請勿將使用電池的 Mac 放在背包中。「闔蓋時」用於選擇螢幕的行為：關閉、以零亮度保持供電讓遠端工作階段維持連線，或維持原狀。兩種模式皆需要系統管理員權限：使用系統管理員輔助程式時會靜默執行，否則 macOS 每次執行 App 時會要求輸入一次密碼。";
+"Normally a MacBook sleeps the moment you shut the lid unless a display is attached. This keeps it running with the lid shut and nothing plugged in, on power or battery. “With each session” turns it on when a keep-awake session starts and off when it ends or Pervigil quits, even after a crash. “Always” flips a system setting (pmset disablesleep) that stays in effect until you turn it off, so don't leave a Mac on battery in a bag. “Screen when closed” picks what the screen does: turn off, stay powered at zero brightness so a remote session stays live, or leave it alone. Both modes need administrator rights: silent with the administrator helper, otherwise macOS asks for your password once per app run." = "一般而言，只要未連接螢幕，MacBook 在闔蓋的瞬間就會進入睡眠。此選項可讓它在闔蓋且未連接任何裝置時繼續運作，無論使用電源或電池皆然。「隨每次工作階段」會在保持喚醒工作階段開始時開啟，並於工作階段結束或 Pervigil 結束時關閉，即使是當機之後。「永遠」會切換一項系統設定（pmset disablesleep），在您將其關閉前持續生效，因此請勿將使用電池的 Mac 放在背包中。「闔蓋時的螢幕」用於選擇螢幕的行為：關閉、以零亮度保持供電讓遠端工作階段維持連線，或維持原狀。兩種模式皆需要系統管理員權限：使用系統管理員輔助程式時會靜默執行，否則 macOS 每次執行 App 時會要求輸入一次密碼。";
 "%@ before the end" = "結束前 %@";
 "%@ left" = "剩餘 %@";
 "%@ window" = "%@ 時段";
@@ -1108,7 +1108,7 @@
 "Status, triggers or durations, guards, and the footer." = "狀態、觸發條件或時長、保護以及底部列。";
 "Stays on until you turn it off, even if Pervigil quits. Do not leave it on in a bag." = "在您關閉前會持續開啟，即使 Pervigil 結束也一樣。請勿讓其在背包中保持開啟。";
 "Still hot" = "仍然過熱";
-"Stops the Mac from sleeping at all. “With each session” turns it on while a keep-awake session runs and off when it ends or Pervigil quits, even after a crash. “Always” flips a system setting (pmset disablesleep) that stays in effect until you turn it off, even if Pervigil quits. The display still sleeps as usual. Both need administrator rights: silent with the administrator helper, otherwise macOS asks for your password once per app run." = "讓 Mac 完全不會進入睡眠。「隨每次工作階段」會在保持喚醒工作階段進行期間開啟，並於工作階段結束或 Pervigil 結束時關閉，即使是當機之後。「永遠」會切換一項系統設定（pmset disablesleep），在您將其關閉前持續生效，即使 Pervigil 結束也一樣。顯示器仍會照常睡眠。兩者皆需要系統管理員權限：使用系統管理員輔助程式時會靜默執行，否則 macOS 每次執行 App 時會要求輸入一次密碼。";
+"Stops the Mac from sleeping at all. “With each session” turns it on while a keep-awake session runs and off when it ends or Pervigil quits, even after a crash. “Always” flips a system setting (pmset disablesleep) that stays in effect until you turn it off, even if Pervigil quits. The screen still turns off as usual. Both need administrator rights: silent with the administrator helper, otherwise macOS asks for your password once per app run." = "讓 Mac 完全不會進入睡眠。「隨每次工作階段」會在保持喚醒工作階段進行期間開啟，並於工作階段結束或 Pervigil 結束時關閉，即使是當機之後。「永遠」會切換一項系統設定（pmset disablesleep），在您將其關閉前持續生效，即使 Pervigil 結束也一樣。螢幕仍會照常關閉。兩者皆需要系統管理員權限：使用系統管理員輔助程式時會靜默執行，否則 macOS 每次執行 App 時會要求輸入一次密碼。";
 "Stops" = "停止";
 "Teach your agent to hold a lease for its own work." = "教您的代理在執行自身工作時持有租約。";
 "The Mac keeps running and the screen stays lit: right for a dashboard or a video, and the fastest way to drain a battery." = "Mac 會持續運作且螢幕保持亮起：適合儀表板或影片，也是最快耗盡電池的方式。";
@@ -1158,7 +1158,7 @@
 "Your Mac has been kept awake for %@." = "您的 Mac 已保持喚醒 %@。";
 "Your keep-awake session ends in about %@." = "您的保持喚醒工作階段將在約 %@ 後結束。";
 "Your keep-awake session has ended." = "您的保持喚醒工作階段已結束。";
-"Closed Lid needs the helper" = "闔蓋需要輔助程式";
+"Lid Closed needs the helper" = "闔蓋時需要輔助程式";
 "Never Sleep needs the helper" = "永不睡眠需要輔助程式";
 "Install the administrator helper to follow sessions automatically, or choose Allow Once in the Pervigil menu." = "安裝系統管理員輔助程式即可自動跟隨工作階段，或在 Pervigil 選單中選擇「允許一次」。";
 "AWDL pause needs the helper" = "暫停 AWDL 需要輔助程式";
@@ -1171,4 +1171,18 @@
 "Start Using Pervigil" = "開始使用 Pervigil";
 "Scanning Claude Desktop, Codex, and tokenstat.ai. Checked %@." = "正在掃描 Claude Desktop、Codex 與 tokenstat.ai。已檢查 %@。";
 "%@, next run %@" = "%@，下次執行 %@";
-"Keeps the screen on while Pervigil holds the Mac awake. When off, the screen sleeps on its normal schedule." = "在 Pervigil 保持 Mac 喚醒期間讓螢幕維持開啟。關閉時，螢幕會依正常排程進入睡眠。";
+"Lid Closed" = "闔蓋時";
+"Screen" = "螢幕";
+"Only during keep-awake" = "僅在保持喚醒期間";
+"Screen when closed" = "闔蓋時的螢幕";
+"Your Mac stays awake when closed, even on battery. Turn this off before putting it in a bag." = "闔蓋時您的 Mac 會保持喚醒，即使使用電池也是如此。放入背包前請先關閉。";
+"Your Mac stays awake until you turn this off. The screen still turns off as usual." = "在您關閉此選項前，Mac 會一直保持喚醒。螢幕仍會照常關閉。";
+"When you step away" = "當您離開時";
+"Stay bright" = "保持亮螢幕";
+"Dim after %d min" = "%d 分鐘後調暗";
+"Screen saver after %d min" = "%d 分鐘後啟動螢幕保護程式";
+"Keeps the screen lit while Pervigil holds the Mac awake. When off, the Mac stays awake while the screen turns off on its normal schedule." = "在 Pervigil 保持 Mac 喚醒期間讓螢幕維持亮起。關閉時，Mac 會保持喚醒，螢幕則依正常排程關閉。";
+"Follows the session while “Only during keep-awake” is on." = "開啟「僅在保持喚醒期間」時會隨工作階段自動切換。";
+"Enable “Only during keep-awake” so closed-display follows each keep-awake session (your triggers or a manual session) and turns off when nothing is holding the Mac awake." = "啟用「僅在保持喚醒期間」，讓闔蓋運作跟隨每次保持喚醒工作階段（觸發條件或手動工作階段），並在沒有項目讓 Mac 保持喚醒時自動關閉。";
+"Stays awake" = "保持喚醒";
+"Turns off" = "自動關閉";

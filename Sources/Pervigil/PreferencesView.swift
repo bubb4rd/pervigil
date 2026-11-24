@@ -447,7 +447,7 @@ enum SettingsSearchIndex {
             e(.keepAwake, "dim", L("Dim the display when idle"), L("Display"), ["brightness"]),
             e(.keepAwake, "presence", L("Keep me active"), L("Presence"), ["idle", "away", "teams", "slack", "f15", "mouse"]),
             e(.power, "lidMode", SettingsPage.isLaptop ? L("Keep awake with the lid closed") : L("Disable system sleep"), lid, ["pmset", "disablesleep", "clamshell"]),
-            e(.power, "lidPolicy", L("If the lid shuts"), lid, ["brightness", "screen"]),
+            e(.power, "lidPolicy", L("Screen when closed"), lid, ["brightness", "screen"]),
             e(.power, "lowPower", L("Low Power Mode while the lid is closed"), lid),
             e(.power, "mute", L("Mute built-in speakers while the lid is closed"), lid, ["sound", "audio"]),
             e(.power, "battery", L("Pause on low battery"), L("Battery guard"), ["threshold", "charge"]),

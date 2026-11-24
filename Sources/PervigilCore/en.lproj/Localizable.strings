@@ -313,3 +313,13 @@
 "Needs helper" = "Needs helper";
 "Read Apple's Game Mode guide" = "Read Apple's Game Mode guide";
 "Read the AWDL write-up" = "Read the AWDL write-up";
+"With keep-awake" = "With keep-awake";
+"Never sleeps" = "Never sleeps";
+"Dims when idle" = "Dims when idle";
+"Turns off" = "Turns off";
+"Turn off" = "Turn off";
+"Black, powered" = "Black, powered";
+"Don't change" = "Don't change";
+"The screen turns off when the lid closes. Remote sessions see a turned-off screen." = "The screen turns off when the lid closes. Remote sessions see a turned-off screen.";
+"The screen stays black at 0% brightness so Screen Sharing and remote sessions keep working." = "The screen stays black at 0% brightness so Screen Sharing and remote sessions keep working.";
+"Pervigil leaves the screen alone when the lid closes." = "Pervigil leaves the screen alone when the lid closes.";

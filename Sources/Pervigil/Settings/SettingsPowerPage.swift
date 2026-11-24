@@ -187,7 +187,7 @@ struct SettingsPowerPage: View {
             }
             if laptop && lidMode != .never {
                 VStack(alignment: .leading, spacing: 8) {
-                    Text(verbatim: L("If the lid shuts")).padding(.leading, 34)
+                    Text(verbatim: L("Screen when closed")).padding(.leading, 34)
                     HStack(alignment: .top, spacing: 8) {
                         ForEach(ClosedLidDisplayPolicy.allCases, id: \.self) { policy in
                             PictureChoice(
@@ -223,8 +223,8 @@ struct SettingsPowerPage: View {
             GroupHeader(
                 title: laptop ? L("Closed-display mode") : L("Disable sleep"),
                 info: laptop
-                    ? L("Normally a MacBook sleeps the moment you shut the lid unless a display is attached. This keeps it running with the lid shut and nothing plugged in, on power or battery. \u{201C}With each session\u{201D} turns it on when a keep-awake session starts and off when it ends or Pervigil quits, even after a crash. \u{201C}Always\u{201D} flips a system setting (pmset disablesleep) that stays in effect until you turn it off, so don't leave a Mac on battery in a bag. \u{201C}If the lid shuts\u{201D} picks what the screen does: turn off, stay powered at zero brightness so a remote session stays live, or leave it alone. Both modes need administrator rights: silent with the administrator helper, otherwise macOS asks for your password once per app run.")
-                    : L("Stops the Mac from sleeping at all. \u{201C}With each session\u{201D} turns it on while a keep-awake session runs and off when it ends or Pervigil quits, even after a crash. \u{201C}Always\u{201D} flips a system setting (pmset disablesleep) that stays in effect until you turn it off, even if Pervigil quits. The display still sleeps as usual. Both need administrator rights: silent with the administrator helper, otherwise macOS asks for your password once per app run.")
+                    ? L("Normally a MacBook sleeps the moment you shut the lid unless a display is attached. This keeps it running with the lid shut and nothing plugged in, on power or battery. \u{201C}With each session\u{201D} turns it on when a keep-awake session starts and off when it ends or Pervigil quits, even after a crash. \u{201C}Always\u{201D} flips a system setting (pmset disablesleep) that stays in effect until you turn it off, so don't leave a Mac on battery in a bag. \u{201C}Screen when closed\u{201D} picks what the screen does: turn off, stay powered at zero brightness so a remote session stays live, or leave it alone. Both modes need administrator rights: silent with the administrator helper, otherwise macOS asks for your password once per app run.")
+                    : L("Stops the Mac from sleeping at all. \u{201C}With each session\u{201D} turns it on while a keep-awake session runs and off when it ends or Pervigil quits, even after a crash. \u{201C}Always\u{201D} flips a system setting (pmset disablesleep) that stays in effect until you turn it off, even if Pervigil quits. The screen still turns off as usual. Both need administrator rights: silent with the administrator helper, otherwise macOS asks for your password once per app run.")
             ) { header(tiles: tiles) }
         } footer: {
             sectionFooter("Turn this on and then quit, and Pervigil asks whether to turn it off first.")

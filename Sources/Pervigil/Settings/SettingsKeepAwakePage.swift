@@ -20,13 +20,13 @@ struct SettingsKeepAwakePage: View {
             Section {
                 HStack(spacing: 8) {
                     GuardTileButton(
-                        title: L("Prevent system sleep"), value: sys ? L("Stays on") : L("Can sleep"),
+                        title: L("Prevent system sleep"), value: sys ? L("Stays awake") : L("Sleeps"),
                         symbol: "laptopcomputer", isOn: sys, toggle: optionBinding(\.preventSystemSleep), wide: true
                     ) { optionBinding(\.preventSystemSleep).wrappedValue.toggle() }
                     .settingsAnchor("system")
                     GuardTileButton(
-                        title: L("Prevent display sleep"), value: disp ? L("Stays on") : L("Can sleep"),
-                        symbol: "display", isOn: disp, toggle: optionBinding(\.preventDisplaySleep), wide: true
+                        title: L("Prevent display sleep"), value: disp ? L("Stays on") : L("Turns off"),
+                        symbol: disp ? "sun.max" : "sun.min", isOn: disp, toggle: optionBinding(\.preventDisplaySleep), wide: true
                     ) { optionBinding(\.preventDisplaySleep).wrappedValue.toggle() }
                     .settingsAnchor("display")
                 }
@@ -118,7 +118,7 @@ struct SettingsKeepAwakePage: View {
                     }
                     Toggle(isOn: optionBinding(\.activityOnlyWhileBrewing)) {
                         RowLabel(
-                            title: L("Only while awake"),
+                            title: L("Only during keep-awake"),
                             subtitle: session.options.activityOnlyWhileBrewing ? nil : L("Also runs between sessions, which can keep the Mac from sleeping."),
                             warning: true,
                             indented: true)

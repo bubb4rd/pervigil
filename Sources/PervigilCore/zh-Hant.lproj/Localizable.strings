@@ -313,3 +313,13 @@
 "Needs helper" = "需要輔助程式";
 "Read Apple's Game Mode guide" = "閱讀 Apple 的遊戲模式指南";
 "Read the AWDL write-up" = "閱讀 AWDL 技術說明";
+"With keep-awake" = "隨保持喚醒";
+"Never sleeps" = "永不睡眠";
+"Dims when idle" = "閒置時調暗";
+"Turns off" = "自動關閉";
+"Turn off" = "關閉";
+"Black, powered" = "黑畫面但保持供電";
+"Don't change" = "不變更";
+"The screen turns off when the lid closes. Remote sessions see a turned-off screen." = "闔蓋時螢幕會關閉。遠端工作階段會看到已關閉的螢幕。";
+"The screen stays black at 0% brightness so Screen Sharing and remote sessions keep working." = "螢幕以 0% 亮度維持黑畫面，讓「螢幕共享」與遠端工作階段繼續運作。";
+"Pervigil leaves the screen alone when the lid closes." = "闔蓋時 Pervigil 不會更動螢幕狀態。";

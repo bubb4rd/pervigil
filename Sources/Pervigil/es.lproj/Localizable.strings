@@ -988,7 +988,7 @@
 "Show %d more agents" = "Mostrar %d agentes más";
 "AI agent working" = "Agente de IA trabajando";
 "Sleeps as usual" = "Reposa como siempre";
-"Normally a MacBook sleeps the moment you shut the lid unless a display is attached. This keeps it running with the lid shut and nothing plugged in, on power or battery. “With each session” turns it on when a keep-awake session starts and off when it ends or Pervigil quits, even after a crash. “Always” flips a system setting (pmset disablesleep) that stays in effect until you turn it off, so don't leave a Mac on battery in a bag. “If the lid shuts” picks what the screen does: turn off, stay powered at zero brightness so a remote session stays live, or leave it alone. Both modes need administrator rights: silent with the administrator helper, otherwise macOS asks for your password once per app run." = "Normalmente un MacBook se suspende en cuanto cierras la tapa, a menos que haya una pantalla conectada. Esto lo mantiene funcionando con la tapa cerrada y nada enchufado, con corriente o batería. «Con cada sesión» lo activa cuando comienza una sesión para mantener despierto y lo desactiva cuando termina o Pervigil se cierra, incluso tras un bloqueo. «Siempre» cambia un ajuste del sistema (pmset disablesleep) que sigue en efecto hasta que lo desactives, así que no dejes un Mac con batería dentro de una bolsa. «Si la tapa se cierra» elige qué hace la pantalla: apagarse, seguir encendida con brillo cero para que una sesión remota siga activa, o no cambiar. Ambos modos requieren permisos de administrador: en silencio con el asistente de administrador; si no, macOS pide tu contraseña una vez por ejecución de la app.";
+"Normally a MacBook sleeps the moment you shut the lid unless a display is attached. This keeps it running with the lid shut and nothing plugged in, on power or battery. “With each session” turns it on when a keep-awake session starts and off when it ends or Pervigil quits, even after a crash. “Always” flips a system setting (pmset disablesleep) that stays in effect until you turn it off, so don't leave a Mac on battery in a bag. “Screen when closed” picks what the screen does: turn off, stay powered at zero brightness so a remote session stays live, or leave it alone. Both modes need administrator rights: silent with the administrator helper, otherwise macOS asks for your password once per app run." = "Normalmente un MacBook se suspende en cuanto cierras la tapa, a menos que haya una pantalla conectada. Esto lo mantiene funcionando con la tapa cerrada y nada enchufado, con corriente o batería. «Con cada sesión» lo activa cuando comienza una sesión para mantener despierto y lo desactiva cuando termina o Pervigil se cierra, incluso tras un bloqueo. «Siempre» cambia un ajuste del sistema (pmset disablesleep) que sigue en efecto hasta que lo desactives, así que no dejes un Mac con batería dentro de una bolsa. «Pantalla al cerrar» elige qué hace la pantalla: apagarse, seguir encendida con brillo cero para que una sesión remota siga activa, o no cambiar. Ambos modos requieren permisos de administrador: en silencio con el asistente de administrador; si no, macOS pide tu contraseña una vez por ejecución de la app.";
 "%@ before the end" = "%@ antes del final";
 "%@ left" = "Quedan %@";
 "%@ window" = "Ventana de %@";
@@ -1108,7 +1108,7 @@
 "Status, triggers or durations, guards, and the footer." = "Estado, disparadores o duraciones, protecciones y el pie.";
 "Stays on until you turn it off, even if Pervigil quits. Do not leave it on in a bag." = "Sigue activado hasta que lo desactives, aunque Pervigil se cierre. No lo dejes activado dentro de una bolsa.";
 "Still hot" = "Sigue caliente";
-"Stops the Mac from sleeping at all. “With each session” turns it on while a keep-awake session runs and off when it ends or Pervigil quits, even after a crash. “Always” flips a system setting (pmset disablesleep) that stays in effect until you turn it off, even if Pervigil quits. The display still sleeps as usual. Both need administrator rights: silent with the administrator helper, otherwise macOS asks for your password once per app run." = "Evita que el Mac se suspenda en absoluto. «Con cada sesión» lo activa mientras hay una sesión para mantener despierto y lo desactiva cuando termina o Pervigil se cierra, incluso tras un bloqueo. «Siempre» cambia un ajuste del sistema (pmset disablesleep) que sigue en efecto hasta que lo desactives, aunque Pervigil se cierre. La pantalla sigue apagándose como siempre. Ambos requieren permisos de administrador: en silencio con el asistente de administrador; si no, macOS pide tu contraseña una vez por ejecución de la app.";
+"Stops the Mac from sleeping at all. “With each session” turns it on while a keep-awake session runs and off when it ends or Pervigil quits, even after a crash. “Always” flips a system setting (pmset disablesleep) that stays in effect until you turn it off, even if Pervigil quits. The screen still turns off as usual. Both need administrator rights: silent with the administrator helper, otherwise macOS asks for your password once per app run." = "Evita que el Mac se suspenda en absoluto. «Con cada sesión» lo activa mientras hay una sesión para mantener despierto y lo desactiva cuando termina o Pervigil se cierra, incluso tras un bloqueo. «Siempre» cambia un ajuste del sistema (pmset disablesleep) que sigue en efecto hasta que lo desactives, aunque Pervigil se cierre. La pantalla sigue apagándose como siempre. Ambos requieren permisos de administrador: en silencio con el asistente de administrador; si no, macOS pide tu contraseña una vez por ejecución de la app.";
 "Stops" = "Detenciones";
 "Teach your agent to hold a lease for its own work." = "Enseña a tu agente a mantener una concesión durante su propio trabajo.";
 "The Mac keeps running and the screen stays lit: right for a dashboard or a video, and the fastest way to drain a battery." = "El Mac sigue funcionando y la pantalla encendida: ideal para un panel o un vídeo, y la forma más rápida de agotar la batería.";
@@ -1158,7 +1158,7 @@
 "Your Mac has been kept awake for %@." = "Tu Mac se ha mantenido despierto durante %@.";
 "Your keep-awake session ends in about %@." = "Tu sesión para mantener despierto termina en unos %@.";
 "Your keep-awake session has ended." = "Tu sesión para mantener despierto ha terminado.";
-"Closed Lid needs the helper" = "Tapa cerrada necesita el asistente";
+"Lid Closed needs the helper" = "Tapa cerrada necesita el asistente";
 "Never Sleep needs the helper" = "Nunca dormir necesita el asistente";
 "Install the administrator helper to follow sessions automatically, or choose Allow Once in the Pervigil menu." = "Instala el asistente de administrador para seguir las sesiones automáticamente o elige Permitir una vez en el menú de Pervigil.";
 "AWDL pause needs the helper" = "La pausa de AWDL necesita el asistente";
@@ -1171,4 +1171,18 @@
 "Start Using Pervigil" = "Empezar a usar Pervigil";
 "Scanning Claude Desktop, Codex, and tokenstat.ai. Checked %@." = "Buscando en Claude Desktop, Codex y tokenstat.ai. Comprobado %@.";
 "%@, next run %@" = "%@, próxima ejecución: %@";
-"Keeps the screen on while Pervigil holds the Mac awake. When off, the screen sleeps on its normal schedule." = "Mantiene la pantalla encendida mientras Pervigil mantiene despierto el Mac. Si está desactivada, la pantalla entra en reposo según su horario normal.";
+"Lid Closed" = "Tapa cerrada";
+"Screen" = "Pantalla";
+"Only during keep-awake" = "Solo al mantener despierto";
+"Screen when closed" = "Pantalla al cerrar";
+"Your Mac stays awake when closed, even on battery. Turn this off before putting it in a bag." = "Tu Mac sigue despierto al cerrarlo, incluso con batería. Desactívalo antes de guardarlo en una mochila.";
+"Your Mac stays awake until you turn this off. The screen still turns off as usual." = "Tu Mac sigue despierto hasta que lo desactives. La pantalla sigue apagándose como siempre.";
+"When you step away" = "Al ausentarte";
+"Stay bright" = "Seguir encendida";
+"Dim after %d min" = "Atenuar tras %d min";
+"Screen saver after %d min" = "Salvapantallas tras %d min";
+"Keeps the screen lit while Pervigil holds the Mac awake. When off, the Mac stays awake while the screen turns off on its normal schedule." = "Mantiene la pantalla iluminada mientras Pervigil mantiene despierto el Mac. Si está desactivada, el Mac sigue despierto y la pantalla se apaga según su horario normal.";
+"Follows the session while “Only during keep-awake” is on." = "Sigue la sesión mientras «Solo al mantener despierto» esté activado.";
+"Enable “Only during keep-awake” so closed-display follows each keep-awake session (your triggers or a manual session) and turns off when nothing is holding the Mac awake." = "Activa «Solo al mantener despierto» para que el modo tapa cerrada siga cada sesión (tus disparadores o una sesión manual) y se desactive cuando nada mantenga el Mac despierto.";
+"Stays awake" = "Sigue despierto";
+"Turns off" = "Se apaga";

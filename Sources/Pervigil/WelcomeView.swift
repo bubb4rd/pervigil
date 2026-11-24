@@ -418,7 +418,7 @@ struct WelcomeView: View {
                 }
             }
             if model.closedDisplayOnlyWhileBrewing {
-                Text("Follows the session while \u{201C}Only while awake\u{201D} is on.")
+                Text("Follows the session while \u{201C}Only during keep-awake\u{201D} is on.")
                     .font(type.caption)
                     .foregroundStyle(.secondary)
                     .fixedSize(horizontal: false, vertical: true)
@@ -456,7 +456,7 @@ struct WelcomeView: View {
             VStack(alignment: .leading, spacing: 2) {
                 Text("Handle it automatically")
                     .font(type.callout.weight(.medium))
-                Text("Enable \u{201C}Only while awake\u{201D} so closed-display follows each keep-awake session (your triggers or a manual session) and turns off when nothing is holding the Mac awake.")
+                Text("Enable \u{201C}Only during keep-awake\u{201D} so closed-display follows each keep-awake session (your triggers or a manual session) and turns off when nothing is holding the Mac awake.")
                     .font(type.caption)
                     .foregroundStyle(.secondary)
                     .fixedSize(horizontal: false, vertical: true)

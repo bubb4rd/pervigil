@@ -335,7 +335,7 @@ extension PanelStatus {
         let lid = lidNeedsHelper
             ? L("Needs helper")
             : input.lidOn
-            ? (input.lidOnlyWhileAwake ? L("During sessions") : L("Stays awake"))
+            ? (input.lidOnlyWhileAwake ? L("With keep-awake") : (input.hasBattery ? L("Stays awake") : L("Never sleeps")))
             : L("Sleeps")
         var battery: String
         var warning = false
@@ -360,8 +360,8 @@ extension PanelStatus {
             battery = L("Below %d%%", input.batteryThreshold)
         }
         let display = input.preventDisplaySleep
-            ? (input.dimsWhenIdle ? L("On, dims when idle") : L("Stays on"))
-            : L("Can sleep")
+            ? (input.dimsWhenIdle ? L("Dims when idle") : L("Stays on"))
+            : L("Turns off")
         return GuardTileValues(
             lid: lid, lidNeedsHelper: lidNeedsHelper, battery: battery, batteryWarning: warning,
             display: display, stayActive: input.stayActiveMethod ?? L("Off"))

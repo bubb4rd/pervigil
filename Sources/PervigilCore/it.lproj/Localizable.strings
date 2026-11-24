@@ -313,3 +313,13 @@
 "Needs helper" = "Serve l’assistente";
 "Read Apple's Game Mode guide" = "Leggi la guida di Apple sulla modalità Gioco";
 "Read the AWDL write-up" = "Leggi l’approfondimento su AWDL";
+"With keep-awake" = "Con veglia attiva";
+"Never sleeps" = "Non va mai in stop";
+"Dims when idle" = "Si attenua se inattivo";
+"Turns off" = "Si spegne";
+"Turn off" = "Spegni";
+"Black, powered" = "Nero, alimentato";
+"Don't change" = "Non cambiare";
+"The screen turns off when the lid closes. Remote sessions see a turned-off screen." = "Lo schermo si spegne quando chiudi il coperchio. Le sessioni remote vedono uno schermo spento.";
+"The screen stays black at 0% brightness so Screen Sharing and remote sessions keep working." = "Lo schermo resta nero allo 0% di luminosità così Condivisione schermo e le sessioni remote continuano a funzionare.";
+"Pervigil leaves the screen alone when the lid closes." = "Pervigil non tocca lo schermo quando chiudi il coperchio.";

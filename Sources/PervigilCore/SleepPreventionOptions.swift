@@ -1,5 +1,13 @@
 import Foundation
 
+/// What happens to the screen after inactivity when
+/// ``SleepPreventionOptions/preventDisplaySleep`` is on.
+public enum IdleScreenBehavior: String, CaseIterable, Hashable, Sendable {
+    case stayBright
+    case dim
+    case screenSaver
+}
+
 /// What Pervigil should keep awake while a session is active.
 ///
 /// The two flags map onto distinct IOKit power assertions:
@@ -131,6 +139,36 @@ public struct SleepPreventionOptions: Equatable, Codable, Sendable {
         guard let code = activitySimulationKeyCode,
               ActivityKeyModifiers.acceptsModifiers(keyCode: code) else { return [] }
         return activitySimulationKeyModifiers.intersection(.all)
+    }
+
+    /// Default idle delay (5 minutes) used when enabling dimming or screen saver yield.
+    public static let defaultIdleScreenDelay: TimeInterval = 5 * 60
+
+    /// The single idle-screen choice represented by the mutually exclusive
+    /// ``dimDisplayAfter`` and ``allowScreenSaverAfter`` intervals.
+    public func idleScreenBehavior(brightnessSupported: Bool = true) -> IdleScreenBehavior {
+        if brightnessSupported, dimDisplayAfter != nil { return .dim }
+        if allowScreenSaverAfter != nil { return .screenSaver }
+        return .stayBright
+    }
+
+    /// Updates ``dimDisplayAfter`` and ``allowScreenSaverAfter`` together so
+    /// the two mutually exclusive idle behaviors never conflict.
+    public mutating func setIdleScreenBehavior(
+        _ behavior: IdleScreenBehavior,
+        defaultDelay: TimeInterval = SleepPreventionOptions.defaultIdleScreenDelay
+    ) {
+        switch behavior {
+        case .stayBright:
+            dimDisplayAfter = nil
+            allowScreenSaverAfter = nil
+        case .dim:
+            dimDisplayAfter = dimDisplayAfter ?? defaultDelay
+            allowScreenSaverAfter = nil
+        case .screenSaver:
+            allowScreenSaverAfter = allowScreenSaverAfter ?? defaultDelay
+            dimDisplayAfter = nil
+        }
     }
 
     /// The default "brew": keep the system awake, let the screen do its thing.

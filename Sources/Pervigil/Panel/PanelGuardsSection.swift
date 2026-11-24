@@ -40,9 +40,9 @@ struct PanelGuardsSection: View {
 
     private func title(_ tile: Tile) -> String {
         switch tile {
-        case .lid: model.machineHasBattery ? L("Closed Lid") : L("Never Sleep")
+        case .lid: model.machineHasBattery ? L("Lid Closed") : L("Never Sleep")
         case .battery: L("Battery Guard")
-        case .display: L("Display")
+        case .display: L("Screen")
         case .stayActive: L("Stay Active")
         }
     }
@@ -69,7 +69,7 @@ struct PanelGuardsSection: View {
         case .lid where tiles.lidNeedsHelper: "lock"
         case .lid: model.machineHasBattery ? "laptopcomputer" : "moon.zzz"
         case .battery: "battery.50percent"
-        case .display: "display"
+        case .display: session.options.preventDisplaySleep && session.options.dimDisplayAfter == nil ? "sun.max" : "sun.min"
         case .stayActive: "cursorarrow.motionlines"
         }
     }
@@ -126,7 +126,7 @@ struct PanelGuardsSection: View {
         if model.closedLidNeedsHelper {
             lidNeedsHelperNotice
         }
-        switchRow("Only while awake", isOn: Binding(
+        switchRow("Only during keep-awake", isOn: Binding(
             get: { model.closedDisplayOnlyWhileBrewing },
             set: { model.closedDisplayOnlyWhileBrewing = $0 }
         ), info: model.machineHasBattery
@@ -134,7 +134,7 @@ struct PanelGuardsSection: View {
             : L("Turns the sleep override on when a keep-awake session starts and off when it ends or Pervigil quits."))
         .disabled(model.closedDisplayAutoBusy)
         if model.machineHasBattery {
-            Picker(L("If the lid shuts"), selection: Binding(
+            Picker(L("Screen when closed"), selection: Binding(
                 get: { model.closedLidDisplayPolicy },
                 set: { model.closedLidDisplayPolicy = $0 }
             )) {
@@ -152,8 +152,8 @@ struct PanelGuardsSection: View {
         }
         Text(model.closedDisplayEnabled
             ? (model.machineHasBattery
-                ? L("Stays awake on battery too; the display turns off when the lid closes. Turn it off before putting it in a bag.")
-                : L("The Mac won't sleep at all until you turn this off. The display still sleeps as usual."))
+                ? L("Your Mac stays awake when closed, even on battery. Turn this off before putting it in a bag.")
+                : L("Your Mac stays awake until you turn this off. The screen still turns off as usual."))
             : model.closedLidDisplayPolicy.explanation)
             .font(.system(size: 11))
             .foregroundStyle(model.closedDisplayEnabled && model.machineHasBattery ? Color.panelAmberText : Color.secondary)
@@ -208,24 +208,22 @@ struct PanelGuardsSection: View {
 
     @ViewBuilder
     private var displayOptions: some View {
-        if model.brightnessSupported {
-            switchRow("Dim the display when idle", isOn: Binding(
-                get: { session.options.dimDisplayAfter != nil },
-                set: { on in model.updateOptions {
-                    $0.dimDisplayAfter = on ? ($0.dimDisplayAfter ?? 5 * 60) : nil
-                    if on { $0.allowScreenSaverAfter = nil }
-                }}
-            ))
+        let dimMinutes = max(1, Int(round((session.options.dimDisplayAfter ?? SleepPreventionOptions.defaultIdleScreenDelay) / 60)))
+        let saverMinutes = max(1, Int(round((session.options.allowScreenSaverAfter ?? SleepPreventionOptions.defaultIdleScreenDelay) / 60)))
+        Picker(L("When you step away"), selection: Binding(
+            get: { session.options.idleScreenBehavior(brightnessSupported: model.brightnessSupported) },
+            set: { behavior in model.updateOptions { $0.setIdleScreenBehavior(behavior) } }
+        )) {
+            Text(L("Stay bright")).tag(IdleScreenBehavior.stayBright)
+            if model.brightnessSupported {
+                Text(L("Dim after %d min", dimMinutes)).tag(IdleScreenBehavior.dim)
+            }
+            Text(L("Screen saver after %d min", saverMinutes)).tag(IdleScreenBehavior.screenSaver)
         }
-        switchRow("Allow screen saver after", isOn: Binding(
-            get: { session.options.allowScreenSaverAfter != nil },
-            set: { on in model.updateOptions {
-                $0.allowScreenSaverAfter = on ? ($0.allowScreenSaverAfter ?? 5 * 60) : nil
-                if on { $0.dimDisplayAfter = nil }
-            }}
-        ))
+        .pickerStyle(.menu)
+        .controlSize(.small)
         .disabled(!session.options.preventDisplaySleep)
-        Text("Keeps the screen on while Pervigil holds the Mac awake. When off, the screen sleeps on its normal schedule.")
+        Text("Keeps the screen lit while Pervigil holds the Mac awake. When off, the Mac stays awake while the screen turns off on its normal schedule.")
             .font(.system(size: 11))
             .foregroundStyle(.secondary)
             .fixedSize(horizontal: false, vertical: true)

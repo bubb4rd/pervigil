@@ -313,3 +313,13 @@
 "Needs helper" = "Requer assistente";
 "Read Apple's Game Mode guide" = "Ler o guia da Apple sobre o Modo de Jogo";
 "Read the AWDL write-up" = "Ler o artigo sobre AWDL";
+"With keep-awake" = "Com vigília ativa";
+"Never sleeps" = "Nunca repousa";
+"Dims when idle" = "Escurece quando ociosa";
+"Turns off" = "Desliga";
+"Turn off" = "Desligar";
+"Black, powered" = "Preta, ligada";
+"Don't change" = "Não alterar";
+"The screen turns off when the lid closes. Remote sessions see a turned-off screen." = "A tela desliga quando a tampa fecha. Sessões remotas veem uma tela desligada.";
+"The screen stays black at 0% brightness so Screen Sharing and remote sessions keep working." = "A tela fica preta com 0% de brilho para que o Compartilhamento de Tela e sessões remotas continuem funcionando.";
+"Pervigil leaves the screen alone when the lid closes." = "O Pervigil não altera a tela quando a tampa fecha.";

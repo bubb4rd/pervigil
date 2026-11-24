@@ -313,3 +313,13 @@
 "Needs helper" = "需要助理";
 "Read Apple's Game Mode guide" = "阅读 Apple 的游戏模式指南";
 "Read the AWDL write-up" = "阅读 AWDL 技术说明";
+"With keep-awake" = "随保持唤醒";
+"Never sleeps" = "永不睡眠";
+"Dims when idle" = "空闲时调暗";
+"Turns off" = "自动关闭";
+"Turn off" = "关闭";
+"Black, powered" = "黑屏但保持供电";
+"Don't change" = "保持不变";
+"The screen turns off when the lid closes. Remote sessions see a turned-off screen." = "合盖时屏幕会关闭。远程会话将看到已关闭的屏幕。";
+"The screen stays black at 0% brightness so Screen Sharing and remote sessions keep working." = "屏幕以 0% 亮度保持黑屏，使“屏幕共享”和远程会话继续工作。";
+"Pervigil leaves the screen alone when the lid closes." = "合盖时 Pervigil 不会更改屏幕状态。";

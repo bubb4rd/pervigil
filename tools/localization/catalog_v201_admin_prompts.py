@@ -25,9 +25,9 @@ CORE = {
 }
 
 APP = {
-    "Closed Lid needs the helper": {
-        "hu": "A Csukott fedél funkcióhoz segéd kell", "es": "Tapa cerrada necesita el asistente", "fr": "Capot fermé nécessite l’assistant", "de": "Geschlossener Deckel braucht den Hilfsdienst", "zh-Hans": "合盖需要助理",
-        "it": "Coperchio chiuso richiede l’assistente", "ja": "「ふたを閉じる」にはヘルパーが必要です", "ko": "덮개 닫힘에는 도우미가 필요합니다", "ru": "Для «Закрытой крышки» нужен помощник", "pt-BR": "Tampa fechada precisa do assistente", "tr": "Kapak kapalı için yardımcı gerekli", "pl": "Zamknięta pokrywa wymaga pomocnika", "uk": "Для «Закритої кришки» потрібен помічник", "zh-Hant": "闔蓋需要輔助程式",
+    "Lid Closed needs the helper": {
+        "hu": "A Fedél csukva funkcióhoz segéd kell", "es": "Tapa cerrada necesita el asistente", "fr": "Capot fermé nécessite l’assistant", "de": "Deckel zu braucht den Hilfsdienst", "zh-Hans": "合盖时需要助理",
+        "it": "Coperchio chiuso richiede l’assistente", "ja": "「ふたを閉じたとき」にはヘルパーが必要です", "ko": "덮개 닫힘에는 도우미가 필요합니다", "ru": "Для «Крышка закрыта» нужен помощник", "pt-BR": "Tampa fechada precisa do assistente", "tr": "Kapak kapalı için yardımcı gerekli", "pl": "Pokrywa zamknięta wymaga pomocnika", "uk": "Для «Кришка закрита» потрібен помічник", "zh-Hant": "闔蓋時需要輔助程式",
     },
     "Never Sleep needs the helper": {
         "hu": "A Soha nem alszik funkcióhoz segéd kell", "es": "Nunca dormir necesita el asistente", "fr": "Jamais en veille nécessite l’assistant", "de": "Nie schlafen braucht den Hilfsdienst", "zh-Hans": "永不睡眠需要助理",

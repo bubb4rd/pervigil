@@ -150,21 +150,24 @@ private func status(_ input: PanelInput) -> PanelStatus {
         hasBattery: true, batteryPercent: 90, onBattery: false, batteryGuardOn: true,
         lidOn: true, lidOnlyWhileAwake: true, preventDisplaySleep: true, dimsWhenIdle: true,
         stayActiveMethod: "F15"))
-    #expect(s.tiles.lid == "During sessions")
+    #expect(s.tiles.lid == "With keep-awake")
     #expect(s.tiles.battery == "Plugged in")
-    #expect(s.tiles.display == "On, dims when idle")
+    #expect(s.tiles.display == "Dims when idle")
     #expect(s.tiles.stayActive == "F15")
     #expect(s.detail == "Lid can close")
 
     let off = status(PanelInput(now: noon, isActive: false, hasBattery: false))
     #expect(off.tiles.lid == "Sleeps")
     #expect(off.tiles.battery == "No battery")
-    #expect(off.tiles.display == "Can sleep")
+    #expect(off.tiles.display == "Turns off")
     #expect(off.tiles.stayActive == "Off")
+
+    let desktopAlways = status(PanelInput(now: noon, isActive: false, hasBattery: false, lidOn: true))
+    #expect(desktopAlways.tiles.lid == "Never sleeps")
 }
 
 @Test func lidTileSaysNeedsHelperInsteadOfPromising() {
-    // "Only while awake" without the helper or an Allow once: the tile must
+    // "Only during keep-awake" without the helper or an Allow once: the tile must
     // not claim the lid can close, and must not read like it is working.
     let s = status(PanelInput(now: noon, isActive: true, elapsed: 1,
         lidOn: true, lidOnlyWhileAwake: true, lidNeedsHelper: true))
@@ -177,6 +180,33 @@ private func status(_ input: PanelInput) -> PanelStatus {
         lidOn: true, lidOnlyWhileAwake: false, lidNeedsHelper: true))
     #expect(sticky.tiles.lid == "Stays awake")
     #expect(!sticky.tiles.lidNeedsHelper)
+}
+
+@Test func idleScreenBehaviorTransitionsStayMutuallyExclusive() {
+    var options = SleepPreventionOptions(preventDisplaySleep: true)
+    #expect(options.idleScreenBehavior() == .stayBright)
+
+    options.setIdleScreenBehavior(.dim)
+    #expect(options.dimDisplayAfter == SleepPreventionOptions.defaultIdleScreenDelay)
+    #expect(options.allowScreenSaverAfter == nil)
+    #expect(options.idleScreenBehavior() == .dim)
+    // When brightness control is unavailable, dimming falls back to stayBright.
+    #expect(options.idleScreenBehavior(brightnessSupported: false) == .stayBright)
+
+    options.setIdleScreenBehavior(.screenSaver)
+    #expect(options.dimDisplayAfter == nil)
+    #expect(options.allowScreenSaverAfter == SleepPreventionOptions.defaultIdleScreenDelay)
+    #expect(options.idleScreenBehavior() == .screenSaver)
+
+    // Preserves a custom delay when re-selecting the active behavior.
+    options.allowScreenSaverAfter = 600
+    options.setIdleScreenBehavior(.screenSaver)
+    #expect(options.allowScreenSaverAfter == 600)
+
+    options.setIdleScreenBehavior(.stayBright)
+    #expect(options.dimDisplayAfter == nil)
+    #expect(options.allowScreenSaverAfter == nil)
+    #expect(options.idleScreenBehavior() == .stayBright)
 }
 
 // MARK: - Reasons

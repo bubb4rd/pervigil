@@ -988,7 +988,7 @@
 "Show %d more agents" = "ほかに %d 件のエージェントを表示";
 "AI agent working" = "AI エージェントが作業中";
 "Sleeps as usual" = "通常どおりスリープ";
-"Normally a MacBook sleeps the moment you shut the lid unless a display is attached. This keeps it running with the lid shut and nothing plugged in, on power or battery. “With each session” turns it on when a keep-awake session starts and off when it ends or Pervigil quits, even after a crash. “Always” flips a system setting (pmset disablesleep) that stays in effect until you turn it off, so don't leave a Mac on battery in a bag. “If the lid shuts” picks what the screen does: turn off, stay powered at zero brightness so a remote session stays live, or leave it alone. Both modes need administrator rights: silent with the administrator helper, otherwise macOS asks for your password once per app run." = "通常、MacBook はディスプレイが接続されていない限り、蓋を閉じた瞬間にスリープします。これは、蓋を閉じて何も接続していない状態でも、電源でもバッテリーでも動作し続けるようにします。「セッションごと」は、スリープ防止セッションの開始時にオンにし、終了時または Pervigil の終了時に（クラッシュ後も含め）オフにします。「常に」はシステム設定（pmset disablesleep）を切り替え、オフにするまで有効なままになるため、バッテリー駆動の Mac をバッグに入れたままにしないでください。「蓋を閉じたとき」では画面の動作を選べます。オフにする、リモートセッションを維持するために輝度ゼロで通電したままにする、何もしない、のいずれかです。どちらのモードにも管理者権限が必要です。管理者ヘルパーがあれば確認なしで実行され、ない場合は App の実行ごとに1回、macOS がパスワードを求めます。";
+"Normally a MacBook sleeps the moment you shut the lid unless a display is attached. This keeps it running with the lid shut and nothing plugged in, on power or battery. “With each session” turns it on when a keep-awake session starts and off when it ends or Pervigil quits, even after a crash. “Always” flips a system setting (pmset disablesleep) that stays in effect until you turn it off, so don't leave a Mac on battery in a bag. “Screen when closed” picks what the screen does: turn off, stay powered at zero brightness so a remote session stays live, or leave it alone. Both modes need administrator rights: silent with the administrator helper, otherwise macOS asks for your password once per app run." = "通常、MacBook はディスプレイが接続されていない限り、蓋を閉じた瞬間にスリープします。これは、蓋を閉じて何も接続していない状態でも、電源でもバッテリーでも動作し続けるようにします。「セッションごと」は、スリープ防止セッションの開始時にオンにし、終了時または Pervigil の終了時に（クラッシュ後も含め）オフにします。「常に」はシステム設定（pmset disablesleep）を切り替え、オフにするまで有効なままになるため、バッテリー駆動の Mac をバッグに入れたままにしないでください。「閉じたときの画面」では画面の動作を選べます。オフにする、リモートセッションを維持するために輝度ゼロで通電したままにする、何もしない、のいずれかです。どちらのモードにも管理者権限が必要です。管理者ヘルパーがあれば確認なしで実行され、ない場合は App の実行ごとに1回、macOS がパスワードを求めます。";
 "%@ before the end" = "終了の %@ 前";
 "%@ left" = "残り %@";
 "%@ window" = "%@ の時間枠";
@@ -1108,7 +1108,7 @@
 "Status, triggers or durations, guards, and the footer." = "ステータス、トリガーまたは継続時間、保護、フッター。";
 "Stays on until you turn it off, even if Pervigil quits. Do not leave it on in a bag." = "Pervigil を終了しても、オフにするまでオンのままです。バッグの中でオンのままにしないでください。";
 "Still hot" = "まだ高温";
-"Stops the Mac from sleeping at all. “With each session” turns it on while a keep-awake session runs and off when it ends or Pervigil quits, even after a crash. “Always” flips a system setting (pmset disablesleep) that stays in effect until you turn it off, even if Pervigil quits. The display still sleeps as usual. Both need administrator rights: silent with the administrator helper, otherwise macOS asks for your password once per app run." = "Mac が一切スリープしないようにします。「セッションごと」は、スリープ防止セッションの実行中にオンにし、終了時または Pervigil の終了時に（クラッシュ後も含め）オフにします。「常に」はシステム設定（pmset disablesleep）を切り替え、Pervigil を終了してもオフにするまで有効なままになります。ディスプレイは通常どおりスリープします。どちらにも管理者権限が必要です。管理者ヘルパーがあれば確認なしで実行され、ない場合は App の実行ごとに1回、macOS がパスワードを求めます。";
+"Stops the Mac from sleeping at all. “With each session” turns it on while a keep-awake session runs and off when it ends or Pervigil quits, even after a crash. “Always” flips a system setting (pmset disablesleep) that stays in effect until you turn it off, even if Pervigil quits. The screen still turns off as usual. Both need administrator rights: silent with the administrator helper, otherwise macOS asks for your password once per app run." = "Mac が一切スリープしないようにします。「セッションごと」は、スリープ防止セッションの実行中にオンにし、終了時または Pervigil の終了時に（クラッシュ後も含め）オフにします。「常に」はシステム設定（pmset disablesleep）を切り替え、Pervigil を終了してもオフにするまで有効なままになります。画面は通常どおりオフになります。どちらにも管理者権限が必要です。管理者ヘルパーがあれば確認なしで実行され、ない場合は App の実行ごとに1回、macOS がパスワードを求めます。";
 "Stops" = "停止";
 "Teach your agent to hold a lease for its own work." = "エージェントが自分の作業中にリースを保持するよう設定します。";
 "The Mac keeps running and the screen stays lit: right for a dashboard or a video, and the fastest way to drain a battery." = "Mac は動作を続け、画面も点灯したままです。ダッシュボードや動画に最適ですが、バッテリーを最も早く消耗します。";
@@ -1158,7 +1158,7 @@
 "Your Mac has been kept awake for %@." = "Mac は %@ の間スリープを防止されています。";
 "Your keep-awake session ends in about %@." = "スリープ防止セッションは約 %@ で終了します。";
 "Your keep-awake session has ended." = "スリープ防止セッションが終了しました。";
-"Closed Lid needs the helper" = "「ふたを閉じる」にはヘルパーが必要です";
+"Lid Closed needs the helper" = "「ふたを閉じたとき」にはヘルパーが必要です";
 "Never Sleep needs the helper" = "「スリープしない」にはヘルパーが必要です";
 "Install the administrator helper to follow sessions automatically, or choose Allow Once in the Pervigil menu." = "管理者ヘルパーをインストールするとセッションに自動で追従します。または Pervigil メニューで「1回だけ許可」を選択してください。";
 "AWDL pause needs the helper" = "AWDL の一時停止にはヘルパーが必要です";
@@ -1171,4 +1171,18 @@
 "Start Using Pervigil" = "Pervigil を使い始める";
 "Scanning Claude Desktop, Codex, and tokenstat.ai. Checked %@." = "Claude Desktop、Codex、tokenstat.ai をスキャン中。確認: %@。";
 "%@, next run %@" = "%@、次回実行 %@";
-"Keeps the screen on while Pervigil holds the Mac awake. When off, the screen sleeps on its normal schedule." = "Pervigil が Mac を起動したままにしている間、画面を点灯し続けます。オフの場合、画面は通常どおりスリープします。";
+"Lid Closed" = "ふたを閉じたとき";
+"Screen" = "画面";
+"Only during keep-awake" = "スリープ防止中のみ";
+"Screen when closed" = "閉じたときの画面";
+"Your Mac stays awake when closed, even on battery. Turn this off before putting it in a bag." = "ふたを閉じてもバッテリー駆動のまま Mac はスリープしません。バッグに入れる前にオフにしてください。";
+"Your Mac stays awake until you turn this off. The screen still turns off as usual." = "オフにするまで Mac はスリープしません。画面は通常どおりオフになります。";
+"When you step away" = "席を離れたとき";
+"Stay bright" = "明るいままにする";
+"Dim after %d min" = "%d 分後に暗くする";
+"Screen saver after %d min" = "%d 分後にスクリーンセーバ";
+"Keeps the screen lit while Pervigil holds the Mac awake. When off, the Mac stays awake while the screen turns off on its normal schedule." = "Pervigil が Mac のスリープを防いでいる間、画面を点灯したままにします。オフの場合、Mac は起動したままで画面は通常どおりオフになります。";
+"Follows the session while “Only during keep-awake” is on." = "「スリープ防止中のみ」がオンの間はセッションに連動します。";
+"Enable “Only during keep-awake” so closed-display follows each keep-awake session (your triggers or a manual session) and turns off when nothing is holding the Mac awake." = "「スリープ防止中のみ」を有効にすると、クラムシェル動作が各セッション（トリガーまたは手動）に連動し、保持するものがなくなるとオフになります。";
+"Stays awake" = "スリープしない";
+"Turns off" = "オフになる";

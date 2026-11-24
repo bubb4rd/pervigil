@@ -3565,7 +3565,7 @@ final class AppModel {
             // needs a password, and automation never asks. Say so once, quietly:
             // no sound, no focus steal. The menu tile carries the fix.
             notifier.notify(
-                title: machineHasBattery ? L("Closed Lid needs the helper") : L("Never Sleep needs the helper"),
+                title: machineHasBattery ? L("Lid Closed needs the helper") : L("Never Sleep needs the helper"),
                 body: L("Install the administrator helper to follow sessions automatically, or choose Allow Once in the Pervigil menu."),
                 sound: false
             )

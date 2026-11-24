@@ -21,9 +21,9 @@ public extension ClosedLidDisplayPolicy {
     /// Menu and Preferences label for the policy picker.
     var label: String {
         switch self {
-        case .displayOff: L("Turn off the display")
-        case .zeroBrightness: L("Stay on at 0% brightness")
-        case .leaveAlone: L("Leave the display alone")
+        case .displayOff: L("Turn off")
+        case .zeroBrightness: L("Black, powered")
+        case .leaveAlone: L("Don't change")
         }
     }
 
@@ -31,11 +31,11 @@ public extension ClosedLidDisplayPolicy {
     var explanation: String {
         switch self {
         case .displayOff:
-            L("The display sleeps when the lid shuts. A remote session sees a sleeping display.")
+            L("The screen turns off when the lid closes. Remote sessions see a turned-off screen.")
         case .zeroBrightness:
-            L("The panel goes dark but stays powered, so a remote session stays live.")
+            L("The screen stays black at 0% brightness so Screen Sharing and remote sessions keep working.")
         case .leaveAlone:
-            L("Pervigil never touches the display.")
+            L("Pervigil leaves the screen alone when the lid closes.")
         }
     }
 }

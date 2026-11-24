@@ -313,3 +313,13 @@
 "Needs helper" = "도우미 필요";
 "Read Apple's Game Mode guide" = "Apple의 게임 모드 가이드 읽기";
 "Read the AWDL write-up" = "AWDL 설명 글 읽기";
+"With keep-awake" = "깨어 있게 유지 시";
+"Never sleeps" = "절대 잠들지 않음";
+"Dims when idle" = "유휴 시 어둡게";
+"Turns off" = "꺼짐";
+"Turn off" = "끄기";
+"Black, powered" = "검은 화면(전원 유지)";
+"Don't change" = "변경 안 함";
+"The screen turns off when the lid closes. Remote sessions see a turned-off screen." = "덮개를 닫으면 화면이 꺼집니다. 원격 세션에서는 꺼진 화면으로 보입니다.";
+"The screen stays black at 0% brightness so Screen Sharing and remote sessions keep working." = "화면이 0% 밝기의 검은 상태로 유지되어 화면 공유와 원격 세션이 계속 작동합니다.";
+"Pervigil leaves the screen alone when the lid closes." = "덮개를 닫아도 Pervigil이 화면을 건드리지 않습니다.";
