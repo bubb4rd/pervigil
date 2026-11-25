@@ -12,7 +12,7 @@
   <a href="LICENSE"><img alt="License: GPL-3.0" src="https://img.shields.io/badge/License-GPLv3-6eaff6"></a>
 </p>
 
-<p align="center">A native macOS menu bar utility built for AI agents, local inference hosts, headless Macs, and everyday workflows.</p>
+<p align="center">A native macOS menu bar utility built for AI agents, headless Macs, and everyday workflows.</p>
 
 <p align="center">
   <a href="#install">Install</a> ·
@@ -27,7 +27,7 @@
   <img src="docs/assets/hero_menu.svg" width="460" alt="Close-up tilted view of the Pervigil menu active with Claude, Cursor, Antigravity, and Codex running">
 </p>
 
-Pervigil manages macOS `IOPMAssertion` power assertions manually or automatically through configurable triggers, closed-display controls, and CLI/MCP leases. Built to keep Macs awake while work runs and let them sleep when idle, it fits both daily desktop use and unattended AI or Apple Silicon inference hosts, with no open network ports and no background polling unless enabled. Distributed outside the Mac App Store because the App Sandbox blocks `IOPMAssertion` APIs.
+Pervigil manages macOS `IOPMAssertion` power assertions manually or automatically through configurable triggers, closed-display controls, and CLI/MCP leases. Built to keep Macs awake while work runs and let them sleep when idle, it fits both daily desktop use and unattended Macs running AI agents, with no open network ports and no background polling unless enabled. Distributed outside the Mac App Store because the App Sandbox blocks `IOPMAssertion` APIs.
 
 > [!NOTE]
 > Pervigil is an unofficial fork of [Keepresso](https://github.com/gyorgysh/keepresso) and is not affiliated with or endorsed by the Keepresso project or pueev OÜ. See [TRADEMARK.md](TRADEMARK.md).
@@ -97,18 +97,9 @@ Permissions are requested only when you enable a feature that requires them. Cam
 
 ## Roadmap
 
-<p align="center">
-  <img src="docs/assets/inference_host.svg" width="560" alt="Pervigil Inference Host concept showing local Ollama, LM Studio, and llama-server activity with GPU and wired-memory telemetry">
-</p>
+No release is scheduled yet. Ideas under consideration include a trigger for local inference servers (Ollama, LM Studio, `llama-server`), power draw tracking, and multi-Mac holds.
 
-Next up is the **Inference Host** release, focused on unattended Apple Silicon machines with zero added dependencies, no open ports, and no always-on polling:
-
-- **Inference server trigger**: Stay awake while Ollama, LM Studio, or `llama-server` is serving, and sleep when idle.
-- **Menu telemetry and health alerts**: On-demand GPU %, memory pressure, swap, and temperature reads with throttling, memory, and server-down alerts.
-- **CLI and Prometheus metrics**: Extended `pervigil status --json` output and `pervigil metrics --prometheus` for Grafana and `node_exporter` textfile collectors.
-- **Host reliability**: Persistent GPU wired-memory limit (via the privileged helper) and power-failure / auto-update restart checks in Headless Setup.
-
-See [ROADMAP.md](ROADMAP.md) for the full release scope, later plans (power draw, fleet/cluster holds, Bonjour wake), and engineering constraints.
+See [ROADMAP.md](ROADMAP.md) for the full list and engineering constraints.
 
 ## Build from source
 
